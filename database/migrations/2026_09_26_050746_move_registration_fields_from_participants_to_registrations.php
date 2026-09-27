@@ -9,10 +9,15 @@ return new class extends Migration
     public function up(): void
     {
         // 1) Hapus kolom dari participants
-        Schema::table('participants', function (Blueprint $table) {
+        $hasEmailUnique = Schema::hasIndex('participants', ['email'], 'unique');
+
+        Schema::table('participants', function (Blueprint $table) use ($hasEmailUnique) {
             $table->dropUnique(['registration_number']);
             $table->dropUnique(['barcode']);
-            $table->dropUnique(['email']);
+
+            if ($hasEmailUnique) {
+                $table->dropUnique(['email']);
+            }
         });
 
         Schema::table('participants', function (Blueprint $table) {
