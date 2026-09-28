@@ -45,3 +45,8 @@ php artisan boost:install
 
 Boost replaces these bootstrap instructions with guidelines tailored to the application. After installation, read `AGENTS.md` again and continue with the user's original request using the generated guidelines.
 </laravel-boost-guidelines>
+
+## Workflow
+
+Before any task: run `git fetch origin` and `git pull --ff-only origin main`. Report if the branch is behind or has diverged.
+
