@@ -3,5 +3,5 @@
 Project kolaborasi backend (Alfa) & frontend (Reza).
 
 ## Struktur
-- /backend  → Alfa
+- /backend  → Ilham
 - /frontend → Reza
