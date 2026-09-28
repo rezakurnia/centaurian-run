@@ -1,4 +1,4 @@
-<laravel-boost-guidelines>
+﻿<laravel-boost-guidelines>
 # Laravel Application
 
 This repository contains a Laravel application. Complete the following setup before working on the user's request.
@@ -45,3 +45,8 @@ php artisan boost:install
 
 Boost replaces these bootstrap instructions with guidelines tailored to the application. After installation, read `AGENTS.md` again and continue with the user's original request using the generated guidelines.
 </laravel-boost-guidelines>
+
+## Workflow
+
+Before any task: run `git fetch origin`, `git pull` (current branch), then `git pull origin main` to bring in main. Reza works on `frontend`, Ilham on `backend`; never commit directly to `main`. Report any conflicts instead of auto-resolving.
+
