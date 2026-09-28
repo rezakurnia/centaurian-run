@@ -2,14 +2,37 @@
 
 Backend REST API untuk Centaurian Fun Run: Laravel 13 (PHP ^8.3), auth pakai token Sanctum.
 
+## Tim & Branch
+
+| Siapa | Bagian | Branch |
+|-------|--------|--------|
+| Reza (`rezakurnia`) | Frontend | `frontend` |
+| Ilham (`ilham-gif-lab`) | Backend | `backend` |
+
+`main` = versi gabungan yang sudah jalan. Jangan kerja langsung di `main`.
+
 ## Workflow
 
-Sebelum mulai kerja, selalu tarik commit terbaru:
+Pertama kali (ganti `frontend` dengan `backend` untuk Ilham):
 
 ```sh
 git fetch origin
-git pull --ff-only origin main
+git checkout frontend
 ```
+
+Setiap hari:
+
+```sh
+git pull origin main        # ambil update terbaru dari main (+ kerjaan teman yang sudah di-merge)
+# ... edit file ...
+git add .
+git commit -m "Jelaskan perubahan"
+git push
+```
+
+Kalau fitur sudah jalan: buka GitHub → **Pull requests** → **New pull request** → pilih `main` ← `frontend` (atau `backend`) → **Create** → **Merge**.
+
+Kalau `git pull` bilang ada *conflict*: buka file yang ditandai, pilih versi yang benar, lalu `git add .` dan `git commit`.
 
 ## Setup
 

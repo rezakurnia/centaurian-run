@@ -1,4 +1,4 @@
-<laravel-boost-guidelines>
+﻿<laravel-boost-guidelines>
 # Laravel Application
 
 This repository contains a Laravel application. Complete the following setup before working on the user's request.
@@ -48,5 +48,5 @@ Boost replaces these bootstrap instructions with guidelines tailored to the appl
 
 ## Workflow
 
-Before any task: run `git fetch origin` and `git pull --ff-only origin main`. Report if the branch is behind or has diverged.
+Before any task: run `git fetch origin`, `git pull` (current branch), then `git pull origin main` to bring in main. Reza works on `frontend`, Ilham on `backend`; never commit directly to `main`. Report any conflicts instead of auto-resolving.
 
