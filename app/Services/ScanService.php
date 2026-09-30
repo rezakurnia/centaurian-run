@@ -104,7 +104,7 @@ class ScanService
 
         $finishTime = now();
         $startTime  = \Carbon\Carbon::parse($event->start_time);
-        $duration   = $finishTime->diffInSeconds($startTime);
+        $duration = $finishTime->getTimestamp() - $startTime->getTimestamp();
 
         if ($existing) {
             $existing->update([

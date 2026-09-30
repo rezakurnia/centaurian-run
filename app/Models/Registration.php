@@ -22,6 +22,15 @@ class Registration extends Model
         'verified_at' => 'datetime',
     ];
 
+    protected $appends = ['payment_proof_url'];
+
+    public function getPaymentProofUrlAttribute(): ?string
+    {
+    return $this->payment_proof
+        ? asset('storage/' . $this->payment_proof)
+        : null;
+    }
+
     public function participant(): BelongsTo
     {
         return $this->belongsTo(Participant::class);

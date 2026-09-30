@@ -17,6 +17,8 @@ class EventResource extends JsonResource
             'event_date'  => $this->event_date,
             'start_time'  => $this->start_time,
             'is_active'   => $this->is_active,
+            'created_at'  => $this->created_at,
+            'updated_at'  => $this->updated_at,
         ];
     }
 }

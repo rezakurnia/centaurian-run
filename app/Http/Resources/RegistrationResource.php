@@ -15,6 +15,8 @@ class RegistrationResource extends JsonResource
             'barcode'             => $this->barcode,
             'registration_status' => $this->registration_status,
             'payment_status'      => $this->payment_status,
+            'payment_proof'       => $this->payment_proof,
+            'payment_proof_url'   => $this->payment_proof_url,
             'category'            => $this->category->name ?? null,
             'package'             => $this->package->name ?? null,
             'event'               => $this->event->name ?? null,

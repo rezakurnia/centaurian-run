@@ -7,9 +7,12 @@ use App\Http\Requests\StoreContentRequest;
 use App\Http\Requests\UpdateContentRequest;
 use App\Http\Resources\ContentResource;
 use App\Models\Content;
+use App\Traits\LogsActivity;
 
 class ContentController extends Controller
 {
+    use LogsActivity;
+
     public function index()
     {
         $contents = Content::orderBy('target_site')
@@ -33,6 +36,13 @@ class ContentController extends Controller
             'sort_order'  => $request->sort_order ?? 0,
             'updated_by'  => $request->user()->id,
         ]);
+
+        $this->logActivity(
+            'create_content',
+            'contents',
+            $content->id,
+            "Membuat konten: {$content->title}"
+        );
 
         return response()->json([
             'message' => 'Konten berhasil dibuat.',
@@ -73,6 +83,13 @@ class ContentController extends Controller
             ['updated_by' => $request->user()->id]
         ));
 
+        $this->logActivity(
+            'update_content',
+            'contents',
+            $content->id,
+            "Memperbarui konten: {$content->title}"
+        );
+
         return response()->json([
             'message' => 'Konten berhasil diperbarui.',
             'data'    => new ContentResource($content->fresh()),
@@ -89,6 +106,13 @@ class ContentController extends Controller
                 'data'    => null,
             ], 404);
         }
+
+        $this->logActivity(
+            'delete_content',
+            'contents',
+            $content->id,
+            "Menghapus konten: {$content->title}"
+        );
 
         $content->delete();
 

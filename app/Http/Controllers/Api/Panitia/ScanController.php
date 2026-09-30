@@ -7,9 +7,11 @@ use App\Http\Requests\ScanBarcodeRequest;
 use App\Models\Event;
 use App\Services\ScanService;
 use Illuminate\Http\Request;
+use App\Traits\LogsActivity;
 
 class ScanController extends Controller
 {
+    use LogsActivity;
     public function start(Request $request, ScanService $scanService)
     {
         $request->validate([
@@ -22,6 +24,13 @@ class ScanController extends Controller
             $request->ip(),
             $request->userAgent()
         );
+
+        $this->logActivity(
+    'start_event',
+    'events',
+    $request->event_id,
+    "Memulai acara event ID: {$request->event_id}"
+);
 
         return response()->json([
             'message' => 'Acara telah dimulai. Waktu start tercatat.',

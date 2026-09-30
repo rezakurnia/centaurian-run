@@ -7,10 +7,13 @@ use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
+use App\Traits\LogsActivity;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
+    use LogsActivity;
+
     public function index()
     {
         $users = User::orderBy('role')->orderBy('username')->get();
@@ -29,6 +32,13 @@ class UserController extends Controller
             'email'    => $request->email,
             'role'     => $request->role,
         ]);
+
+        $this->logActivity(
+            'create_user',
+            'users',
+            $user->id,
+            "Membuat user: {$user->username} ({$user->role})"
+        );
 
         return response()->json([
             'message' => 'User berhasil dibuat.',
@@ -74,6 +84,13 @@ class UserController extends Controller
 
         $user->update($data);
 
+        $this->logActivity(
+            'update_user',
+            'users',
+            $user->id,
+            "Memperbarui user: {$user->username}"
+        );
+
         return response()->json([
             'message' => 'User berhasil diperbarui.',
             'data'    => new UserResource($user->fresh()),
@@ -91,7 +108,6 @@ class UserController extends Controller
             ], 404);
         }
 
-        // Cegah admin menghapus dirinya sendiri
         if ($user->id === auth()->id()) {
             return response()->json([
                 'message' => 'Tidak dapat menghapus akun sendiri.',
@@ -100,6 +116,13 @@ class UserController extends Controller
         }
 
         $user->delete();
+
+        $this->logActivity(
+            'delete_user',
+            'users',
+            $user->id,
+            "Menghapus user: {$user->username}"
+        );
 
         return response()->json([
             'message' => 'User berhasil dihapus.',

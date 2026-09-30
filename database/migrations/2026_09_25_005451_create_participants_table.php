@@ -10,9 +10,9 @@ return new class extends Migration
     {
         Schema::create('participants', function (Blueprint $table) {
             $table->id();
-            $table->string('registration_number', 20)->unique();
+            $table->string('registration_number', 20);       // ← TANPA unique
             $table->integer('sequence_number');
-            $table->string('barcode', 50)->unique();
+            $table->string('barcode', 50);                   // ← TANPA unique
             $table->string('full_name', 100);
             $table->enum('gender', ['L', 'P'])->nullable();
             $table->string('birth_place', 100)->nullable();

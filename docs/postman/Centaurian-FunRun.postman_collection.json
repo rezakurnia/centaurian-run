@@ -1,0 +1,689 @@
+{
+  "info": {
+    "name": "Centaurian FunRun",
+    "description": "Koleksi API Centaurian FunRun. Gunakan environment 'Centaurian Local'.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. Autentikasi",
+      "item": [
+        {
+          "name": "Login Admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.token) { pm.environment.set('token_admin', res.token); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"admin123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/login",
+              "host": ["{{base_url}}"],
+              "path": ["login"]
+            }
+          }
+        },
+        {
+          "name": "Login Panitia",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.token) { pm.environment.set('token_panitia', res.token); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"panitia\",\n  \"password\": \"panitia123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/login",
+              "host": ["{{base_url}}"],
+              "path": ["login"]
+            }
+          }
+        },
+        {
+          "name": "Cek Profil Sendiri",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token_panitia}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/me",
+              "host": ["{{base_url}}"],
+              "path": ["me"]
+            }
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token_panitia}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/logout",
+              "host": ["{{base_url}}"],
+              "path": ["logout"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Website Utama - Publik",
+      "item": [
+        {
+          "name": "Event Aktif",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{base_url}}/event/active",
+              "host": ["{{base_url}}"],
+              "path": ["event", "active"]
+            }
+          }
+        },
+        {
+          "name": "Daftar Konten",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{base_url}}/contents",
+              "host": ["{{base_url}}"],
+              "path": ["contents"]
+            }
+          }
+        },
+        {
+          "name": "Registrasi Peserta",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"full_name\": \"Budi Santoso\",\n  \"gender\": \"L\",\n  \"birth_place\": \"Bandung\",\n  \"birth_date\": \"2000-05-15\",\n  \"motivation\": \"Tetap semangat!\",\n  \"email\": \"budi@example.com\",\n  \"phone\": \"08123456789\",\n  \"event_id\": 1,\n  \"category_id\": 1,\n  \"package_id\": 2\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/registrations",
+              "host": ["{{base_url}}"],
+              "path": ["registrations"]
+            }
+          }
+        },
+        {
+          "name": "Time Result",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{base_url}}/results",
+              "host": ["{{base_url}}"],
+              "path": ["results"]
+            }
+          }
+        },
+        {
+          "name": "Time Result by No Peserta",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{base_url}}/results/SW-0001",
+              "host": ["{{base_url}}"],
+              "path": ["results", "SW-0001"]
+            }
+          }
+        },
+        {
+          "name": "Daftar Kategori",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{base_url}}/categories",
+              "host": ["{{base_url}}"],
+              "path": ["categories"]
+            }
+          }
+        },
+        {
+          "name": "Daftar Paket",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{base_url}}/packages",
+              "host": ["{{base_url}}"],
+              "path": ["packages"]
+            }
+          }
+        },
+        {
+          "name": "Upload Bukti Bayar",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "payment_proof", "type": "file", "src": "" }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/registrations/SW-0001/payment-proof",
+              "host": ["{{base_url}}"],
+              "path": ["registrations", "SW-0001", "payment-proof"]
+            }
+          }
+        },
+        {
+          "name": "Cek Status Pendaftaran",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"registration_number\": \"SW-0001\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/registrations/check-status",
+              "host": ["{{base_url}}"],
+              "path": ["registrations", "check-status"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Website Panitia",
+      "item": [
+        {
+          "name": "Rekap Peserta per Kategori",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token_panitia}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/panitia/recap/category",
+              "host": ["{{base_url}}"],
+              "path": ["panitia", "recap", "category"]
+            }
+          }
+        },
+        {
+          "name": "Rekap Peserta per Nomor",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token_panitia}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/panitia/recap/participants",
+              "host": ["{{base_url}}"],
+              "path": ["panitia", "recap", "participants"]
+            }
+          }
+        },
+        {
+          "name": "Start Acara",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token_panitia}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"event_id\": 1\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/panitia/start",
+              "host": ["{{base_url}}"],
+              "path": ["panitia", "start"]
+            }
+          }
+        },
+        {
+          "name": "Scan Barcode",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token_panitia}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"barcode\": \"GANTI-DENGAN-BARCODE\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/panitia/scan",
+              "host": ["{{base_url}}"],
+              "path": ["panitia", "scan"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Website Admin",
+      "item": [
+        {
+          "name": "Konten - Daftar",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token_admin}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/contents",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "contents"]
+            }
+          }
+        },
+        {
+          "name": "Konten - Buat",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token_admin}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"target_site\": \"utama\",\n  \"section\": \"banner\",\n  \"title\": \"Selamat Datang\",\n  \"body\": \"Ikuti Centaurian FunRun!\",\n  \"status\": \"published\",\n  \"sort_order\": 1\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/admin/contents",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "contents"]
+            }
+          }
+        },
+        {
+          "name": "Konten - Update",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token_admin}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Judul Baru\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/admin/contents/1",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "contents", "1"]
+            }
+          }
+        },
+        {
+          "name": "Konten - Hapus",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token_admin}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/contents/1",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "contents", "1"]
+            }
+          }
+        },
+        {
+          "name": "Data - Daftar Peserta",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token_admin}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/participants",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "participants"]
+            }
+          }
+        },
+        {
+          "name": "Data - Daftar Pendaftaran",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token_admin}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/registrations",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "registrations"]
+            }
+          }
+        },
+        {
+          "name": "Data - Verifikasi Pendaftaran",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token_admin}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"registration_status\": \"confirmed\",\n  \"payment_status\": \"paid\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/admin/registrations/1/verify",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "registrations", "1", "verify"]
+            }
+          }
+        },
+        {
+          "name": "Data - Dashboard",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token_admin}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/dashboard",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "dashboard"]
+            }
+          }
+        },
+        {
+          "name": "User - Daftar",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token_admin}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/users",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "users"]
+            }
+          }
+        },
+        {
+          "name": "User - Buat",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token_admin}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"panitia2\",\n  \"password\": \"rahasia123\",\n  \"email\": \"panitia2@centaurian.test\",\n  \"role\": \"panitia\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/admin/users",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "users"]
+            }
+          }
+        },
+        {
+          "name": "User - Update",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token_admin}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"panitia2_new@centaurian.test\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/admin/users/3",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "users", "3"]
+            }
+          }
+        },
+        {
+          "name": "User - Hapus",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token_admin}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/users/3",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "users", "3"]
+            }
+          }
+        },
+        {
+          "name": "Event - Daftar",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token_admin}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/events",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "events"]
+            }
+          }
+        },
+        {
+          "name": "Event - Buat",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token_admin}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Centaurian FunRun 2026\",\n  \"description\": \"Lari santai\",\n  \"location\": \"Lapangan Sekolah\",\n  \"event_date\": \"2026-05-15\",\n  \"is_active\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/admin/events",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "events"]
+            }
+          }
+        },
+        {
+          "name": "Event - Toggle Active",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token_admin}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/events/1/toggle-active",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "events", "1", "toggle-active"]
+            }
+          }
+        },
+        {
+          "name": "Event - Reset",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token_admin}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"confirmation\": \"RESET\",\n  \"password\": \"admin123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/admin/events/1/reset",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "events", "1", "reset"]
+            }
+          }
+        },
+        {
+          "name": "Scan Logs - Daftar",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token_admin}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/scan-logs",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "scan-logs"]
+            }
+          }
+        },
+        {
+          "name": "Activity Logs - Daftar",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token_admin}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/activity-logs",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "activity-logs"]
+            }
+          }
+        },
+        {
+          "name": "Settings - Daftar",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token_admin}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/settings",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "settings"]
+            }
+          }
+        },
+        {
+          "name": "Settings - Buat",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token_admin}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"key\": \"app_name\",\n  \"value\": \"Centaurian FunRun 2026\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/admin/settings",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "settings"]
+            }
+          }
+        },
+        {
+          "name": "Export - Participants",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token_admin}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/export/participants",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "export", "participants"]
+            }
+          }
+        },
+        {
+          "name": "Export - Registrations",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token_admin}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/export/registrations",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "export", "registrations"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

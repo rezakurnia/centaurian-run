@@ -11,7 +11,7 @@ class ResultResource extends JsonResource
     {
         return [
             'id'                  => $this->id,
-            'registration_number' => $this->participant->registration_number ?? null,
+            'registration_number' => $this->registration->registration_number ?? null,
             'full_name'           => $this->participant->full_name ?? null,
             'category'            => $this->registration->category->name ?? null,
             'start_time'          => $this->start_time,

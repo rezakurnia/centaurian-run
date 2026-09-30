@@ -31,7 +31,7 @@ class ResultController extends Controller
     public function show(string $registrationNumber)
     {
         $result = Result::with(['participant', 'registration.category'])
-            ->whereHas('participant', function ($q) use ($registrationNumber) {
+            ->whereHas('registration', function ($q) use ($registrationNumber) {
                 $q->where('registration_number', $registrationNumber);
             })
             ->where('scan_status', 'valid')
