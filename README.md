@@ -1,68 +1,40 @@
-# Centaurian-Funrun
+# Centaurian FunRun — Backend API
 
-Backend REST API untuk Centaurian Fun Run: Laravel 13 (PHP ^8.3), auth pakai token Sanctum.
+Backend API untuk kegiatan **Centaurian FunRun** — terdiri dari 3 website
+(Utama, Panitia, Admin) dengan satu backend terpusat.
 
-## Tim & Branch
+## Teknologi
 
-| Siapa | Bagian | Branch |
-|-------|--------|--------|
-| Reza (`rezakurnia`) | Frontend | `frontend` |
-| Ilham (`ilham-gif-lab`) | Backend | `backend` |
+- Laravel 13
+- PHP 8.3
+- MySQL 8.4
+- Laravel Sanctum (API Token)
+- PHPUnit (163 test)
 
-`main` = versi gabungan yang sudah jalan. Jangan kerja langsung di `main`.
+## Fitur Utama
 
-## Workflow
+- Pendaftaran peserta dengan nomor otomatis & barcode unik
+- Scan barcode di garis finis dengan deteksi duplikat
+- Start acara serentak (tombol start)
+- Perhitungan waktu tempuh otomatis
+- Upload bukti bayar
+- Cek status pendaftaran (publik)
+- Verifikasi pendaftaran + notifikasi email
+- CRUD konten, event, user (admin)
+- Audit trail (activity log)
+- Scan logs
+- Export data CSV
+- Reset acara dengan konfirmasi + password
 
-Pertama kali (ganti `frontend` dengan `backend` untuk Ilham):
+## Instalasi Lokal
 
-```sh
-git fetch origin
-git checkout frontend
-```
-
-Setiap hari:
-
-```sh
-git pull origin main        # ambil update terbaru dari main (+ kerjaan teman yang sudah di-merge)
-# ... edit file ...
-git add .
-git commit -m "Jelaskan perubahan"
-git push
-```
-
-Kalau fitur sudah jalan: buka GitHub → **Pull requests** → **New pull request** → pilih `main` ← `frontend` (atau `backend`) → **Create** → **Merge**.
-
-Kalau `git pull` bilang ada *conflict*: buka file yang ditandai, pilih versi yang benar, lalu `git add .` dan `git commit`.
-
-## Setup
-
-```sh
+```bash
+git clone https://github.com/username/centaurian-funrun-backend.git
+cd centaurian-funrun-backend
 composer install
 cp .env.example .env
 php artisan key:generate
-php artisan migrate --seed
-npm install
+# Edit .env sesuai konfigurasi database Anda
+php artisan migrate:fresh --seed
+php artisan storage:link
 php artisan serve
-```
-
-Default DB = SQLite. Session, cache, dan queue memakai driver `database` (tabelnya sudah ada di migration).
-Seeder membuat akun `admin@centaurian.test` (admin) dan `panitia@centaurian.test` (panitia). Password ada di `database/seeders/UserSeeder.php`.
-
-## Endpoint (`/api`)
-
-| Akses | Method | Path |
-|-------|--------|------|
-| Publik | POST | `/login` (throttle) |
-| Publik | POST | `/registrations` |
-| Publik | GET | `/event/active` |
-| Publik | GET | `/contents` |
-| Publik | GET | `/results`, `/results/{registration_number}` |
-| Token | POST | `/logout` |
-| Token | GET | `/me` |
-| Panitia | GET | `/panitia/recap/category`, `/panitia/recap/participants` |
-| Panitia | POST | `/panitia/start`, `/panitia/scan` |
-| Admin | CRUD | `/admin/contents`, `/admin/users` |
-| Admin | GET | `/admin/participants`, `/admin/registrations`, `/admin/registrations/{id}`, `/admin/dashboard` |
-| Admin | PUT | `/admin/registrations/{id}/verify` |
-
-Token = header `Authorization: Bearer <token>` dari `/login`. Route admin butuh `role:admin`; route panitia saat ini cukup token (belum ada cek role).
