@@ -1,0 +1,1003 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ACR Wireframe</title>
+<!--
+  Alcent Centaurian Run: low-fidelity clickable wireframe.
+  Static mock with no network calls. Each screen is tagged with the backend
+  endpoints (routes/api.php) it would call. Use the "Anotasi API" toggle to show or hide the tags.
+-->
+<style>
+  :root {
+    --bg: #f2f2ef;
+    --paper: #ffffff;
+    --ink: #1f1f1f;
+    --muted: #5c5c5c;
+    --line: #8a8a8a;
+    --soft: #e6e6e3;
+    --hatch: #d4d4d0;
+    --note-bg: #fff6bf;
+    --note-ink: #4a3f00;
+    --focus: #1f1f1f;
+    --radius: 6px;
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 24px;
+    --space-6: 32px;
+    --mono: ui-monospace, "Cascadia Mono", Consolas, monospace;
+    --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #1b1b1a; --paper: #262625; --ink: #ececea; --muted: #b0b0ac;
+      --line: #7a7a76; --soft: #333331; --hatch: #3d3d3b;
+      --note-bg: #3b3510; --note-ink: #f3e9a8; --focus: #ececea;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--bg); color: var(--ink);
+    font: 16px/1.5 var(--sans);
+  }
+  a { color: inherit; }
+  :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  h1, h2, h3 { line-height: 1.25; margin: 0 0 var(--space-3); }
+  h1 { font-size: 1.6rem; } h2 { font-size: 1.25rem; } h3 { font-size: 1.05rem; }
+  p { margin: 0 0 var(--space-3); }
+  .muted { color: var(--muted); }
+  .small { font-size: .875rem; }
+
+  /* ---------- top bar (wireframe chrome, not part of the product) ---------- */
+  .wf-bar {
+    position: sticky; top: 0; z-index: 20;
+    display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-4); align-items: center;
+    padding: var(--space-2) var(--space-4);
+    background: var(--ink); color: var(--bg); font-size: .875rem;
+  }
+  .wf-bar strong { letter-spacing: .02em; }
+  .wf-bar nav { display: flex; gap: var(--space-1); flex-wrap: wrap; }
+  .wf-bar nav a {
+    text-decoration: none; padding: 6px 10px; border-radius: 999px; border: 1px solid transparent;
+    min-height: 32px; display: inline-flex; align-items: center;
+  }
+  .wf-bar nav a[aria-current="true"] { border-color: var(--bg); }
+  .wf-bar label { margin-left: auto; display: inline-flex; gap: var(--space-2); align-items: center; cursor: pointer; }
+  .wf-bar input { width: 18px; height: 18px; }
+
+  /* ---------- building blocks ---------- */
+  .wrap { max-width: 1100px; margin: 0 auto; padding: var(--space-5) var(--space-4); }
+  .card {
+    background: var(--paper); border: 1.5px solid var(--line); border-radius: var(--radius);
+    padding: var(--space-4); margin-bottom: var(--space-4);
+  }
+  .grid { display: grid; gap: var(--space-4); }
+  @media (min-width: 720px) {
+    .g2 { grid-template-columns: repeat(2, 1fr); }
+    .g3 { grid-template-columns: repeat(3, 1fr); }
+    .g4 { grid-template-columns: repeat(4, 1fr); }
+  }
+  .row { display: flex; flex-wrap: wrap; gap: var(--space-2); align-items: center; }
+  .spread { justify-content: space-between; }
+  .ph {
+    border: 1.5px dashed var(--line); border-radius: var(--radius); color: var(--muted);
+    display: grid; place-items: center; text-align: center; padding: var(--space-4);
+    background: repeating-linear-gradient(45deg, transparent 0 10px, var(--hatch) 10px 11px);
+    font-size: .875rem; min-height: 120px;
+  }
+  .stat strong { display: block; font-size: 1.8rem; line-height: 1.1; }
+  .bar-track { height: 12px; background: var(--soft); border-radius: 999px; overflow: hidden; }
+  .bar-fill { height: 100%; background: var(--line); }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2);
+    min-height: 44px; padding: 0 var(--space-4);
+    border: 1.5px solid var(--ink); border-radius: var(--radius);
+    background: var(--paper); color: var(--ink); font: inherit; font-weight: 600;
+    cursor: pointer; text-decoration: none;
+    transition: background-color .15s ease, transform .1s ease;
+  }
+  .btn:hover { background: var(--soft); }
+  .btn:active { transform: translateY(1px); }
+  .btn.primary { background: var(--ink); color: var(--paper); }
+  .btn.primary:hover { opacity: .9; }
+  .btn.sm { min-height: 36px; padding: 0 var(--space-3); font-size: .875rem; }
+  .btn.ghost { border-style: dashed; }
+
+  .badge {
+    display: inline-block; white-space: nowrap; padding: 1px 8px; border-radius: 999px;
+    border: 1.5px solid var(--line); font-size: .8rem; font-weight: 600;
+  }
+  .badge.solid { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  .badge.dashed { border-style: dashed; }
+
+  /* forms */
+  .field { display: grid; gap: var(--space-1); margin-bottom: var(--space-3); }
+  .field label, .field legend { font-weight: 600; font-size: .9rem; }
+  .field .hint { font-size: .8rem; color: var(--muted); }
+  .field .err { font-size: .85rem; font-weight: 600; }
+  .field .err::before { content: "⚠ "; }
+  input:not([type=checkbox]):not([type=radio]), select, textarea {
+    width: 100%; min-height: 44px; padding: var(--space-2) var(--space-3);
+    border: 1.5px solid var(--line); border-radius: var(--radius);
+    background: var(--paper); color: var(--ink); font: inherit;
+  }
+  textarea { min-height: 88px; resize: vertical; }
+  [aria-invalid="true"] { border-color: var(--ink) !important; border-width: 2.5px !important; }
+  fieldset { border: 0; padding: 0; margin: 0 0 var(--space-3); }
+  .choice { display: inline-flex; gap: var(--space-2); align-items: center; min-height: 44px; margin-right: var(--space-4); }
+  .choice input { width: 20px; height: 20px; }
+  .err-summary { border: 2.5px solid var(--ink); border-radius: var(--radius); padding: var(--space-3) var(--space-4); margin-bottom: var(--space-4); }
+  .err-summary ul { margin: 0; padding-left: 1.2em; }
+
+  /* tables */
+  .table-wrap { overflow-x: auto; border: 1.5px solid var(--line); border-radius: var(--radius); background: var(--paper); }
+  table { border-collapse: collapse; width: 100%; min-width: 560px; font-size: .9rem; }
+  th, td { text-align: left; padding: var(--space-2) var(--space-3); border-bottom: 1px solid var(--soft); vertical-align: middle; }
+  th { background: var(--soft); font-weight: 600; white-space: nowrap; }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  tr:last-child td { border-bottom: 0; }
+  .mono { font-family: var(--mono); font-size: .85rem; }
+
+  /* API annotation tags */
+  .api-list { display: flex; flex-wrap: wrap; gap: var(--space-1); margin: 0 0 var(--space-3); }
+  .api {
+    display: inline-block;
+    font: 600 .75rem/1.4 var(--mono); padding: 2px 8px;
+    background: var(--note-bg); color: var(--note-ink);
+    border: 1px dashed var(--note-ink); border-radius: 4px; max-width: 100%; overflow-wrap: anywhere;
+  }
+  .api b { font-weight: 800; margin-right: 6px; }
+  .note {
+    background: var(--note-bg); color: var(--note-ink); border: 1px dashed var(--note-ink);
+    border-radius: var(--radius); padding: var(--space-2) var(--space-3); font-size: .85rem; margin-bottom: var(--space-3);
+  }
+  body.hide-api .api, body.hide-api .api-list, body.hide-api .note { display: none; }
+
+  /* public site shell */
+  .site-nav { background: var(--paper); border-bottom: 1.5px solid var(--line); }
+  .site-nav .wrap { padding-top: var(--space-3); padding-bottom: var(--space-3); display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: center; }
+  .logo { display: inline-flex; gap: var(--space-2); align-items: center; font-weight: 800; text-decoration: none; }
+  .logo span.mark { width: 32px; height: 32px; border: 1.5px solid var(--ink); border-radius: 50%; display: grid; place-items: center; font-size: .7rem; }
+  .site-links { display: flex; flex-wrap: wrap; gap: var(--space-1); margin-left: auto; }
+  .site-links a { text-decoration: none; padding: var(--space-2) var(--space-3); border-radius: var(--radius); min-height: 44px; display: inline-flex; align-items: center; }
+  .site-links a[aria-current="page"] { text-decoration: underline; text-underline-offset: 4px; font-weight: 700; }
+  footer.site-foot { border-top: 1.5px solid var(--line); color: var(--muted); font-size: .85rem; }
+
+  /* console shell (panitia/admin) */
+  .console { display: grid; grid-template-columns: minmax(0, 1fr); align-content: start; min-height: calc(100vh - 44px); }
+  @media (min-width: 900px) { .console { grid-template-columns: 240px minmax(0, 1fr); align-content: stretch; } }
+  .side { background: var(--paper); border-right: 1.5px solid var(--line); padding: var(--space-4); }
+  .side h2 { font-size: .75rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: var(--space-4) 0 var(--space-2); }
+  .side h2:first-of-type { margin-top: 0; }
+  .side nav { display: flex; flex-direction: column; gap: 2px; }
+  .side nav a { text-decoration: none; padding: var(--space-2) var(--space-3); border-radius: var(--radius); min-height: 40px; display: flex; align-items: center; }
+  .side nav a:hover { background: var(--soft); }
+  .side nav a[aria-current="page"] { background: var(--ink); color: var(--paper); font-weight: 600; }
+  @media (max-width: 899px) {
+    .side { border-right: 0; border-bottom: 1.5px solid var(--line); padding: var(--space-2) var(--space-4); }
+    .side h2 { display: none; }
+    .side .who { display: flex; flex-wrap: wrap; gap: var(--space-2); align-items: center; margin-top: var(--space-2); padding-top: var(--space-2); }
+    .side .who .api-list { margin: 0; }
+    .side .navs { display: flex; gap: 2px; overflow-x: auto; }
+    .side nav { flex-direction: row; }
+    .side nav a { white-space: nowrap; }
+  }
+  .who { border-top: 1px solid var(--soft); margin-top: var(--space-4); padding-top: var(--space-3); font-size: .85rem; }
+  .main { padding: var(--space-5) var(--space-4); min-width: 0; }
+  @media (min-width: 900px) { .main { padding: var(--space-5) var(--space-6); } }
+  .page-head { display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: flex-start; justify-content: space-between; margin-bottom: var(--space-3); }
+  .page-head h1 { margin: 0; }
+  .filters { display: grid; gap: var(--space-3); margin-bottom: var(--space-4); }
+  @media (min-width: 720px) { .filters { grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); align-items: end; } }
+  .filters .field { margin: 0; }
+
+  /* scanner */
+  .scan-box { border: 2.5px solid var(--ink); border-radius: var(--radius); padding: var(--space-5); text-align: center; }
+  .scan-box input { font: 600 1.25rem var(--mono); text-align: center; }
+  .scan-result { border-radius: var(--radius); padding: var(--space-4); margin-top: var(--space-4); text-align: left; border: 2.5px solid var(--ink); }
+  .scan-result.duplicate { border-style: dashed; }
+  .scan-result.invalid { border-style: dotted; }
+  .big-time { font: 800 2rem/1.1 var(--mono); }
+
+  /* modal + toast */
+  dialog { border: 1.5px solid var(--ink); border-radius: var(--radius); padding: 0; width: min(560px, calc(100vw - 32px)); background: var(--paper); color: var(--ink); }
+  dialog::backdrop { background: rgb(0 0 0 / .45); }
+  dialog .m-head { display: flex; justify-content: space-between; align-items: center; padding: var(--space-3) var(--space-4); border-bottom: 1px solid var(--soft); }
+  dialog .m-head h2 { margin: 0; }
+  dialog .m-body { padding: var(--space-4); max-height: 70vh; overflow: auto; }
+  dialog .m-foot { display: flex; gap: var(--space-2); justify-content: flex-end; padding: var(--space-3) var(--space-4); border-top: 1px solid var(--soft); }
+  #toast {
+    position: fixed; left: 50%; bottom: var(--space-5); transform: translate(-50%, 20px); opacity: 0;
+    background: var(--ink); color: var(--paper); padding: var(--space-3) var(--space-4); border-radius: var(--radius);
+    max-width: calc(100vw - 32px); transition: opacity .2s ease, transform .2s ease; pointer-events: none; z-index: 50;
+  }
+  #toast.show { opacity: 1; transform: translate(-50%, 0); }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+</style>
+</head>
+<body>
+<header class="wf-bar">
+  <strong>ACR · Wireframe</strong>
+  <nav aria-label="Area aplikasi" id="areaNav">
+    <a href="#/" data-area="public">Situs Utama</a>
+    <a href="#/panitia/scan" data-area="panitia">Panitia</a>
+    <a href="#/admin" data-area="admin">Admin</a>
+  </nav>
+  <label><input type="checkbox" id="toggleApi" checked> Anotasi API</label>
+</header>
+
+<div id="app"></div>
+<dialog id="modal" aria-labelledby="modalTitle"></dialog>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* =========================================================================
+   Mock data mirroring the database schema and API resources
+   ========================================================================= */
+const db = {
+  categories: [
+    { id: 1, name: 'Siswa', code: 'SW' },
+    { id: 2, name: 'Guru Karyawan', code: 'GK' },
+    { id: 3, name: 'Alumni', code: 'AL' },
+    { id: 4, name: 'Orangtua', code: 'OT' },
+    { id: 5, name: 'External', code: 'EX' },
+  ],
+  packages: [
+    { id: 1, name: 'Gratis', price: 0, description: 'Siswa tertentu, Guru & Karyawan' },
+    { id: 2, name: 'Paket 100K', price: 100000, description: 'Siswa' },
+    { id: 3, name: 'Paket 150K', price: 150000, description: 'Orangtua, Alumni & External' },
+  ],
+  events: [
+    { id: 1, name: 'Alcent Centaurian Run 2026', description: 'Fun run tahunan keluarga besar sekolah.', location: '[Lokasi acara]', event_date: '2026-11-15', start_time: null, is_active: true },
+    { id: 2, name: 'Centaurian Run 2025', description: 'Edisi sebelumnya.', location: '[Lokasi acara]', event_date: '2025-11-16', start_time: '2025-11-16 06:30:00', is_active: false },
+  ],
+  registrations: [
+    { id: 1, registration_number: 'SW-0001', barcode: 'K3J9QX2A-SW-0001', full_name: 'Peserta Satu', gender: 'L', email: 'satu@contoh.id', phone: '0812xxxx01', category_id: 1, package_id: 2, registration_status: 'confirmed', payment_status: 'paid', payment_proof: 'payment_proofs/a1.jpg', created_at: '2026-10-01 09:12' },
+    { id: 2, registration_number: 'SW-0002', barcode: 'P8L2MN4R-SW-0002', full_name: 'Peserta Dua', gender: 'P', email: 'dua@contoh.id', phone: '0812xxxx02', category_id: 1, package_id: 1, registration_status: 'confirmed', payment_status: 'free', payment_proof: null, created_at: '2026-10-01 10:40' },
+    { id: 3, registration_number: 'GK-0001', barcode: 'Z7Y6WV5U-GK-0001', full_name: 'Peserta Tiga', gender: 'P', email: 'tiga@contoh.id', phone: '0812xxxx03', category_id: 2, package_id: 1, registration_status: 'confirmed', payment_status: 'free', payment_proof: null, created_at: '2026-10-02 08:05' },
+    { id: 4, registration_number: 'AL-0001', barcode: 'B4C5D6E7-AL-0001', full_name: 'Peserta Empat', gender: 'L', email: 'empat@contoh.id', phone: '0812xxxx04', category_id: 3, package_id: 3, registration_status: 'pending', payment_status: 'unpaid', payment_proof: 'payment_proofs/a4.jpg', created_at: '2026-10-03 13:22' },
+    { id: 5, registration_number: 'OT-0001', barcode: 'H1J2K3L4-OT-0001', full_name: 'Peserta Lima', gender: 'P', email: 'lima@contoh.id', phone: '0812xxxx05', category_id: 4, package_id: 3, registration_status: 'pending', payment_status: 'unpaid', payment_proof: null, created_at: '2026-10-04 19:47' },
+    { id: 6, registration_number: 'EX-0001', barcode: 'Q9W8E7R6-EX-0001', full_name: 'Peserta Enam', gender: 'L', email: 'enam@contoh.id', phone: '0812xxxx06', category_id: 5, package_id: 3, registration_status: 'confirmed', payment_status: 'paid', payment_proof: 'payment_proofs/a6.jpg', created_at: '2026-10-05 07:15' },
+    { id: 7, registration_number: 'EX-0002', barcode: 'T5Y4U3I2-EX-0002', full_name: 'Peserta Tujuh', gender: 'P', email: 'tujuh@contoh.id', phone: '0812xxxx07', category_id: 5, package_id: 3, registration_status: 'cancelled', payment_status: 'unpaid', payment_proof: null, created_at: '2026-10-05 21:03' },
+  ],
+  results: [
+    { registration_number: 'EX-0001', duration: 1534, scan_status: 'valid' },
+    { registration_number: 'SW-0001', duration: 1688, scan_status: 'valid' },
+    { registration_number: 'GK-0001', duration: 2105, scan_status: 'valid' },
+  ],
+  contents: [
+    { id: 1, target_site: 'utama', section: 'hero', title: 'Lari Bersama, Satu Keluarga', body: 'Teks sambutan di beranda.', status: 'published', sort_order: 1 },
+    { id: 2, target_site: 'utama', section: 'rute', title: 'Rute & Jarak', body: 'Deskripsi rute lari.', status: 'published', sort_order: 2 },
+    { id: 3, target_site: 'utama', section: 'faq', title: 'Pertanyaan Umum', body: 'Daftar FAQ.', status: 'draft', sort_order: 3 },
+    { id: 4, target_site: 'panitia', section: 'sop', title: 'SOP Petugas Scan', body: 'Panduan untuk panitia di garis finish.', status: 'published', sort_order: 1 },
+  ],
+  users: [
+    { id: 1, username: 'admin', email: 'admin@contoh.id', role: 'admin', last_login: '2026-10-07 08:01' },
+    { id: 2, username: 'panitia', email: null, role: 'panitia', last_login: '2026-10-06 16:30' },
+  ],
+  scanLogs: [
+    { id: 3, barcode: 'Z7Y6WV5U-GK-0001', scan_status: 'valid', participant: 'Peserta Tiga', scanned_by: 'panitia', ip: '10.0.0.12', scanned_at: '2025-11-16 07:05:35' },
+    { id: 2, barcode: 'K3J9QX2A-SW-0001', scan_status: 'valid', participant: 'Peserta Satu', scanned_by: 'panitia', ip: '10.0.0.12', scanned_at: '2025-11-16 06:58:08' },
+    { id: 4, barcode: 'K3J9QX2A-SW-0001', scan_status: 'duplicate', participant: 'Peserta Satu', scanned_by: 'panitia', ip: '10.0.0.12', scanned_at: '2025-11-16 06:58:40' },
+    { id: 1, barcode: 'XXXX-0000', scan_status: 'invalid', participant: null, scanned_by: 'panitia', ip: '10.0.0.12', scanned_at: '2025-11-16 06:50:11' },
+  ],
+  activity: [
+    { id: 5, user: 'admin', action: 'verify_registration', target_table: 'registrations', target_id: 6, detail: 'Verifikasi EX-0001: confirmed / paid', created_at: '2026-10-06 10:11' },
+    { id: 4, user: 'admin', action: 'update_content', target_table: 'contents', target_id: 2, detail: 'Ubah konten "Rute & Jarak"', created_at: '2026-10-05 15:42' },
+    { id: 3, user: 'panitia', action: 'start_event', target_table: 'events', target_id: 2, detail: 'Memulai acara event ID: 2', created_at: '2025-11-16 06:30' },
+    { id: 2, user: 'admin', action: 'create_user', target_table: 'users', target_id: 2, detail: 'Membuat user panitia', created_at: '2025-10-01 09:00' },
+  ],
+  settings: [
+    { key: 'registration_open', value: 'true' },
+    { key: 'contact_whatsapp', value: '+62 8xx-xxxx-xxxx' },
+    { key: 'bank_account', value: '[Bank] 000-000-000 a.n. Panitia' },
+  ],
+};
+
+const state = { user: null, lastRegistration: null, scan: null };
+
+/* =========================================================================
+   Helpers
+   ========================================================================= */
+const $ = (s, el = document) => el.querySelector(s);
+const esc = (v) => String(v ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const cat = (id) => db.categories.find((c) => c.id === +id);
+const pkg = (id) => db.packages.find((p) => p.id === +id);
+const regByNo = (no) => db.registrations.find((r) => r.registration_number.toLowerCase() === String(no).trim().toLowerCase());
+const activeEvent = () => db.events.find((e) => e.is_active);
+const rupiah = (n) => (n === 0 ? 'Gratis' : 'Rp ' + n.toLocaleString('id-ID'));
+const dur = (s) => { if (s == null) return '–'; const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), x = s % 60; return [h, m, x].map((n) => String(n).padStart(2, '0')).join(':'); };
+const now = () => new Date().toLocaleString('sv-SE').slice(0, 19);
+
+const api = (...eps) => `<div class="api-list" aria-label="Endpoint API">${eps.map((e) => { const [m, ...p] = e.split(' '); return `<span class="api"><b>${m}</b>/api${esc(p.join(' '))}</span>`; }).join('')}</div>`;
+const note = (t) => `<div class="note">${t}</div>`;
+
+const STATUS_LABEL = {
+  pending: 'Menunggu', confirmed: 'Terkonfirmasi', cancelled: 'Dibatalkan',
+  unpaid: 'Belum bayar', paid: 'Lunas', free: 'Gratis',
+  valid: 'Valid', duplicate: 'Duplikat', invalid: 'Tidak valid',
+  published: 'Terbit', draft: 'Draf', admin: 'Admin', panitia: 'Panitia',
+};
+const badge = (v) => {
+  const style = ['confirmed', 'paid', 'valid', 'published'].includes(v) ? 'solid' : ['cancelled', 'invalid'].includes(v) ? 'dashed' : '';
+  return `<span class="badge ${style}">${esc(STATUS_LABEL[v] || v)}</span>`;
+};
+
+const field = (id, label, input, { hint = '', err = '' } = {}) =>
+  `<div class="field"><label for="${id}">${label}</label>${input}${hint ? `<span class="hint" id="${id}-hint">${hint}</span>` : ''}<span class="err" id="${id}-err" ${err ? '' : 'hidden'}>${esc(err)}</span></div>`;
+const options = (list, sel, { blank = '', val = (o) => o.id, text = (o) => o.name } = {}) =>
+  (blank ? `<option value="">${blank}</option>` : '') + list.map((o) => `<option value="${esc(val(o))}" ${String(val(o)) === String(sel) ? 'selected' : ''}>${esc(text(o))}</option>`).join('');
+const table = (head, rows, empty = 'Belum ada data.') =>
+  `<div class="table-wrap"><table><thead><tr>${head.map((h) => `<th${h.startsWith('#') ? ' class="num"' : ''}>${esc(h.replace(/^#/, ''))}</th>`).join('')}</tr></thead><tbody>${rows.length ? rows.join('') : `<tr><td colspan="${head.length}" class="muted">${empty}</td></tr>`}</tbody></table></div>`;
+
+function toast(msg) {
+  const t = $('#toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove('show'), 2600);
+}
+
+function modal(title, body, foot, onOpen) {
+  const m = $('#modal');
+  m.innerHTML = `<form method="dialog"><div class="m-head"><h2 id="modalTitle">${title}</h2><button class="btn sm" value="cancel" aria-label="Tutup">✕</button></div><div class="m-body">${body}</div><div class="m-foot">${foot}</div></form>`;
+  m.showModal();
+  onOpen && onOpen(m);
+  return m;
+}
+
+/* Marks required fields invalid; returns list of [id, message] errors. */
+function validate(form, rules) {
+  const errors = [];
+  for (const [id, label, test] of rules) {
+    const el = form.querySelector('#' + id);
+    const ok = test ? test(el.value) : el.value.trim() !== '';
+    const errEl = form.querySelector('#' + id + '-err');
+    el.setAttribute('aria-invalid', ok ? 'false' : 'true');
+    if (errEl) { errEl.hidden = ok; errEl.textContent = ok ? '' : label; }
+    if (!ok) errors.push([id, label]);
+  }
+  return errors;
+}
+function showErrorSummary(form, errors) {
+  let box = form.querySelector('.err-summary');
+  if (!errors.length) { box && box.remove(); return; }
+  if (!box) { box = document.createElement('div'); box.className = 'err-summary'; box.tabIndex = -1; box.setAttribute('role', 'alert'); form.prepend(box); }
+  box.innerHTML = `<strong>Periksa kembali isian berikut:</strong><ul>${errors.map(([id, l]) => `<li><a href="#" data-focus="${id}">${esc(l)}</a></li>`).join('')}</ul>`;
+  box.querySelectorAll('[data-focus]').forEach((a) => a.addEventListener('click', (e) => { e.preventDefault(); form.querySelector('#' + a.dataset.focus).focus(); }));
+  box.focus();
+}
+
+/* =========================================================================
+   Layouts
+   ========================================================================= */
+function publicLayout(path, content) {
+  const links = [['#/', 'Beranda'], ['#/daftar', 'Daftar'], ['#/cek-status', 'Cek Status'], ['#/hasil', 'Hasil Lomba'], ['#/login', 'Login Panitia']];
+  return `
+  <div class="site-nav"><div class="wrap">
+    <a class="logo" href="#/"><span class="mark" aria-hidden="true">ACR</span> Alcent Centaurian Run</a>
+    <nav class="site-links" aria-label="Menu utama">${links.map(([h, t]) => `<a href="${h}" ${('#' + path) === h || (h !== '#/' && ('#' + path).startsWith(h)) ? 'aria-current="page"' : ''}>${t}</a>`).join('')}</nav>
+  </div></div>
+  <main class="wrap" id="main">${content}</main>
+  <footer class="site-foot"><div class="wrap">© 2026 Alcent Centaurian Run · [Kontak panitia dari pengaturan <span class="mono">contact_whatsapp</span>]</div></footer>`;
+}
+
+function consoleLayout(path, content) {
+  const isAdmin = state.user.role === 'admin';
+  const link = (h, t) => `<a href="#${h}" ${path === h ? 'aria-current="page"' : ''}>${t}</a>`;
+  return `
+  <div class="console">
+    <aside class="side" aria-label="Navigasi konsol">
+      <div class="navs">
+        <h2>Panitia</h2>
+        <nav>${link('/panitia/scan', 'Scan Finish')}${link('/panitia/rekap', 'Rekap Peserta')}</nav>
+        ${isAdmin ? `<h2>Admin</h2><nav>
+          ${link('/admin', 'Dashboard')}${link('/admin/pendaftaran', 'Pendaftaran')}${link('/admin/peserta', 'Peserta')}
+          ${link('/admin/event', 'Event')}${link('/admin/konten', 'Konten')}${link('/admin/user', 'Pengguna')}
+          ${link('/admin/scan-log', 'Log Scan')}${link('/admin/log-aktivitas', 'Log Aktivitas')}
+          ${link('/admin/pengaturan', 'Pengaturan')}${link('/admin/ekspor', 'Ekspor Data')}</nav>` : ''}
+      </div>
+      <div class="who">
+        Masuk sebagai <strong>${esc(state.user.username)}</strong> ${badge(state.user.role)}
+        ${api('GET /me')}
+        <button class="btn sm" id="logout">Keluar</button>
+        ${api('POST /logout')}
+      </div>
+    </aside>
+    <main class="main" id="main">${content}</main>
+  </div>`;
+}
+
+const pageHead = (title, actions = '') => `<div class="page-head"><h1>${title}</h1><div class="row">${actions}</div></div>`;
+
+/* =========================================================================
+   Public pages
+   ========================================================================= */
+const pages = {};
+
+pages['/'] = () => {
+  const ev = activeEvent();
+  const contents = db.contents.filter((c) => c.target_site === 'utama' && c.status === 'published').sort((a, b) => a.sort_order - b.sort_order);
+  return `
+  ${api('GET /event/active', 'GET /contents', 'GET /packages')}
+  <section class="card grid g2" aria-labelledby="evTitle">
+    <div>
+      <p class="muted small">Event aktif</p>
+      <h1 id="evTitle">${ev ? esc(ev.name) : 'Belum ada event aktif'}</h1>
+      ${ev ? `<p>${esc(ev.description)}</p>
+      <p><strong>Tanggal:</strong> ${esc(ev.event_date)}<br><strong>Lokasi:</strong> ${esc(ev.location)}</p>` : ''}
+      <div class="row"><a class="btn primary" href="#/daftar">Daftar Sekarang</a><a class="btn" href="#/cek-status">Cek Status Pendaftaran</a></div>
+    </div>
+    <div class="ph">Gambar / poster event</div>
+  </section>
+
+  <h2>Informasi</h2>
+  ${note('Blok di bawah dirender dari <span class="mono">contents</span> dengan target_site = utama, status = published, diurutkan berdasarkan sort_order.')}
+  <div class="grid g2">${contents.map((c) => `<article class="card"><p class="muted small mono">section: ${esc(c.section)}</p><h3>${esc(c.title)}</h3><p>${esc(c.body)}</p></article>`).join('')}</div>
+
+  <h2>Paket Pendaftaran</h2>
+  <div class="grid g3">${db.packages.map((p) => `<div class="card"><h3>${esc(p.name)}</h3><p class="stat"><strong>${rupiah(p.price)}</strong></p><p class="muted">${esc(p.description)}</p></div>`).join('')}</div>`;
+};
+
+pages['/daftar'] = () => {
+  const ev = activeEvent();
+  return `
+  <h1>Formulir Pendaftaran</h1>
+  ${api('GET /event/active', 'GET /categories', 'GET /packages', 'POST /registrations')}
+  ${note('Rate limit 60 req/menit. Nomor peserta dibuat otomatis dari kode kategori, mis. <span class="mono">SW-0001</span>. Email konfirmasi dikirim setelah berhasil.')}
+  <form class="card" id="regForm" novalidate>
+    <input type="hidden" id="event_id" value="${ev ? ev.id : ''}">
+    <p class="muted">Event: <strong>${ev ? esc(ev.name) : '–'}</strong></p>
+    <h2>Data Diri</h2>
+    ${field('full_name', 'Nama lengkap', '<input id="full_name" maxlength="100" autocomplete="name">')}
+    <fieldset class="field"><legend>Jenis kelamin</legend>
+      <div><label class="choice"><input type="radio" name="gender" value="L" id="gender_L"> Laki-laki</label><label class="choice"><input type="radio" name="gender" value="P"> Perempuan</label></div>
+      <span class="err" id="gender-err" hidden></span>
+    </fieldset>
+    <div class="grid g2">
+      ${field('birth_place', 'Tempat lahir', '<input id="birth_place" maxlength="100">')}
+      ${field('birth_date', 'Tanggal lahir', '<input id="birth_date" type="date">')}
+    </div>
+    <div class="grid g2">
+      ${field('email', 'Email', '<input id="email" type="email" maxlength="100" autocomplete="email" aria-describedby="email-hint">', { hint: 'Bukti pendaftaran dikirim ke email ini.' })}
+      ${field('phone', 'No. HP / WhatsApp', '<input id="phone" type="tel" maxlength="20" autocomplete="tel">')}
+    </div>
+    ${field('motivation', 'Motivasi (opsional)', '<textarea id="motivation"></textarea>')}
+    <h2>Kategori &amp; Paket</h2>
+    <div class="grid g2">
+      ${field('category_id', 'Kategori', `<select id="category_id">${options(db.categories, '', { blank: 'Pilih kategori', text: (c) => `${c.name} (${c.code})` })}</select>`)}
+      ${field('package_id', 'Paket', `<select id="package_id">${options(db.packages, '', { blank: 'Pilih paket', text: (p) => `${p.name}: ${rupiah(p.price)}` })}</select>`)}
+    </div>
+    <div class="row"><button class="btn primary" type="submit">Kirim Pendaftaran</button><a class="btn" href="#/">Batal</a></div>
+  </form>`;
+};
+
+pages['/daftar/sukses'] = () => {
+  const r = state.lastRegistration;
+  if (!r) { location.hash = '#/daftar'; return ''; }
+  const p = pkg(r.package_id);
+  return `
+  ${note('Respons 201 dari <span class="mono">POST /api/registrations</span>: RegistrationResource (registration_number, barcode, status).')}
+  <section class="card" aria-labelledby="okTitle">
+    <h1 id="okTitle">Pendaftaran berhasil</h1>
+    <p>Simpan nomor peserta dan barcode ini. Salinannya dikirim ke <strong>${esc(r.email)}</strong>.</p>
+    <div class="grid g2">
+      <div><p class="muted small">Nomor peserta</p><p class="big-time">${esc(r.registration_number)}</p>
+        <p>Status: ${badge(r.registration_status)} ${badge(r.payment_status)}</p>
+        <p>Kategori: ${esc(cat(r.category_id).name)} · Paket: ${esc(p.name)}</p></div>
+      <div class="ph">Barcode<br><span class="mono">${esc(r.barcode)}</span></div>
+    </div>
+    ${r.payment_status === 'unpaid' ? `<p><strong>Langkah berikutnya:</strong> transfer ${rupiah(p.price)} lalu unggah bukti pembayaran.</p>` : '<p>Paket gratis tidak memerlukan pembayaran.</p>'}
+    <div class="row">${r.payment_status === 'unpaid' ? `<a class="btn primary" href="#/cek-status" data-prefill>Unggah Bukti Bayar</a>` : ''}<a class="btn" href="#/">Ke Beranda</a></div>
+  </section>`;
+};
+
+pages['/cek-status'] = () => `
+  <h1>Cek Status Pendaftaran</h1>
+  ${api('POST /registrations/check-status', 'POST /registrations/{registration_number}/payment-proof')}
+  <form class="card" id="statusForm" novalidate>
+    <div class="grid g2">
+      ${field('registration_number', 'Nomor peserta', `<input id="registration_number" class="mono" placeholder="SW-0001" value="${esc(state.prefill?.registration_number)}">`)}
+      ${field('check_email', 'Email saat mendaftar', `<input id="check_email" type="email" value="${esc(state.prefill?.email)}">`)}
+    </div>
+    <button class="btn primary" type="submit">Cek Status</button>
+    <p class="muted small" style="margin-top:var(--space-3)">Coba: <span class="mono">AL-0001</span> / <span class="mono">empat@contoh.id</span> atau <span class="mono">OT-0001</span> / <span class="mono">lima@contoh.id</span></p>
+  </form>
+  <div id="statusResult" aria-live="polite"></div>`;
+
+function renderStatusResult(r) {
+  const box = $('#statusResult');
+  if (!r) { box.innerHTML = `<div class="card"><h2>Pendaftaran tidak ditemukan</h2><p>Periksa kembali nomor peserta dan email. (HTTP 404)</p></div>`; return; }
+  const p = pkg(r.package_id);
+  const canUpload = r.payment_status === 'unpaid';
+  box.innerHTML = `
+  <section class="card" aria-labelledby="stTitle">
+    <div class="row spread"><h2 id="stTitle">${esc(r.registration_number)} · ${esc(r.full_name)}</h2><div class="row">${badge(r.registration_status)} ${badge(r.payment_status)}</div></div>
+    <p>Event: ${esc(activeEvent()?.name)} · Kategori: ${esc(cat(r.category_id).name)} · Paket: ${esc(p.name)} (${rupiah(p.price)})</p>
+    <div class="grid g2">
+      <div class="ph">Barcode<br><span class="mono">${esc(r.barcode)}</span></div>
+      <div>
+        <h3>Bukti pembayaran</h3>
+        ${r.payment_proof ? `<div class="ph" style="min-height:80px">Pratinjau bukti (<span class="mono">payment_proof_url</span>)</div><p class="small muted">Menunggu verifikasi admin.</p>` : '<p class="muted">Belum ada bukti yang diunggah.</p>'}
+        ${canUpload ? `
+        <form id="proofForm" novalidate>
+          ${field('payment_proof', r.payment_proof ? 'Ganti bukti pembayaran' : 'Unggah bukti pembayaran', '<input id="payment_proof" type="file" accept="image/*,application/pdf" aria-describedby="payment_proof-hint">', { hint: 'JPG/PNG/PDF.' })}
+          <button class="btn primary" type="submit">Unggah</button>
+        </form>` : `<p class="small">${r.payment_status === 'free' ? 'Paket gratis: tidak perlu bukti (422 jika diunggah).' : 'Pembayaran sudah terverifikasi.'}</p>`}
+      </div>
+    </div>
+  </section>`;
+  const f = $('#proofForm');
+  f && f.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const errs = validate(f, [['payment_proof', 'Pilih file bukti pembayaran.']]);
+    if (errs.length) return;
+    r.payment_proof = 'payment_proofs/new.jpg';
+    toast('Bukti pembayaran berhasil diunggah. Menunggu verifikasi admin.');
+    renderStatusResult(r);
+  });
+}
+
+pages['/hasil'] = (q) => {
+  const filter = q.get('category') || '';
+  const rows = db.results
+    .map((x) => ({ ...x, reg: regByNo(x.registration_number) }))
+    .filter((x) => x.scan_status === 'valid' && (!filter || x.reg.category_id === +filter))
+    .sort((a, b) => a.duration - b.duration);
+  return `
+  <h1>Hasil Lomba</h1>
+  ${api('GET /results?category_id=', 'GET /categories')}
+  <div class="filters"><div class="field"><label for="resultCat">Kategori</label><select id="resultCat">${options(db.categories, filter, { blank: 'Semua kategori' })}</select></div></div>
+  ${table(['#Peringkat', 'No. Peserta', 'Nama', 'Kategori', '#Waktu Tempuh', ''],
+    rows.map((x, i) => `<tr><td class="num">${i + 1}</td><td class="mono">${esc(x.registration_number)}</td><td>${esc(x.reg.full_name)}</td><td>${esc(cat(x.reg.category_id).name)}</td><td class="num mono">${dur(x.duration)}</td><td><a href="#/hasil/${esc(x.registration_number)}">Detail</a></td></tr>`),
+    'Belum ada hasil untuk kategori ini.')}`;
+};
+
+pages['/hasil/:no'] = (q, no) => {
+  const r = regByNo(no), res = db.results.find((x) => x.registration_number === no);
+  return `
+  <p><a href="#/hasil">← Kembali ke hasil</a></p>
+  ${api('GET /results/{registration_number}')}
+  ${!r || !res ? `<div class="card"><h1>Hasil tidak ditemukan</h1></div>` : `
+  <section class="card">
+    <p class="muted mono">${esc(no)}</p><h1>${esc(r.full_name)}</h1>
+    <div class="grid g3">
+      <div class="stat"><span class="muted small">Waktu tempuh</span><strong class="mono">${dur(res.duration)}</strong></div>
+      <div class="stat"><span class="muted small">Kategori</span><strong>${esc(cat(r.category_id).name)}</strong></div>
+      <div class="stat"><span class="muted small">Status scan</span><strong>${badge(res.scan_status)}</strong></div>
+    </div>
+    <p class="muted small">start_time / finish_time ditampilkan di sini.</p>
+  </section>`}`;
+};
+
+pages['/login'] = () => `
+  <div style="max-width:420px;margin:0 auto">
+  <h1>Login Panitia &amp; Admin</h1>
+  ${api('POST /login')}
+  ${note('Respons berisi <span class="mono">user.role</span> dan token Sanctum. Role menentukan menu: panitia → Scan &amp; Rekap; admin → semua. Wireframe ini tidak memeriksa password.')}
+  <form class="card" id="loginForm" novalidate>
+    ${field('username', 'Username', '<input id="username" autocomplete="username" placeholder="admin / panitia">')}
+    ${field('password', 'Password', '<input id="password" type="password" autocomplete="current-password">')}
+    <button class="btn primary" type="submit" style="width:100%">Masuk</button>
+  </form>
+  <p class="muted small">Pintasan demo: <button class="btn sm ghost" data-demo="admin">Masuk sebagai admin</button> <button class="btn sm ghost" data-demo="panitia">Masuk sebagai panitia</button></p>
+  </div>`;
+
+/* =========================================================================
+   Panitia pages
+   ========================================================================= */
+pages['/panitia/scan'] = () => {
+  const ev = activeEvent();
+  const s = state.scan;
+  return `
+  ${pageHead('Scan Garis Finish')}
+  ${api('POST /panitia/start', 'POST /panitia/scan')}
+  <div class="grid g2">
+    <section class="card">
+      <h2>1. Mulai acara</h2>
+      <p>Event: <strong>${esc(ev?.name)}</strong></p>
+      <p>Waktu start: <strong class="mono">${ev?.start_time ? esc(ev.start_time) : 'belum dimulai'}</strong></p>
+      <button class="btn ${ev?.start_time ? '' : 'primary'}" id="startEvent" ${ev?.start_time ? 'disabled' : ''}>${ev?.start_time ? 'Acara sudah dimulai' : 'Mulai Acara (catat waktu start)'}</button>
+      ${note('Scan sebelum acara dimulai mengembalikan status <b>invalid</b> dengan pesan "Acara belum dimulai."')}
+    </section>
+    <section class="card">
+      <h2>2. Scan barcode peserta</h2>
+      <form id="scanForm" class="scan-box" novalidate>
+        <div class="ph" style="min-height:140px;margin-bottom:var(--space-3)">Pratinjau kamera / pemindai barcode</div>
+        ${field('barcode', 'Atau ketik barcode', '<input id="barcode" autocomplete="off" placeholder="K3J9QX2A-SW-0001">')}
+        <button class="btn primary" type="submit" style="width:100%">Catat Finish</button>
+      </form>
+      <p class="muted small" style="margin-top:var(--space-3)">Simulasi: <button class="btn sm ghost" data-sim="P8L2MN4R-SW-0002">valid</button> <button class="btn sm ghost" data-sim="Z7Y6WV5U-GK-0001">duplikat</button> <button class="btn sm ghost" data-sim="TIDAK-ADA">tidak valid</button></p>
+    </section>
+  </div>
+  <div id="scanResult" aria-live="assertive">${s ? scanResultHtml(s) : ''}</div>`;
+};
+
+function scanResultHtml(s) {
+  const head = { valid: 'Scan berhasil.', duplicate: 'Peserta sudah pernah discan.', invalid: s.message }[s.status];
+  const code = { valid: 200, duplicate: 409, invalid: 404 }[s.status];
+  return `<section class="scan-result ${s.status}">
+    <div class="row spread"><h2 style="margin:0">${esc(head)}</h2>${badge(s.status)}</div>
+    ${s.reg ? `<p style="margin-top:var(--space-3)"><span class="mono">${esc(s.reg.registration_number)}</span> · ${esc(s.reg.full_name)} · ${esc(cat(s.reg.category_id).name)}</p>
+    <p class="muted small">Waktu tempuh</p><p class="big-time">${dur(s.duration)}</p>` : `<p class="mono" style="margin-top:var(--space-3)">${esc(s.barcode)}</p>`}
+    <p class="muted small">HTTP ${code}</p>
+  </section>`;
+}
+
+function doScan(barcode) {
+  const ev = activeEvent();
+  const reg = db.registrations.find((r) => r.barcode.toLowerCase() === barcode.trim().toLowerCase());
+  let s;
+  if (!reg) s = { status: 'invalid', message: 'Barcode tidak ditemukan.', barcode };
+  else if (!ev.start_time) s = { status: 'invalid', message: 'Acara belum dimulai.', barcode };
+  else {
+    const existing = db.results.find((x) => x.registration_number === reg.registration_number);
+    if (existing) s = { status: 'duplicate', reg, duration: existing.duration, barcode };
+    else {
+      const d = Math.max(1, Math.round((Date.now() - new Date(ev.start_time.replace(' ', 'T')).getTime()) / 1000));
+      db.results.push({ registration_number: reg.registration_number, duration: d, scan_status: 'valid' });
+      s = { status: 'valid', reg, duration: d, barcode };
+    }
+  }
+  db.scanLogs.unshift({ id: db.scanLogs.length + 1, barcode, scan_status: s.status, participant: reg?.full_name ?? null, scanned_by: state.user.username, ip: '10.0.0.12', scanned_at: now() });
+  state.scan = s;
+  $('#scanResult').innerHTML = scanResultHtml(s);
+}
+
+pages['/panitia/rekap'] = () => `
+  ${pageHead('Rekap Peserta')}
+  ${api('GET /panitia/recap/category', 'GET /panitia/recap/participants')}
+  <h2>Per kategori</h2>
+  <div class="grid g4" style="margin-bottom:var(--space-5)">${db.categories.map((c) => `<div class="card stat"><span class="muted small">${esc(c.name)} (${c.code})</span><strong>${db.registrations.filter((r) => r.category_id === c.id).length}</strong></div>`).join('')}</div>
+  <h2>Per nomor peserta</h2>
+  ${table(['No. Peserta', 'Nama', 'Kategori', 'Paket', 'Status', 'Pembayaran'],
+    [...db.registrations].sort((a, b) => a.registration_number.localeCompare(b.registration_number)).map((r) =>
+      `<tr><td class="mono">${esc(r.registration_number)}</td><td>${esc(r.full_name)}</td><td>${esc(cat(r.category_id).name)}</td><td>${esc(pkg(r.package_id).name)}</td><td>${badge(r.registration_status)}</td><td>${badge(r.payment_status)}</td></tr>`))}`;
+
+/* =========================================================================
+   Admin pages
+   ========================================================================= */
+pages['/admin'] = () => {
+  const total = db.registrations.length;
+  const count = (k, v) => db.registrations.filter((r) => r[k] === v).length;
+  const bars = (list) => list.map(([label, n]) => `<div style="margin-bottom:var(--space-2)"><div class="row spread small"><span>${label}</span><strong>${n}</strong></div><div class="bar-track" role="img" aria-label="${esc(label)}: ${n} dari ${total}"><div class="bar-fill" style="width:${total ? (n / total) * 100 : 0}%"></div></div></div>`).join('');
+  return `
+  ${pageHead('Dashboard')}
+  ${api('GET /admin/dashboard')}
+  <div class="grid g4">
+    <div class="card stat"><span class="muted small">Total peserta</span><strong>${total}</strong></div>
+    <div class="card stat"><span class="muted small">Total pendaftaran</span><strong>${total}</strong></div>
+    <div class="card stat"><span class="muted small">Menunggu verifikasi</span><strong>${count('registration_status', 'pending')}</strong></div>
+    <div class="card stat"><span class="muted small">Sudah finish</span><strong>${db.results.length}</strong></div>
+  </div>
+  <div class="grid g3">
+    <section class="card"><h2>Per kategori</h2>${bars(db.categories.map((c) => [c.name, count('category_id', c.id)]))}</section>
+    <section class="card"><h2>Status pembayaran</h2>${bars(['unpaid', 'paid', 'free'].map((s) => [STATUS_LABEL[s], count('payment_status', s)]))}</section>
+    <section class="card"><h2>Status pendaftaran</h2>${bars(['pending', 'confirmed', 'cancelled'].map((s) => [STATUS_LABEL[s], count('registration_status', s)]))}</section>
+  </div>
+  <section class="card"><div class="row spread"><h2 style="margin:0">Perlu diverifikasi</h2><a href="#/admin/pendaftaran?status=pending">Lihat semua</a></div></section>`;
+};
+
+pages['/admin/pendaftaran'] = (q) => {
+  const f = { category_id: q.get('category') || '', registration_status: q.get('status') || '', payment_status: q.get('payment') || '' };
+  const rows = db.registrations.filter((r) => (!f.category_id || r.category_id === +f.category_id) && (!f.registration_status || r.registration_status === f.registration_status) && (!f.payment_status || r.payment_status === f.payment_status));
+  const opt = (keys, sel, blank) => `<option value="">${blank}</option>` + keys.map((k) => `<option value="${k}" ${k === sel ? 'selected' : ''}>${STATUS_LABEL[k]}</option>`).join('');
+  return `
+  ${pageHead('Pendaftaran')}
+  ${api('GET /admin/registrations?category_id=&registration_status=&payment_status=', 'GET /admin/registrations/{id}', 'PUT /admin/registrations/{id}/verify')}
+  <form class="filters" id="regFilters">
+    <div class="field"><label for="fCat">Kategori</label><select id="fCat" name="category">${options(db.categories, f.category_id, { blank: 'Semua' })}</select></div>
+    <div class="field"><label for="fStatus">Status</label><select id="fStatus" name="status">${opt(['pending', 'confirmed', 'cancelled'], f.registration_status, 'Semua')}</select></div>
+    <div class="field"><label for="fPay">Pembayaran</label><select id="fPay" name="payment">${opt(['unpaid', 'paid', 'free'], f.payment_status, 'Semua')}</select></div>
+  </form>
+  <p class="muted small">${rows.length} pendaftaran</p>
+  ${table(['No. Peserta', 'Nama', 'Kategori', 'Paket', 'Bukti', 'Status', 'Pembayaran', 'Masuk', ''],
+    rows.map((r) => `<tr><td class="mono">${esc(r.registration_number)}</td><td>${esc(r.full_name)}</td><td>${esc(cat(r.category_id).name)}</td><td>${esc(pkg(r.package_id).name)}</td>
+      <td>${r.payment_proof ? 'Ada' : '<span class="muted">–</span>'}</td><td>${badge(r.registration_status)}</td><td>${badge(r.payment_status)}</td><td class="small">${esc(r.created_at)}</td>
+      <td><button class="btn sm" data-verify="${r.id}">Verifikasi</button></td></tr>`),
+    'Tidak ada pendaftaran untuk filter ini.')}`;
+};
+
+function openVerify(id) {
+  const r = db.registrations.find((x) => x.id === +id);
+  const sel = (name, keys, v) => `<select id="${name}">${keys.map((k) => `<option value="${k}" ${k === v ? 'selected' : ''}>${STATUS_LABEL[k]}</option>`).join('')}</select>`;
+  modal(`Verifikasi ${esc(r.registration_number)}`, `
+    ${api('GET /admin/registrations/{id}', 'PUT /admin/registrations/{id}/verify')}
+    <p><strong>${esc(r.full_name)}</strong> · ${esc(r.email)} · ${esc(r.phone)}</p>
+    <p>${esc(cat(r.category_id).name)} · ${esc(pkg(r.package_id).name)} (${rupiah(pkg(r.package_id).price)})</p>
+    ${r.payment_proof ? '<div class="ph" style="margin-bottom:var(--space-3)">Pratinjau bukti pembayaran</div>' : '<p class="muted">Belum ada bukti pembayaran.</p>'}
+    <div class="grid g2">${field('v_reg', 'Status pendaftaran', sel('v_reg', ['pending', 'confirmed', 'cancelled'], r.registration_status))}${field('v_pay', 'Status pembayaran', sel('v_pay', ['unpaid', 'paid', 'free'], r.payment_status))}</div>
+    <p class="muted small">verified_by dan verified_at diisi otomatis oleh server.</p>`,
+    `<button class="btn" value="cancel">Batal</button><button class="btn primary" value="ok" id="vSave">Simpan</button>`,
+    (m) => $('#vSave', m).addEventListener('click', () => {
+      r.registration_status = $('#v_reg', m).value; r.payment_status = $('#v_pay', m).value;
+      db.activity.unshift({ id: Date.now(), user: state.user.username, action: 'verify_registration', target_table: 'registrations', target_id: r.id, detail: `Verifikasi ${r.registration_number}: ${r.registration_status} / ${r.payment_status}`, created_at: now() });
+      toast('Pendaftaran diperbarui.'); setTimeout(render);
+    }));
+}
+
+pages['/admin/peserta'] = () => `
+  ${pageHead('Peserta')}
+  ${api('GET /admin/participants')}
+  ${table(['Nama', 'L/P', 'Email', 'No. HP', 'Email terkirim', 'Terdaftar'],
+    db.registrations.map((r) => `<tr><td>${esc(r.full_name)}</td><td>${r.gender}</td><td>${esc(r.email)}</td><td>${esc(r.phone)}</td><td>${r.registration_status === 'cancelled' ? '<span class="muted">–</span>' : 'Terkirim'}</td><td class="small">${esc(r.created_at)}</td></tr>`))}`;
+
+/* Generic CRUD screen for simple resources (events, contents, users). */
+function crudPage({ title, apiBase, list, cols, row, form, onSave, extraActions = () => '', newLabel = 'Tambah' }) {
+  return `
+  ${pageHead(title, `<button class="btn primary" data-new>${newLabel}</button>`)}
+  ${api(`GET ${apiBase}`, `POST ${apiBase}`, `GET ${apiBase}/{id}`, `PUT ${apiBase}/{id}`, `DELETE ${apiBase}/{id}`)}
+  ${table([...cols, 'Aksi'], list().map((x) => `<tr>${row(x)}<td><div class="row"><button class="btn sm" data-edit="${x.id}">Ubah</button>${extraActions(x)}<button class="btn sm ghost" data-del="${x.id}">Hapus</button></div></td></tr>`))}`;
+}
+const crud = {};
+
+crud['/admin/event'] = {
+  title: 'Event', apiBase: '/admin/events', newLabel: 'Event Baru', coll: 'events',
+  list: () => db.events,
+  cols: ['Nama', 'Tanggal', 'Lokasi', 'Mulai', 'Aktif'],
+  row: (e) => `<td>${esc(e.name)}</td><td>${esc(e.event_date)}</td><td>${esc(e.location)}</td><td class="mono small">${esc(e.start_time || '–')}</td><td>${e.is_active ? '<span class="badge solid">Aktif</span>' : '<span class="badge">Nonaktif</span>'}</td>`,
+  extraActions: (e) => `<button class="btn sm" data-toggle="${e.id}">${e.is_active ? 'Nonaktifkan' : 'Aktifkan'}</button><button class="btn sm" data-reset="${e.id}">Reset</button>`,
+  form: (e = {}) => `
+    ${field('name', 'Nama event', `<input id="name" maxlength="100" value="${esc(e.name)}">`)}
+    ${field('description', 'Deskripsi', `<textarea id="description">${esc(e.description)}</textarea>`)}
+    ${field('location', 'Lokasi', `<input id="location" maxlength="150" value="${esc(e.location)}">`)}
+    <div class="grid g2">${field('event_date', 'Tanggal', `<input id="event_date" type="date" value="${esc(e.event_date)}">`)}${field('start_time', 'Waktu mulai (opsional)', `<input id="start_time" type="datetime-local" value="${esc((e.start_time || '').replace(' ', 'T').slice(0, 16))}">`)}</div>
+    <label class="choice"><input type="checkbox" id="is_active" ${e.is_active ? 'checked' : ''}> Aktif</label>`,
+  required: [['name', 'Nama event wajib diisi.'], ['event_date', 'Tanggal wajib diisi.']],
+  read: (m) => ({ name: $('#name', m).value, description: $('#description', m).value, location: $('#location', m).value, event_date: $('#event_date', m).value, start_time: $('#start_time', m).value.replace('T', ' ') || null, is_active: $('#is_active', m).checked }),
+};
+crud['/admin/konten'] = {
+  title: 'Konten', apiBase: '/admin/contents', newLabel: 'Konten Baru', coll: 'contents',
+  list: () => [...db.contents].sort((a, b) => a.target_site.localeCompare(b.target_site) || a.sort_order - b.sort_order),
+  cols: ['Situs', 'Section', 'Judul', '#Urutan', 'Status'],
+  row: (c) => `<td>${c.target_site === 'utama' ? 'Utama' : 'Panitia'}</td><td class="mono small">${esc(c.section)}</td><td>${esc(c.title)}</td><td class="num">${c.sort_order}</td><td>${badge(c.status)}</td>`,
+  form: (c = {}) => `
+    <div class="grid g2">${field('target_site', 'Target situs', `<select id="target_site">${options([{ id: 'utama', name: 'Situs utama' }, { id: 'panitia', name: 'Situs panitia' }], c.target_site)}</select>`)}${field('section', 'Section', `<input id="section" maxlength="50" value="${esc(c.section)}" aria-describedby="section-hint">`, { hint: 'mis. hero, rute, faq' })}</div>
+    ${field('title', 'Judul', `<input id="title" maxlength="150" value="${esc(c.title)}">`)}
+    ${field('body', 'Isi', `<textarea id="body" rows="5">${esc(c.body)}</textarea>`)}
+    <div class="grid g2">${field('status', 'Status', `<select id="status">${options([{ id: 'draft', name: 'Draf' }, { id: 'published', name: 'Terbit' }], c.status || 'draft')}</select>`)}${field('sort_order', 'Urutan', `<input id="sort_order" type="number" value="${esc(c.sort_order ?? 0)}">`)}</div>`,
+  required: [],
+  read: (m) => ({ target_site: $('#target_site', m).value, section: $('#section', m).value, title: $('#title', m).value, body: $('#body', m).value, status: $('#status', m).value, sort_order: +$('#sort_order', m).value }),
+};
+crud['/admin/user'] = {
+  title: 'Pengguna', apiBase: '/admin/users', newLabel: 'Pengguna Baru', coll: 'users',
+  list: () => db.users,
+  cols: ['Username', 'Email', 'Role', 'Login terakhir'],
+  row: (u) => `<td>${esc(u.username)}</td><td>${esc(u.email || '–')}</td><td>${badge(u.role)}</td><td class="small">${esc(u.last_login || '–')}</td>`,
+  form: (u = {}) => `
+    ${field('username', 'Username', `<input id="username" maxlength="50" value="${esc(u.username)}" autocomplete="off">`)}
+    ${field('u_email', 'Email (opsional)', `<input id="u_email" type="email" maxlength="100" value="${esc(u.email)}">`)}
+    ${field('role', 'Role', `<select id="role">${options([{ id: 'panitia', name: 'Panitia' }, { id: 'admin', name: 'Admin' }], u.role || 'panitia')}</select>`)}
+    ${field('u_password', u.id ? 'Password baru (kosongkan jika tidak diubah)' : 'Password', '<input id="u_password" type="password" autocomplete="new-password" aria-describedby="u_password-hint">', { hint: 'Minimal 6 karakter.' })}`,
+  required: [['username', 'Username wajib diisi.']],
+  read: (m) => ({ username: $('#username', m).value, email: $('#u_email', m).value || null, role: $('#role', m).value }),
+};
+for (const [path, cfg] of Object.entries(crud)) pages[path] = () => crudPage(cfg);
+
+function openCrudForm(cfg, item) {
+  modal(`${item ? 'Ubah' : 'Tambah'} ${cfg.title.toLowerCase()}`, `${api(item ? `PUT ${cfg.apiBase}/{id}` : `POST ${cfg.apiBase}`)}<div id="crudForm">${cfg.form(item)}</div>`,
+    `<button class="btn" value="cancel">Batal</button><button class="btn primary" type="button" id="crudSave">Simpan</button>`,
+    (m) => $('#crudSave', m).addEventListener('click', () => {
+      if (validate($('#crudForm', m), cfg.required).length) return;
+      const data = cfg.read(m);
+      if (item) Object.assign(item, data); else db[cfg.coll].push({ id: Date.now(), ...data });
+      m.close(); toast('Data tersimpan.'); render();
+    }));
+}
+
+function openReset(id) {
+  const e = db.events.find((x) => x.id === +id);
+  modal(`Reset ${esc(e.name)}`, `
+    ${api('POST /admin/events/{id}/reset')}
+    <p>Tindakan ini <strong>menghapus semua hasil dan log scan</strong> untuk event ini serta mengosongkan waktu start. Tidak bisa dibatalkan.</p>
+    <div id="resetForm">
+    ${field('confirmation', 'Ketik RESET untuk konfirmasi', '<input id="confirmation" autocomplete="off" class="mono">')}
+    ${field('reset_password', 'Password admin', '<input id="reset_password" type="password" autocomplete="current-password">')}
+    </div>`,
+    `<button class="btn" value="cancel">Batal</button><button class="btn primary" type="button" id="doReset">Reset Event</button>`,
+    (m) => $('#doReset', m).addEventListener('click', () => {
+      if (validate($('#resetForm', m), [['confirmation', 'Ketik RESET (huruf kapital).', (v) => v === 'RESET'], ['reset_password', 'Password wajib diisi.']]).length) return;
+      e.start_time = null; if (e.is_active) { db.results = []; state.scan = null; }
+      m.close(); toast('Event berhasil direset.'); render();
+    }));
+}
+
+pages['/admin/scan-log'] = (q) => {
+  const f = q.get('status') || '';
+  const rows = db.scanLogs.filter((l) => !f || l.scan_status === f);
+  return `
+  ${pageHead('Log Scan')}
+  ${api('GET /admin/scan-logs', 'GET /admin/scan-logs/{id}')}
+  <form class="filters" id="logFilters"><div class="field"><label for="fScan">Status scan</label><select id="fScan" name="status"><option value="">Semua</option>${['valid', 'duplicate', 'invalid'].map((k) => `<option value="${k}" ${k === f ? 'selected' : ''}>${STATUS_LABEL[k]}</option>`).join('')}</select></div></form>
+  ${table(['Waktu', 'Barcode', 'Peserta', 'Status', 'Petugas', 'IP'],
+    rows.map((l) => `<tr><td class="small mono">${esc(l.scanned_at)}</td><td class="mono">${esc(l.barcode)}</td><td>${esc(l.participant || '–')}</td><td>${badge(l.scan_status)}</td><td>${esc(l.scanned_by)}</td><td class="mono small">${esc(l.ip)}</td></tr>`))}`;
+};
+
+pages['/admin/log-aktivitas'] = () => `
+  ${pageHead('Log Aktivitas')}
+  ${api('GET /admin/activity-logs', 'GET /admin/activity-logs/{id}')}
+  ${table(['Waktu', 'Pengguna', 'Aksi', 'Target', 'Detail'],
+    db.activity.map((a) => `<tr><td class="small mono">${esc(a.created_at)}</td><td>${esc(a.user)}</td><td class="mono small">${esc(a.action)}</td><td class="mono small">${esc(a.target_table)}#${esc(a.target_id)}</td><td>${esc(a.detail)}</td></tr>`))}`;
+
+pages['/admin/pengaturan'] = () => `
+  ${pageHead('Pengaturan', '<button class="btn primary" data-new-setting>Tambah</button>')}
+  ${api('GET /admin/settings', 'POST /admin/settings', 'GET /admin/settings/{key}', 'PUT /admin/settings/{key}', 'DELETE /admin/settings/{key}')}
+  ${table(['Key', 'Value', 'Aksi'],
+    db.settings.map((s) => `<tr><td class="mono">${esc(s.key)}</td><td>${esc(s.value)}</td><td><div class="row"><button class="btn sm" data-edit-setting="${esc(s.key)}">Ubah</button><button class="btn sm ghost" data-del-setting="${esc(s.key)}">Hapus</button></div></td></tr>`))}`;
+
+function openSetting(s) {
+  modal(s ? `Ubah ${esc(s.key)}` : 'Tambah pengaturan', `<div id="setForm">
+    ${field('s_key', 'Key', `<input id="s_key" class="mono" maxlength="50" value="${esc(s?.key)}" ${s ? 'readonly' : ''}>`)}
+    ${field('s_value', 'Value', `<textarea id="s_value">${esc(s?.value)}</textarea>`)}</div>`,
+    `<button class="btn" value="cancel">Batal</button><button class="btn primary" type="button" id="sSave">Simpan</button>`,
+    (m) => $('#sSave', m).addEventListener('click', () => {
+      if (validate($('#setForm', m), [['s_key', 'Key wajib diisi.']]).length) return;
+      if (s) s.value = $('#s_value', m).value; else db.settings.push({ key: $('#s_key', m).value, value: $('#s_value', m).value });
+      m.close(); toast('Pengaturan tersimpan.'); render();
+    }));
+}
+
+pages['/admin/ekspor'] = () => `
+  ${pageHead('Ekspor Data')}
+  <div class="grid g2">
+    <section class="card"><h2>Data peserta</h2>${api('GET /admin/export/participants')}<p class="muted">Semua peserta beserta kontak, dalam bentuk file unduhan.</p><button class="btn primary" data-export="participants">Unduh Peserta</button></section>
+    <section class="card"><h2>Data pendaftaran</h2>${api('GET /admin/export/registrations')}<p class="muted">Nomor peserta, kategori, paket, status, dan pembayaran.</p><button class="btn primary" data-export="registrations">Unduh Pendaftaran</button></section>
+  </div>`;
+
+/* =========================================================================
+   Router
+   ========================================================================= */
+function match(path) {
+  if (pages[path]) return [pages[path], []];
+  for (const key of Object.keys(pages)) {
+    if (!key.includes(':')) continue;
+    const re = new RegExp('^' + key.replace(/:[^/]+/g, '([^/]+)') + '$');
+    const m = path.match(re);
+    if (m) return [pages[key], m.slice(1).map(decodeURIComponent)];
+  }
+  return [null, []];
+}
+
+function render() {
+  const raw = location.hash.slice(1) || '/';
+  const [path, qs] = raw.split('?');
+  const q = new URLSearchParams(qs || '');
+  const area = path.startsWith('/admin') ? 'admin' : path.startsWith('/panitia') ? 'panitia' : 'public';
+
+  // Auth guards, mirroring the auth:sanctum + role middleware.
+  if (area !== 'public' && !state.user) { state.after = raw; location.hash = '#/login'; return; }
+  if (area === 'admin' && state.user.role !== 'admin') { toast('Akses ditolak: khusus admin (403).'); location.hash = '#/panitia/scan'; return; }
+
+  const [page, params] = match(path);
+  const content = page ? page(q, ...params) : `<div class="card"><h1>Halaman tidak ditemukan</h1><p><a href="#/">Kembali ke beranda</a></p></div>`;
+  $('#app').innerHTML = area === 'public' ? publicLayout(path, content) : consoleLayout(path, content);
+  document.querySelectorAll('#areaNav a').forEach((a) => a.setAttribute('aria-current', String(a.dataset.area === area)));
+  document.title = `ACR Wireframe · ${$('#main h1')?.textContent || ''}`;
+  bind(path);
+}
+
+function login(username) {
+  const u = db.users.find((x) => x.username === username) || { username, role: 'panitia' };
+  u.last_login = now();
+  state.user = { username: u.username, role: u.role };
+  toast(`Login berhasil sebagai ${u.role}.`);
+  const target = state.after && (u.role === 'admin' || !state.after.startsWith('/admin')) ? state.after : (u.role === 'admin' ? '/admin' : '/panitia/scan');
+  state.after = null;
+  location.hash = '#' + target;
+}
+
+function bind(path) {
+  const main = $('#main');
+  $('#logout')?.addEventListener('click', () => { state.user = null; toast('Berhasil keluar.'); location.hash = '#/'; });
+
+  const reg = $('#regForm');
+  reg && reg.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const gender = reg.querySelector('[name=gender]:checked');
+    const errs = validate(reg, [
+      ['full_name', 'Nama lengkap wajib diisi.'], ['birth_place', 'Tempat lahir wajib diisi.'], ['birth_date', 'Tanggal lahir wajib diisi.'],
+      ['email', 'Masukkan email yang valid.', (v) => /^\S+@\S+\.\S+$/.test(v)], ['phone', 'No. HP wajib diisi.'],
+      ['category_id', 'Pilih kategori.'], ['package_id', 'Pilih paket.'],
+    ]);
+    const gErr = $('#gender-err'); gErr.hidden = !!gender; gErr.textContent = gender ? '' : 'Pilih jenis kelamin.';
+    if (!gender) errs.splice(1, 0, ['gender_L', 'Pilih jenis kelamin.']);
+    if (errs.length) { showErrorSummary(reg, errs); return; }
+    const c = cat($('#category_id').value), p = pkg($('#package_id').value);
+    const seq = db.registrations.filter((r) => r.category_id === c.id).length + 1;
+    const no = `${c.code}-${String(seq).padStart(4, '0')}`;
+    const r = {
+      id: db.registrations.length + 1, registration_number: no, barcode: Math.random().toString(36).slice(2, 10).toUpperCase() + '-' + no,
+      full_name: $('#full_name').value, gender: gender.value, email: $('#email').value, phone: $('#phone').value,
+      category_id: c.id, package_id: p.id, registration_status: 'pending', payment_status: p.price === 0 ? 'free' : 'unpaid', payment_proof: null, created_at: now().slice(0, 16),
+    };
+    db.registrations.push(r); state.lastRegistration = r;
+    location.hash = '#/daftar/sukses';
+  });
+  reg && reg.querySelectorAll('input,select').forEach((el) => el.addEventListener('blur', () => {
+    if (el.getAttribute('aria-invalid') === 'true' && el.value.trim()) { el.setAttribute('aria-invalid', 'false'); const er = $('#' + el.id + '-err'); if (er) er.hidden = true; }
+  }));
+
+  const st = $('#statusForm');
+  if (st) {
+    const go = () => {
+      const errs = validate(st, [['registration_number', 'Nomor peserta wajib diisi.'], ['check_email', 'Email wajib diisi.']]);
+      if (errs.length) return;
+      const r = regByNo($('#registration_number').value);
+      renderStatusResult(r && r.email.toLowerCase() === $('#check_email').value.trim().toLowerCase() ? r : null);
+    };
+    st.addEventListener('submit', (e) => { e.preventDefault(); go(); });
+    if (state.prefill) { state.prefill = null; go(); }
+  }
+
+  main.querySelector('[data-prefill]')?.addEventListener('click', () => { state.prefill = state.lastRegistration; });
+  $('#resultCat')?.addEventListener('change', (e) => { location.hash = '#/hasil' + (e.target.value ? '?category=' + e.target.value : ''); });
+
+  const lf = $('#loginForm');
+  lf && lf.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (validate(lf, [['username', 'Username wajib diisi.'], ['password', 'Password wajib diisi.']]).length) return;
+    login($('#username').value.trim());
+  });
+  main.querySelectorAll('[data-demo]').forEach((b) => b.addEventListener('click', () => login(b.dataset.demo)));
+
+  $('#startEvent')?.addEventListener('click', () => {
+    const ev = activeEvent(); ev.start_time = now();
+    db.activity.unshift({ id: Date.now(), user: state.user.username, action: 'start_event', target_table: 'events', target_id: ev.id, detail: `Memulai acara event ID: ${ev.id}`, created_at: now() });
+    toast('Acara telah dimulai. Waktu start tercatat.'); render();
+  });
+  const sf = $('#scanForm');
+  sf && sf.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (validate(sf, [['barcode', 'Barcode wajib diisi.']]).length) return;
+    doScan($('#barcode').value); $('#barcode').value = ''; $('#barcode').focus();
+  });
+  main.querySelectorAll('[data-sim]').forEach((b) => b.addEventListener('click', () => {
+    if (b.dataset.sim.includes('GK-0001') && !db.results.some((x) => x.registration_number === 'GK-0001')) db.results.push({ registration_number: 'GK-0001', duration: 2105, scan_status: 'valid' });
+    doScan(b.dataset.sim);
+  }));
+
+  ['regFilters', 'logFilters'].forEach((id) => {
+    const f = $('#' + id);
+    f && f.addEventListener('change', () => {
+      const p = new URLSearchParams([...new FormData(f)].filter(([, v]) => v));
+      location.hash = '#' + path + (p.toString() ? '?' + p : '');
+    });
+  });
+  main.querySelectorAll('[data-verify]').forEach((b) => b.addEventListener('click', () => openVerify(b.dataset.verify)));
+
+  const cfg = crud[path];
+  if (cfg) {
+    main.querySelector('[data-new]')?.addEventListener('click', () => openCrudForm(cfg));
+    main.querySelectorAll('[data-edit]').forEach((b) => b.addEventListener('click', () => openCrudForm(cfg, db[cfg.coll].find((x) => x.id === +b.dataset.edit))));
+    main.querySelectorAll('[data-del]').forEach((b) => b.addEventListener('click', () => {
+      const item = db[cfg.coll].find((x) => x.id === +b.dataset.del);
+      if (!confirm(`Hapus "${item.name || item.title || item.username}"?`)) return;
+      db[cfg.coll] = db[cfg.coll].filter((x) => x !== item); toast('Data dihapus.'); render();
+    }));
+    main.querySelectorAll('[data-toggle]').forEach((b) => b.addEventListener('click', () => {
+      const ev = db.events.find((x) => x.id === +b.dataset.toggle);
+      const on = !ev.is_active; db.events.forEach((x) => (x.is_active = false)); ev.is_active = on;
+      toast(on ? 'Event diaktifkan.' : 'Event dinonaktifkan.'); render();
+    }));
+    main.querySelectorAll('[data-reset]').forEach((b) => b.addEventListener('click', () => openReset(b.dataset.reset)));
+  }
+
+  main.querySelector('[data-new-setting]')?.addEventListener('click', () => openSetting());
+  main.querySelectorAll('[data-edit-setting]').forEach((b) => b.addEventListener('click', () => openSetting(db.settings.find((s) => s.key === b.dataset.editSetting))));
+  main.querySelectorAll('[data-del-setting]').forEach((b) => b.addEventListener('click', () => {
+    if (!confirm(`Hapus pengaturan "${b.dataset.delSetting}"?`)) return;
+    db.settings = db.settings.filter((s) => s.key !== b.dataset.delSetting); toast('Pengaturan dihapus.'); render();
+  }));
+  main.querySelectorAll('[data-export]').forEach((b) => b.addEventListener('click', () => toast(`Wireframe: file ekspor ${b.dataset.export} akan diunduh di sini.`)));
+}
+
+$('#toggleApi').addEventListener('change', (e) => document.body.classList.toggle('hide-api', !e.target.checked));
+window.addEventListener('hashchange', render);
+render();
+</script>
+</body>
+</html>
