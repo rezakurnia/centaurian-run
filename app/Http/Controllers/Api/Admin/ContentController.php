@@ -21,7 +21,7 @@ class ContentController extends Controller
 
         return response()->json([
             'message' => 'Daftar semua konten.',
-            'data'    => ContentResource::collection($contents),
+            'data' => ContentResource::collection($contents),
         ]);
     }
 
@@ -29,12 +29,12 @@ class ContentController extends Controller
     {
         $content = Content::create([
             'target_site' => $request->target_site,
-            'section'     => $request->section,
-            'title'       => $request->title,
-            'body'        => $request->body,
-            'status'      => $request->status,
-            'sort_order'  => $request->sort_order ?? 0,
-            'updated_by'  => $request->user()->id,
+            'section' => $request->section,
+            'title' => $request->title,
+            'body' => $request->body,
+            'status' => $request->status,
+            'sort_order' => $request->sort_order ?? 0,
+            'updated_by' => $request->user()->id,
         ]);
 
         $this->logActivity(
@@ -46,7 +46,7 @@ class ContentController extends Controller
 
         return response()->json([
             'message' => 'Konten berhasil dibuat.',
-            'data'    => new ContentResource($content),
+            'data' => new ContentResource($content),
         ], 201);
     }
 
@@ -54,16 +54,16 @@ class ContentController extends Controller
     {
         $content = Content::find($id);
 
-        if (!$content) {
+        if (! $content) {
             return response()->json([
                 'message' => 'Konten tidak ditemukan.',
-                'data'    => null,
+                'data' => null,
             ], 404);
         }
 
         return response()->json([
             'message' => 'Detail konten.',
-            'data'    => new ContentResource($content),
+            'data' => new ContentResource($content),
         ]);
     }
 
@@ -71,10 +71,10 @@ class ContentController extends Controller
     {
         $content = Content::find($id);
 
-        if (!$content) {
+        if (! $content) {
             return response()->json([
                 'message' => 'Konten tidak ditemukan.',
-                'data'    => null,
+                'data' => null,
             ], 404);
         }
 
@@ -92,7 +92,7 @@ class ContentController extends Controller
 
         return response()->json([
             'message' => 'Konten berhasil diperbarui.',
-            'data'    => new ContentResource($content->fresh()),
+            'data' => new ContentResource($content->fresh()),
         ]);
     }
 
@@ -100,10 +100,10 @@ class ContentController extends Controller
     {
         $content = Content::find($id);
 
-        if (!$content) {
+        if (! $content) {
             return response()->json([
                 'message' => 'Konten tidak ditemukan.',
-                'data'    => null,
+                'data' => null,
             ], 404);
         }
 
@@ -118,7 +118,7 @@ class ContentController extends Controller
 
         return response()->json([
             'message' => 'Konten berhasil dihapus.',
-            'data'    => null,
+            'data' => null,
         ]);
     }
 }

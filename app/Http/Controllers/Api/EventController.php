@@ -12,16 +12,16 @@ class EventController extends Controller
     {
         $event = Event::where('is_active', true)->first();
 
-        if (!$event) {
+        if (! $event) {
             return response()->json([
                 'message' => 'Belum ada acara aktif.',
-                'data'    => null,
+                'data' => null,
             ], 404);
         }
 
         return response()->json([
             'message' => 'Informasi acara aktif.',
-            'data'    => new EventResource($event),
+            'data' => new EventResource($event),
         ]);
     }
 }

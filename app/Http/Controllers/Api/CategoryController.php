@@ -14,7 +14,7 @@ class CategoryController extends Controller
 
         return response()->json([
             'message' => 'Daftar kategori peserta.',
-            'data'    => CategoryResource::collection($categories),
+            'data' => CategoryResource::collection($categories),
         ]);
     }
 }

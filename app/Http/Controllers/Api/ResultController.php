@@ -24,7 +24,7 @@ class ResultController extends Controller
 
         return response()->json([
             'message' => 'Daftar waktu tempuh peserta.',
-            'data'    => ResultResource::collection($results),
+            'data' => ResultResource::collection($results),
         ]);
     }
 
@@ -37,16 +37,16 @@ class ResultController extends Controller
             ->where('scan_status', 'valid')
             ->first();
 
-        if (!$result) {
+        if (! $result) {
             return response()->json([
                 'message' => 'Hasil tidak ditemukan untuk nomor peserta tersebut.',
-                'data'    => null,
+                'data' => null,
             ], 404);
         }
 
         return response()->json([
             'message' => 'Hasil waktu tempuh peserta.',
-            'data'    => new ResultResource($result),
+            'data' => new ResultResource($result),
         ]);
     }
 }

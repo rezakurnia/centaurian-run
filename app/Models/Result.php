@@ -14,7 +14,7 @@ class Result extends Model
     ];
 
     protected $casts = [
-        'start_time'  => 'datetime',
+        'start_time' => 'datetime',
         'finish_time' => 'datetime',
     ];
 

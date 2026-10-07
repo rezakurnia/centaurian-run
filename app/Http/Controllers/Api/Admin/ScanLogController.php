@@ -18,7 +18,7 @@ class ScanLogController extends Controller
         }
 
         if ($request->filled('barcode')) {
-            $query->where('barcode', 'like', '%' . $request->barcode . '%');
+            $query->where('barcode', 'like', '%'.$request->barcode.'%');
         }
 
         if ($request->filled('date_from')) {
@@ -33,12 +33,12 @@ class ScanLogController extends Controller
 
         return response()->json([
             'message' => 'Daftar scan logs.',
-            'data'    => ScanLogResource::collection($logs),
-            'meta'    => [
+            'data' => ScanLogResource::collection($logs),
+            'meta' => [
                 'current_page' => $logs->currentPage(),
-                'last_page'    => $logs->lastPage(),
-                'per_page'     => $logs->perPage(),
-                'total'        => $logs->total(),
+                'last_page' => $logs->lastPage(),
+                'per_page' => $logs->perPage(),
+                'total' => $logs->total(),
             ],
         ]);
     }
@@ -47,16 +47,16 @@ class ScanLogController extends Controller
     {
         $log = ScanLog::with(['participant', 'scannedBy'])->find($id);
 
-        if (!$log) {
+        if (! $log) {
             return response()->json([
                 'message' => 'Scan log tidak ditemukan.',
-                'data'    => null,
+                'data' => null,
             ], 404);
         }
 
         return response()->json([
             'message' => 'Detail scan log.',
-            'data'    => new ScanLogResource($log),
+            'data' => new ScanLogResource($log),
         ]);
     }
 }

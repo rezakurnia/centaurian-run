@@ -22,8 +22,8 @@ class UploadPaymentProofRequest extends FormRequest
     {
         return [
             'payment_proof.required' => 'File bukti pembayaran wajib diunggah.',
-            'payment_proof.mimes'    => 'File harus berupa JPG, JPEG, PNG, atau PDF.',
-            'payment_proof.max'      => 'Ukuran file maksimal 2 MB.',
+            'payment_proof.mimes' => 'File harus berupa JPG, JPEG, PNG, atau PDF.',
+            'payment_proof.max' => 'Ukuran file maksimal 2 MB.',
         ];
     }
 }

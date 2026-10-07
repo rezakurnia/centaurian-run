@@ -15,7 +15,7 @@ class VerifyRegistrationRequest extends FormRequest
     {
         return [
             'registration_status' => 'required|in:pending,confirmed,cancelled',
-            'payment_status'      => 'required|in:unpaid,paid,free',
+            'payment_status' => 'required|in:unpaid,paid,free',
         ];
     }
 }

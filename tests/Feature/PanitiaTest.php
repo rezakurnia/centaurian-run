@@ -14,11 +14,17 @@ use Tests\TestCase;
 class PanitiaTest extends TestCase
 {
     protected User $panitia;
+
     protected string $token;
+
     protected Event $event;
+
     protected Category $categorySiswa;
+
     protected Category $categoryGuru;
+
     protected Package $package;
+
     protected Registration $regSiswa;
 
     protected function setUp(): void
@@ -28,73 +34,73 @@ class PanitiaTest extends TestCase
         $this->panitia = User::create([
             'username' => 'panitia',
             'password' => Hash::make('panitia123'),
-            'email'    => 'panitia@centaurian.test',
-            'role'     => 'panitia',
+            'email' => 'panitia@centaurian.test',
+            'role' => 'panitia',
         ]);
         $this->token = $this->panitia->createToken('test')->plainTextToken;
 
         $this->event = Event::create([
-            'name'       => 'Centaurian FunRun 2026',
+            'name' => 'Centaurian FunRun 2026',
             'event_date' => '2026-05-15',
-            'is_active'  => true,
+            'is_active' => true,
         ]);
 
         $this->categorySiswa = Category::create(['name' => 'Siswa', 'code' => 'SW']);
-        $this->categoryGuru  = Category::create(['name' => 'Guru Karyawan', 'code' => 'GK']);
-        $this->categoryAlumni   = Category::create(['name' => 'Alumni',   'code' => 'AL']);
+        $this->categoryGuru = Category::create(['name' => 'Guru Karyawan', 'code' => 'GK']);
+        $this->categoryAlumni = Category::create(['name' => 'Alumni',   'code' => 'AL']);
         $this->categoryOrangtua = Category::create(['name' => 'Orangtua', 'code' => 'OT']);
         $this->categoryExternal = Category::create(['name' => 'External', 'code' => 'EX']);
-        $this->package       = Package::create(['name' => 'Paket 100K', 'price' => 100000]);
+        $this->package = Package::create(['name' => 'Paket 100K', 'price' => 100000]);
 
         // Registrasi Siswa #1
         $participant1 = Participant::create([
             'full_name' => 'Budi Santoso',
-            'email'     => 'budi@example.com',
+            'email' => 'budi@example.com',
         ]);
         $this->regSiswa = Registration::create([
             'registration_number' => 'SW-0001',
-            'sequence_number'     => 1,
-            'barcode'             => 'BUDI-SW-0001',
-            'participant_id'      => $participant1->id,
-            'event_id'            => $this->event->id,
-            'category_id'         => $this->categorySiswa->id,
-            'package_id'          => $this->package->id,
+            'sequence_number' => 1,
+            'barcode' => 'BUDI-SW-0001',
+            'participant_id' => $participant1->id,
+            'event_id' => $this->event->id,
+            'category_id' => $this->categorySiswa->id,
+            'package_id' => $this->package->id,
             'registration_status' => 'confirmed',
-            'payment_status'      => 'paid',
+            'payment_status' => 'paid',
         ]);
 
         // Registrasi Siswa #2
         $participant2 = Participant::create([
             'full_name' => 'Andi Wijaya',
-            'email'     => 'andi@example.com',
+            'email' => 'andi@example.com',
         ]);
         Registration::create([
             'registration_number' => 'SW-0002',
-            'sequence_number'     => 2,
-            'barcode'             => 'ANDI-SW-0002',
-            'participant_id'      => $participant2->id,
-            'event_id'            => $this->event->id,
-            'category_id'         => $this->categorySiswa->id,
-            'package_id'          => $this->package->id,
+            'sequence_number' => 2,
+            'barcode' => 'ANDI-SW-0002',
+            'participant_id' => $participant2->id,
+            'event_id' => $this->event->id,
+            'category_id' => $this->categorySiswa->id,
+            'package_id' => $this->package->id,
             'registration_status' => 'confirmed',
-            'payment_status'      => 'paid',
+            'payment_status' => 'paid',
         ]);
 
         // Registrasi Guru #1
         $participant3 = Participant::create([
             'full_name' => 'Ibu Sari',
-            'email'     => 'sari@example.com',
+            'email' => 'sari@example.com',
         ]);
         Registration::create([
             'registration_number' => 'GK-0001',
-            'sequence_number'     => 1,
-            'barcode'             => 'SARI-GK-0001',
-            'participant_id'      => $participant3->id,
-            'event_id'            => $this->event->id,
-            'category_id'         => $this->categoryGuru->id,
-            'package_id'          => $this->package->id,
+            'sequence_number' => 1,
+            'barcode' => 'SARI-GK-0001',
+            'participant_id' => $participant3->id,
+            'event_id' => $this->event->id,
+            'category_id' => $this->categoryGuru->id,
+            'package_id' => $this->package->id,
             'registration_status' => 'confirmed',
-            'payment_status'      => 'paid',
+            'payment_status' => 'paid',
         ]);
     }
 
@@ -158,7 +164,7 @@ class PanitiaTest extends TestCase
 
         $this->assertDatabaseHas('results', [
             'registration_id' => $this->regSiswa->id,
-            'scan_status'     => 'valid',
+            'scan_status' => 'valid',
         ]);
     }
 

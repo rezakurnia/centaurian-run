@@ -9,6 +9,7 @@ use App\Http\Requests\UploadPaymentProofRequest;
 use App\Http\Resources\ParticipantResource;
 use App\Http\Resources\RegistrationResource;
 use App\Mail\RegistrationConfirmationMail;
+use App\Models\Package;
 use App\Models\Participant;
 use App\Models\Registration;
 use App\Services\BarcodeService;
@@ -34,28 +35,28 @@ class RegistrationController extends Controller
             $participant = Participant::firstOrCreate(
                 ['email' => $validated['email']],
                 [
-                    'full_name'   => $validated['full_name'],
-                    'gender'      => $validated['gender'],
+                    'full_name' => $validated['full_name'],
+                    'gender' => $validated['gender'],
                     'birth_place' => $validated['birth_place'],
-                    'birth_date'  => $validated['birth_date'],
-                    'motivation'  => $validated['motivation'] ?? null,
-                    'phone'       => $validated['phone'],
+                    'birth_date' => $validated['birth_date'],
+                    'motivation' => $validated['motivation'] ?? null,
+                    'phone' => $validated['phone'],
                 ]
             );
 
-            $package = \App\Models\Package::find($validated['package_id']);
-            $isFree  = $package && $package->price == 0;
+            $package = Package::find($validated['package_id']);
+            $isFree = $package && $package->price == 0;
 
             $registration = Registration::create([
                 'registration_number' => $generated['registration_number'],
-                'sequence_number'     => $generated['sequence_number'],
-                'barcode'             => $barcodeService->generate($generated['registration_number']),
-                'participant_id'      => $participant->id,
-                'event_id'            => $validated['event_id'],
-                'category_id'         => $validated['category_id'],
-                'package_id'          => $validated['package_id'],
+                'sequence_number' => $generated['sequence_number'],
+                'barcode' => $barcodeService->generate($generated['registration_number']),
+                'participant_id' => $participant->id,
+                'event_id' => $validated['event_id'],
+                'category_id' => $validated['category_id'],
+                'package_id' => $validated['package_id'],
                 'registration_status' => $isFree ? 'confirmed' : 'pending',
-                'payment_status'      => $isFree ? 'free' : 'unpaid',
+                'payment_status' => $isFree ? 'free' : 'unpaid',
             ]);
 
             return [$participant, $registration];
@@ -66,8 +67,8 @@ class RegistrationController extends Controller
 
         return response()->json([
             'message' => 'Pendaftaran berhasil. Nomor peserta & barcode telah dikirim ke email Anda.',
-            'data'    => [
-                'participant'  => new ParticipantResource($participant),
+            'data' => [
+                'participant' => new ParticipantResource($participant),
                 'registration' => new RegistrationResource($registration),
             ],
         ], 201);
@@ -79,24 +80,24 @@ class RegistrationController extends Controller
     ) {
         $registration = Registration::where('registration_number', $registrationNumber)->first();
 
-        if (!$registration) {
+        if (! $registration) {
             return response()->json([
                 'message' => 'Pendaftaran tidak ditemukan.',
-                'data'    => null,
+                'data' => null,
             ], 404);
         }
 
         if ($registration->payment_status === 'free') {
             return response()->json([
                 'message' => 'Paket gratis tidak memerlukan bukti pembayaran.',
-                'data'    => null,
+                'data' => null,
             ], 422);
         }
 
         if ($registration->payment_status === 'paid') {
             return response()->json([
                 'message' => 'Pembayaran sudah terverifikasi.',
-                'data'    => null,
+                'data' => null,
             ], 422);
         }
 
@@ -108,34 +109,30 @@ class RegistrationController extends Controller
 
         return response()->json([
             'message' => 'Bukti pembayaran berhasil diunggah. Menunggu verifikasi admin.',
-            'data'    => new RegistrationResource($registration->fresh()),
+            'data' => new RegistrationResource($registration->fresh()),
         ]);
     }
 
     public function checkStatus(CheckRegistrationStatusRequest $request)
     {
-        $query = Registration::with(['participant', 'category', 'package', 'event']);
-
-        if ($request->filled('registration_number')) {
-            $query->where('registration_number', $request->registration_number);
-        } else {
-            $query->whereHas('participant', function ($q) use ($request) {
+        $query = Registration::with(['participant', 'category', 'package', 'event'])
+            ->where('registration_number', $request->registration_number)
+            ->whereHas('participant', function ($q) use ($request) {
                 $q->where('email', $request->email);
             });
-        }
 
         $registrations = $query->orderBy('created_at', 'desc')->get();
 
         if ($registrations->isEmpty()) {
             return response()->json([
                 'message' => 'Pendaftaran tidak ditemukan.',
-                'data'    => [],
+                'data' => [],
             ], 404);
         }
 
         return response()->json([
             'message' => 'Status pendaftaran ditemukan.',
-            'data'    => RegistrationResource::collection($registrations),
+            'data' => RegistrationResource::collection($registrations),
         ]);
     }
 
@@ -143,7 +140,7 @@ class RegistrationController extends Controller
     {
         $participant = Participant::where('email', $email)->first();
 
-        if (!$participant) {
+        if (! $participant) {
             return;
         }
 

@@ -11,16 +11,16 @@ class EventContentTest extends TestCase
     public function test_event_aktif_muncul(): void
     {
         Event::create([
-            'name'       => 'Centaurian FunRun 2026',
-            'location'   => 'Lapangan Sekolah',
+            'name' => 'Centaurian FunRun 2026',
+            'location' => 'Lapangan Sekolah',
             'event_date' => '2026-05-15',
-            'is_active'  => true,
+            'is_active' => true,
         ]);
 
         Event::create([
-            'name'       => 'Event Lama',
+            'name' => 'Event Lama',
             'event_date' => '2020-01-01',
-            'is_active'  => false,
+            'is_active' => false,
         ]);
 
         $response = $this->getJson('/api/event/active');
@@ -46,20 +46,20 @@ class EventContentTest extends TestCase
     {
         Content::create([
             'target_site' => 'utama',
-            'section'     => 'banner',
-            'title'       => 'Selamat Datang',
-            'body'        => 'Ikuti Centaurian FunRun!',
-            'status'      => 'published',
-            'sort_order'  => 1,
+            'section' => 'banner',
+            'title' => 'Selamat Datang',
+            'body' => 'Ikuti Centaurian FunRun!',
+            'status' => 'published',
+            'sort_order' => 1,
         ]);
 
         Content::create([
             'target_site' => 'utama',
-            'section'     => 'info',
-            'title'       => 'Info Acara',
-            'body'        => 'Detail acara...',
-            'status'      => 'published',
-            'sort_order'  => 2,
+            'section' => 'info',
+            'title' => 'Info Acara',
+            'body' => 'Detail acara...',
+            'status' => 'published',
+            'sort_order' => 2,
         ]);
 
         $response = $this->getJson('/api/contents');
@@ -74,9 +74,9 @@ class EventContentTest extends TestCase
     {
         Content::create([
             'target_site' => 'utama',
-            'section'     => 'banner',
-            'title'       => 'Draft',
-            'status'      => 'draft',
+            'section' => 'banner',
+            'title' => 'Draft',
+            'status' => 'draft',
         ]);
 
         $response = $this->getJson('/api/contents');
@@ -89,9 +89,9 @@ class EventContentTest extends TestCase
     {
         Content::create([
             'target_site' => 'panitia',
-            'section'     => 'info',
-            'title'       => 'Info Panitia',
-            'status'      => 'published',
+            'section' => 'info',
+            'title' => 'Info Panitia',
+            'status' => 'published',
         ]);
 
         $response = $this->getJson('/api/contents');

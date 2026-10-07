@@ -14,10 +14,15 @@ use Tests\TestCase;
 class PaymentProofTest extends TestCase
 {
     protected Event $event;
+
     protected Category $category;
+
     protected Package $packageGratis;
+
     protected Package $package100k;
+
     protected Registration $regBerbayar;
+
     protected Registration $regGratis;
 
     protected function setUp(): void
@@ -27,44 +32,44 @@ class PaymentProofTest extends TestCase
         Storage::fake('public');
 
         $this->event = Event::create([
-            'name'       => 'Centaurian FunRun 2026',
+            'name' => 'Centaurian FunRun 2026',
             'event_date' => '2026-05-15',
-            'is_active'  => true,
+            'is_active' => true,
         ]);
         $this->category = Category::create(['name' => 'Siswa', 'code' => 'SW']);
         $this->packageGratis = Package::create(['name' => 'Gratis', 'price' => 0]);
-        $this->package100k   = Package::create(['name' => 'Paket 100K', 'price' => 100000]);
+        $this->package100k = Package::create(['name' => 'Paket 100K', 'price' => 100000]);
 
         $p1 = Participant::create([
             'full_name' => 'Budi Santoso',
-            'email'     => 'budi@example.com',
+            'email' => 'budi@example.com',
         ]);
         $this->regBerbayar = Registration::create([
             'registration_number' => 'SW-0001',
-            'sequence_number'     => 1,
-            'barcode'             => 'BUDI-SW-0001',
-            'participant_id'      => $p1->id,
-            'event_id'            => $this->event->id,
-            'category_id'         => $this->category->id,
-            'package_id'          => $this->package100k->id,
+            'sequence_number' => 1,
+            'barcode' => 'BUDI-SW-0001',
+            'participant_id' => $p1->id,
+            'event_id' => $this->event->id,
+            'category_id' => $this->category->id,
+            'package_id' => $this->package100k->id,
             'registration_status' => 'pending',
-            'payment_status'      => 'unpaid',
+            'payment_status' => 'unpaid',
         ]);
 
         $p2 = Participant::create([
             'full_name' => 'Ibu Sari',
-            'email'     => 'sari@example.com',
+            'email' => 'sari@example.com',
         ]);
         $this->regGratis = Registration::create([
             'registration_number' => 'SW-0002',
-            'sequence_number'     => 2,
-            'barcode'             => 'SARI-SW-0002',
-            'participant_id'      => $p2->id,
-            'event_id'            => $this->event->id,
-            'category_id'         => $this->category->id,
-            'package_id'          => $this->packageGratis->id,
+            'sequence_number' => 2,
+            'barcode' => 'SARI-SW-0002',
+            'participant_id' => $p2->id,
+            'event_id' => $this->event->id,
+            'category_id' => $this->category->id,
+            'package_id' => $this->packageGratis->id,
             'registration_status' => 'confirmed',
-            'payment_status'      => 'free',
+            'payment_status' => 'free',
         ]);
     }
 
@@ -117,7 +122,7 @@ class PaymentProofTest extends TestCase
         $file = UploadedFile::fake()->image('bukti.jpg');
 
         $response = $this->postJson(
-            "/api/registrations/XX-9999/payment-proof",
+            '/api/registrations/XX-9999/payment-proof',
             ['payment_proof' => $file]
         );
 

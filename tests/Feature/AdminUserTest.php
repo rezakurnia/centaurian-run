@@ -9,8 +9,11 @@ use Tests\TestCase;
 class AdminUserTest extends TestCase
 {
     protected User $admin;
+
     protected User $panitia;
+
     protected string $tokenAdmin;
+
     protected string $tokenPanitia;
 
     protected function setUp(): void
@@ -20,16 +23,16 @@ class AdminUserTest extends TestCase
         $this->admin = User::create([
             'username' => 'admin',
             'password' => Hash::make('admin123'),
-            'email'    => 'admin@centaurian.test',
-            'role'     => 'admin',
+            'email' => 'admin@centaurian.test',
+            'role' => 'admin',
         ]);
         $this->tokenAdmin = $this->admin->createToken('test')->plainTextToken;
 
         $this->panitia = User::create([
             'username' => 'panitia',
             'password' => Hash::make('panitia123'),
-            'email'    => 'panitia@centaurian.test',
-            'role'     => 'panitia',
+            'email' => 'panitia@centaurian.test',
+            'role' => 'panitia',
         ]);
         $this->tokenPanitia = $this->panitia->createToken('test')->plainTextToken;
     }
@@ -77,8 +80,8 @@ class AdminUserTest extends TestCase
             ->postJson('/api/admin/users', [
                 'username' => 'panitia2',
                 'password' => 'rahasia123',
-                'email'    => 'panitia2@centaurian.test',
-                'role'     => 'panitia',
+                'email' => 'panitia2@centaurian.test',
+                'role' => 'panitia',
             ]);
 
         $response->assertStatus(201)
@@ -87,7 +90,7 @@ class AdminUserTest extends TestCase
 
         $this->assertDatabaseHas('users', [
             'username' => 'panitia2',
-            'role'     => 'panitia',
+            'role' => 'panitia',
         ]);
     }
 
@@ -106,8 +109,8 @@ class AdminUserTest extends TestCase
             ->postJson('/api/admin/users', [
                 'username' => 'admin',
                 'password' => 'rahasia123',
-                'email'    => 'duplikat@centaurian.test',
-                'role'     => 'panitia',
+                'email' => 'duplikat@centaurian.test',
+                'role' => 'panitia',
             ]);
 
         $response->assertStatus(422)
@@ -120,8 +123,8 @@ class AdminUserTest extends TestCase
             ->postJson('/api/admin/users', [
                 'username' => 'panitia3',
                 'password' => '123',
-                'email'    => 'panitia3@centaurian.test',
-                'role'     => 'panitia',
+                'email' => 'panitia3@centaurian.test',
+                'role' => 'panitia',
             ]);
 
         $response->assertStatus(422)
@@ -156,7 +159,7 @@ class AdminUserTest extends TestCase
         $response->assertStatus(200);
 
         $this->assertDatabaseHas('users', [
-            'id'    => $this->panitia->id,
+            'id' => $this->panitia->id,
             'email' => 'panitia_new@centaurian.test',
         ]);
     }
@@ -181,8 +184,8 @@ class AdminUserTest extends TestCase
         $userBaru = User::create([
             'username' => 'untuk_hapus',
             'password' => Hash::make('rahasia123'),
-            'email'    => 'hapus@centaurian.test',
-            'role'     => 'panitia',
+            'email' => 'hapus@centaurian.test',
+            'role' => 'panitia',
         ]);
 
         $response = $this->withHeaders($this->adminHeaders())
@@ -204,7 +207,7 @@ class AdminUserTest extends TestCase
 
         // Pastikan admin masih ada
         $this->assertDatabaseHas('users', [
-            'id'       => $this->admin->id,
+            'id' => $this->admin->id,
             'username' => 'admin',
         ]);
     }
@@ -219,7 +222,7 @@ class AdminUserTest extends TestCase
             ->postJson('/api/admin/users', [
                 'username' => 'test',
                 'password' => 'rahasia123',
-                'role'     => 'panitia',
+                'role' => 'panitia',
             ])
             ->assertStatus(403);
     }

@@ -10,8 +10,11 @@ use Tests\TestCase;
 class AdminContentTest extends TestCase
 {
     protected User $admin;
+
     protected User $panitia;
+
     protected string $tokenAdmin;
+
     protected string $tokenPanitia;
 
     protected function setUp(): void
@@ -21,16 +24,16 @@ class AdminContentTest extends TestCase
         $this->admin = User::create([
             'username' => 'admin',
             'password' => Hash::make('admin123'),
-            'email'    => 'admin@centaurian.test',
-            'role'     => 'admin',
+            'email' => 'admin@centaurian.test',
+            'role' => 'admin',
         ]);
         $this->tokenAdmin = $this->admin->createToken('test')->plainTextToken;
 
         $this->panitia = User::create([
             'username' => 'panitia',
             'password' => Hash::make('panitia123'),
-            'email'    => 'panitia@centaurian.test',
-            'role'     => 'panitia',
+            'email' => 'panitia@centaurian.test',
+            'role' => 'panitia',
         ]);
         $this->tokenPanitia = $this->panitia->createToken('test')->plainTextToken;
     }
@@ -59,11 +62,11 @@ class AdminContentTest extends TestCase
         $response = $this->withHeaders($this->adminHeaders())
             ->postJson('/api/admin/contents', [
                 'target_site' => 'utama',
-                'section'     => 'banner',
-                'title'       => 'Selamat Datang',
-                'body'        => 'Ikuti Centaurian FunRun!',
-                'status'      => 'published',
-                'sort_order'  => 1,
+                'section' => 'banner',
+                'title' => 'Selamat Datang',
+                'body' => 'Ikuti Centaurian FunRun!',
+                'status' => 'published',
+                'sort_order' => 1,
             ]);
 
         $response->assertStatus(201)
@@ -72,8 +75,8 @@ class AdminContentTest extends TestCase
 
         $this->assertDatabaseHas('contents', [
             'target_site' => 'utama',
-            'title'       => 'Selamat Datang',
-            'status'      => 'published',
+            'title' => 'Selamat Datang',
+            'status' => 'published',
         ]);
     }
 
@@ -90,10 +93,10 @@ class AdminContentTest extends TestCase
     {
         $content = Content::create([
             'target_site' => 'utama',
-            'section'     => 'banner',
-            'title'       => 'Judul Awal',
-            'status'      => 'published',
-            'sort_order'  => 1,
+            'section' => 'banner',
+            'title' => 'Judul Awal',
+            'status' => 'published',
+            'sort_order' => 1,
         ]);
 
         $response = $this->withHeaders($this->adminHeaders())
@@ -116,13 +119,13 @@ class AdminContentTest extends TestCase
     {
         $content = Content::create([
             'target_site' => 'utama',
-            'title'       => 'Judul Lama',
-            'status'      => 'draft',
+            'title' => 'Judul Lama',
+            'status' => 'draft',
         ]);
 
         $response = $this->withHeaders($this->adminHeaders())
             ->putJson("/api/admin/contents/{$content->id}", [
-                'title'  => 'Judul Baru',
+                'title' => 'Judul Baru',
                 'status' => 'published',
             ]);
 
@@ -130,8 +133,8 @@ class AdminContentTest extends TestCase
             ->assertJsonPath('data.title', 'Judul Baru');
 
         $this->assertDatabaseHas('contents', [
-            'id'     => $content->id,
-            'title'  => 'Judul Baru',
+            'id' => $content->id,
+            'title' => 'Judul Baru',
             'status' => 'published',
         ]);
     }
@@ -140,8 +143,8 @@ class AdminContentTest extends TestCase
     {
         $content = Content::create([
             'target_site' => 'utama',
-            'title'       => 'Akan Dihapus',
-            'status'      => 'published',
+            'title' => 'Akan Dihapus',
+            'status' => 'published',
         ]);
 
         $response = $this->withHeaders($this->adminHeaders())
@@ -161,7 +164,7 @@ class AdminContentTest extends TestCase
         $this->withHeaders($this->panitiaHeaders())
             ->postJson('/api/admin/contents', [
                 'target_site' => 'utama',
-                'status'      => 'published',
+                'status' => 'published',
             ])
             ->assertStatus(403);
     }

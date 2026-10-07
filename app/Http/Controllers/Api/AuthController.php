@@ -19,7 +19,7 @@ class AuthController extends Controller
 
         $user = User::where('username', $request->username)->first();
 
-        if (!$user || !Hash::check($request->password, $user->password)) {
+        if (! $user || ! Hash::check($request->password, $user->password)) {
             throw ValidationException::withMessages([
                 'username' => ['Username atau password salah.'],
             ]);
@@ -31,13 +31,13 @@ class AuthController extends Controller
 
         return response()->json([
             'message' => 'Login berhasil.',
-            'user'    => [
-                'id'       => $user->id,
+            'user' => [
+                'id' => $user->id,
                 'username' => $user->username,
-                'email'    => $user->email,
-                'role'     => $user->role,
+                'email' => $user->email,
+                'role' => $user->role,
             ],
-            'token'   => $token,
+            'token' => $token,
         ]);
     }
 

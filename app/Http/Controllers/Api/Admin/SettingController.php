@@ -19,14 +19,14 @@ class SettingController extends Controller
 
         return response()->json([
             'message' => 'Daftar settings.',
-            'data'    => SettingResource::collection($settings),
+            'data' => SettingResource::collection($settings),
         ]);
     }
 
     public function store(StoreSettingRequest $request)
     {
         $setting = Setting::create([
-            'key'   => $request->key,
+            'key' => $request->key,
             'value' => $request->value,
         ]);
 
@@ -39,7 +39,7 @@ class SettingController extends Controller
 
         return response()->json([
             'message' => 'Setting berhasil dibuat.',
-            'data'    => new SettingResource($setting),
+            'data' => new SettingResource($setting),
         ], 201);
     }
 
@@ -47,16 +47,16 @@ class SettingController extends Controller
     {
         $setting = Setting::where('key', $key)->first();
 
-        if (!$setting) {
+        if (! $setting) {
             return response()->json([
                 'message' => 'Setting tidak ditemukan.',
-                'data'    => null,
+                'data' => null,
             ], 404);
         }
 
         return response()->json([
             'message' => 'Detail setting.',
-            'data'    => new SettingResource($setting),
+            'data' => new SettingResource($setting),
         ]);
     }
 
@@ -64,10 +64,10 @@ class SettingController extends Controller
     {
         $setting = Setting::where('key', $key)->first();
 
-        if (!$setting) {
+        if (! $setting) {
             return response()->json([
                 'message' => 'Setting tidak ditemukan.',
-                'data'    => null,
+                'data' => null,
             ], 404);
         }
 
@@ -84,7 +84,7 @@ class SettingController extends Controller
 
         return response()->json([
             'message' => 'Setting berhasil diperbarui.',
-            'data'    => new SettingResource($setting->fresh()),
+            'data' => new SettingResource($setting->fresh()),
         ]);
     }
 
@@ -92,10 +92,10 @@ class SettingController extends Controller
     {
         $setting = Setting::where('key', $key)->first();
 
-        if (!$setting) {
+        if (! $setting) {
             return response()->json([
                 'message' => 'Setting tidak ditemukan.',
-                'data'    => null,
+                'data' => null,
             ], 404);
         }
 
@@ -110,7 +110,7 @@ class SettingController extends Controller
 
         return response()->json([
             'message' => 'Setting berhasil dihapus.',
-            'data'    => null,
+            'data' => null,
         ]);
     }
 }
