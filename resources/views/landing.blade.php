@@ -103,7 +103,7 @@
         </section>
 
         {{-- Timeline --}}
-        <section class="c-homepage-timeline timeline relative z-10 -mt-[50px] rounded-t-[50px] bg-beige px-5 pt-14 pb-0 md:p-0">
+        <section class="c-homepage-timeline timeline relative z-10 -mt-[50px] rounded-t-[50px] bg-beige p-0">
             {{-- Intro Section (MindMarket 1:1) --}}
             <div class="c-homepage-timeline_intro relative z-10" data-scroll data-scroll-css-progress data-scroll-offset="0,100%">
                 <div class="c-homepage-timeline_intro_illustration_wrap pointer-events-none absolute top-[-100svh] bottom-0 left-0 w-full z-2">

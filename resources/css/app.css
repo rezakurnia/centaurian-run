@@ -214,7 +214,7 @@ html.is-loaded .nav {
 .c-homepage-timeline_intro {
     position: relative;
     z-index: 5;
-    padding-top: 5vw;
+    padding-top: clamp(2.75rem, 5vw, 4rem);
     margin-bottom: -4vw;
 }
 .c-homepage-timeline_intro_illustration_wrap {
@@ -258,7 +258,8 @@ html.is-loaded .nav {
 .c-homepage-timeline_path {
     display: block;
     position: relative;
-    width: 100%;
+    margin-left: -2vw;
+    margin-right: -2vw;
 }
 .c-homepage-timeline_end {
     width: 100%;
