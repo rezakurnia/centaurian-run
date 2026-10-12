@@ -1,39 +1,121 @@
-# Design
+# Design — MindMarket Style Reference (Centaurian Run)
 
-Public UI style, modelled on mindmarket.com (layout, tokens, motion). Illustrations are our own SVGs, not copied.
+> Warm storybook on cream paper — a friendly editorial canvas where oversized Inter headlines and paper-cut characters share a sunlit, sticker-soft surface.
+
+**Theme:** light  
+Public UI style, modelled 1:1 on MindMarket (layout, tokens, motion, components).
+
 Tokens live in `resources/css/app.css` (`@theme`). Change them there and here together.
 
-## Color
-| Token | Value | Use |
-|---|---|---|
-| `green` | `#8ed462` | Hero, callout, route, primary accents |
-| `green-600` / `green-300` | `#6fb846` / `#b5e590` | Back / middle hill layers |
-| `beige` | `#f5f1e4` | Page + timeline background, chips |
-| `beige-500` | `#e0dbce` | Dividers, dotted route plan |
-| `charcoal` | `#2c2e2a` | Text, outlines |
-| `yellow` `red` `blue` `pink` | `#f5e211` `#ff705d` `#2ba0ff` `#ebc1ff` | One per timeline card button + decoration |
+---
 
-White is used for cards, nav bar and secondary buttons.
+## Tokens — Colors
 
-## Type
-Inter (400/500/700, via Bunny). Headings are weight 500 with `-0.06em` tracking.
+| Name | Value | Token | Role |
+|------|-------|-------|------|
+| Fresh Grass | `#8ed462` | `--color-fresh-grass` (`--color-green`) | Primary brand accent — navigation strokes, card borders, hero fills, callout, route path. The chromatic anchor. |
+| Cream Paper | `#f5f1e4` | `--color-cream-paper` (`--color-beige`) | Dominant page background and soft card surface. Warm off-white canvas replacing stark white. |
+| Ink Black | `#2c2e2a` | `--color-ink-black` (`--color-charcoal`) | Primary text, icons, nav borders, dominant hairline border color. |
+| Pure White | `#ffffff` | `--color-pure-white` | Elevated card surfaces, floating nav background. The highest surface level in the stack. |
+| Sandstone | `#e0dbce` | `--color-sandstone` (`--color-beige-500`) | Secondary surface tone for inset or recessed card states, subtle dividers. |
+| Stone Gray | `#80827f` | `--color-stone-gray` | Muted body text and secondary link borders. The mid-gray for de-emphasized content. |
+| Hairline Mist | `#d5d5d4` | `--color-hairline-mist` | Subtle nav dividers and low-contrast borders. Barely visible structural lines. |
+| Pure Ink | `#000000` | `--color-pure-ink` | Icon fills, body text on light surfaces, high-contrast borders where maximum contrast is needed. |
+| Sky Pop | `#2ba0ff` | `--color-sky-pop` (`--color-blue`) | Decorative illustration accent and card border accent; Jadwal card button. |
+| Coral Pop | `#ff705d` | `--color-coral-pop` (`--color-red`) | Red outline accent for tags, dividers, and Kategori card CTA button. |
+| Sunshine Pop | `#f5e211` | `--color-sunshine-pop` (`--color-yellow`) | Footer accent block highlight, Paket card button, warm closing band. |
+| Blossom Pop | `#ebc1ff` | `--color-pink` | Decorative card accent; Hasil card button. |
+| Forest Back / Middle | `#6fb846` / `#b5e590` | `--color-green-600` / `--color-green-300` | Timeline end hill layers. |
 
-Root font-size is fluid on ≥768px: `clamp(15px, .48vw + 10.1px, 17px)` (15px at 1024, 17px from 1440); 16px below. Every rem token scales with it, as on the reference.
+---
 
-| Utility | Size |
-|---|---|
-| `heading-2xl` | `clamp(3.625rem, 1.1033rem + 12.6087vw, 10.875rem)` on mobile, `9.7vw` from 768px; lh .95 |
-| `heading-sm` | `clamp(1.625rem, 1.3641rem + 1.3043vw, 2.375rem)`, lh 1.2 |
-| `heading-xs` | `clamp(1.5rem, 1.413rem + .4348vw, 1.75rem)`, lh 1.2 |
-| `text-md` | `clamp(1rem, .9783rem + .1087vw, 1.0625rem)` (buttons; nav links use 1rem) |
-| Card body | `1.1875rem`, lh 1.25, `-0.04em` |
+## Tokens — Typography
 
-## Shape
-- `radius-sm` 10px: nav bar, buttons, cards.
-- `radius-lg` 50px: section edges (timeline top, callout bottom).
-- Page gutter 16px (nav) / 20px (sections). From 1280px the nav sits inside `7.5vw` side margins, max 1405px.
+### Inter — Single-family system
+Inter carries everything from 9px micro-labels to 144px display headlines. The system trusts Inter's geometric clarity at extreme sizes, relying on tight letter-spacing (`-0.06em` at 81px+) and aggressive line-height compression (`0.95–1.20`) to create visual weight without switching families.
+- **Weights:** 400 (regular), 500 (medium), 700
+- **Scale:**
+  - `body-sm`: 15px, lh 1.5 (`--text-body-sm`)
+  - `body-lg`: 18px, lh 1.5 (`--text-body-lg`)
+  - `subheading`: 20px, lh 1.25 (`--text-subheading`)
+  - `heading-sm`: 30px, lh 1.2 (`--text-heading-sm`)
+  - `heading`: 53px, lh 1.15, tracking -2.12px (`--text-heading`)
+  - `heading-lg`: 81px, lh 1.2, tracking -4.86px (`--text-heading-lg`)
+  - `display`: 140px, lh 0.95, tracking -8.4px (`--text-display`)
+  - `display-lg`: 144px, lh 0.95, tracking -8.64px (`--text-display-lg`)
 
-## Motion
+Fluid root font-size on ≥768px: `clamp(15px, .48vw + 10.1px, 17px)` (15px at 1024, 17px from 1440); 16px below.
+
+---
+
+## Tokens — Spacing & Shapes
+
+**Base unit:** 4px  
+**Density:** comfortable  
+**Spacing scale:** `4px` (`--spacing-4`), `20px` (`--spacing-20`), `60px` (`--spacing-60`), `136px` (`--spacing-136`), `216px` (`--spacing-216`).
+
+### Border Radius
+| Element | Value | Token |
+|---------|-------|-------|
+| Navigation Bar | 50px | `--radius-nav` |
+| Content Cards | 50px (50–64px) | `--radius-cards` |
+| Buttons | 50px | `--radius-buttons` |
+| Small / Chips / Tags | 10px | `--radius-small` |
+| Illustration Containers | 63.75px | `--radius-illustration-containers` |
+
+### Layout
+- **Page max-width:** 1200px (desktop bounds)
+- **Section gap:** 80–120px
+- **Card padding:** 20–21px (comfortable editorial padding)
+- **Element gap:** 17–21px
+
+---
+
+## Components
+
+### 1. Floating Pill Navigation Bar
+- **Role:** Primary floating site navigation container.
+- White (`#ffffff`) pill-shaped bar with **50px border-radius**, floating over the cream canvas with generous margins.
+- Contains brand logo container (rounded square, ~40px), nav links at 15px Inter 500 in `#2c2e2a` with hover indicator, a circular green menu toggle button (`#8ed462`, 40px), and a pill CTA.
+- The entire bar reads as a single soft pill, not a rectangular header.
+
+### 2. Primary CTA Button
+- **Role:** Main action trigger.
+- Light/white pill button with **50px radius**, ~11px vertical and 20px horizontal padding, 15px Inter 500 `#2c2e2a` text.
+- Features a circular icon accent (green or blue) embedded at the edge as a visual action indicator.
+
+### 3. Service Card Action Button
+- **Role:** Navigable service/package card entry.
+- Pill shape (**50px radius**), colored primary button (Coral `#ff705d`, Sunshine `#f5e211`, Sky `#2ba0ff`, Pink `#ebc1ff`).
+
+### 4. Content Card
+- **Role:** Feature and timeline card container.
+- White (`#ffffff`) surface with **50px border-radius**, generous internal padding, 30px Inter 500 heading, body text at 17–18px.
+- Flat surface stack (no drop shadow).
+
+### 5. Footer Accent Block
+- **Role:** Footer highlight surface.
+- Full-width **#f5e211 Sunshine Pop** yellow fill section at the page bottom.
+- 50px+ vertical padding (`py-16 md:py-20`).
+- Serves as the warm closing band contrasting sharply with the cream canvas.
+
+---
+
+## Surfaces & Elevation
+
+| Level | Name | Value | Purpose |
+|-------|------|-------|---------|
+| 0 | Cream Paper | `#f5f1e4` | Page canvas — the dominant warm background |
+| 1 | Pure White | `#ffffff` | Elevated cards, floating navigation |
+| 2 | Sandstone | `#e0dbce` | Inset or secondary surface tone, hairline borders |
+
+**Elevation Rule:**  
+MindMarket uses a cream-to-white surface stack and generous border-radii instead of box-shadows for elevation. Drop shadows are avoided to maintain the flat, editorial, printed storybook feel.
+
+---
+
+## Motion & Behaviors
+
 | Token | Value |
 |---|---|
 | `--ease` | `cubic-bezier(.5,0,0,1)`: entrances, reveals |
@@ -41,36 +123,8 @@ Root font-size is fluid on ≥768px: `clamp(15px, .48vw + 10.1px, 17px)` (15px a
 | `--ease-smooth` | `cubic-bezier(.38,.005,.215,1)` |
 | Durations | .2s fast, .4s default, .6s slow |
 
-Behaviours (`resources/js/app.js`, Lenis + GSAP ScrollTrigger + DrawSVG):
 - Lenis smooth scroll; anchor links offset 100px for the fixed nav.
 - Nav slides down on load (`.4s var(--ease) .2s`).
-- Hero is sticky; timeline slides over it with a 50px rounded top while the hero darkens (`--progress * .4`). Hero title bottom sits at `52.1svh` (desktop), subtitle `3rem` below; the title breaks after the first word ("Centaurian" / "Run 2026").
-- `[data-track]` runner group starts peeking into the hero (`top: -38svh`) and trails the scroll for `1.3 × viewport` until it sits where the route begins. Each runner has an idle loop (y -10px, ±2°, 0.8–1.2s, `sine.inOut`, yoyo) in place of the reference's Rive animation.
-- Green route draws with scroll, its tip at ~70% of the viewport.
-- `[data-speed]` parallax on decorations and hill layers (desktop only).
-- `[data-reveal]` fade-up 40px; `[data-lines]` masked line slide-up.
-- `prefers-reduced-motion`: no Lenis, no GSAP, transitions off.
-
-## Components
-- **Button** (`partials/btn.blade.php`): black label, white (or `--btn-bg`) 10px box with a 43px circle arrow on the right. On hover the arrow moves to the left and the background scales to 1.04. `primary` makes the circle white.
-- **Nav link**: a beige pill scales in on hover.
-- **Nav CTA**: yellow fill grows from the centre on hover.
-- **Card**: white 10px box, `3.125rem` padding (desktop), `35.6vw` wide, `heading-sm` title, body, data list, coloured primary button.
-- **Menu button**: green 2.5rem circle in the nav bar on all sizes (`<details>`); lists the page links (Daftar, Cek status, Hasil lomba), plus section anchors on mobile.
-
-## Illustration
-- Characters: [Open Doodles](https://www.opendoodles.com) by Pablo Stanley (free for commercial use, no credit required), in `public/images/doodles/` (`running`, `jumping`, `rolling`, `groovy`).
-- Recolour rules: ink `#000000` → charcoal; the pink accent `#FF5678` → one palette colour per character (running red, jumping blue, rolling yellow, groovy pink); never green on the green hero.
-- Each file holds the art once in `<defs>`, coloured via `--ink` / `--accent`. A second `<use>` underneath sets them to white with a 28-unit round stroke, which fills the transparent body areas and leaves a thin white sticker edge. The viewBox is cropped to the drawing.
-- Flip a character with `-scale-x-100` on a wrapper, never on the animated `<img>`: GSAP's transform would fight the CSS `scale`.
-- Decorations are hand-written inline SVG, following the reference's ornament rules:
-  - **Gloss**: every round prop (confetti dots, coins, medal, trophy, stopwatch glass) gets a small white rotated ellipse at its top-left.
-  - **Traces**: thin charcoal lines (3px, round caps; dashed `2 12` for thrown paths) show motion: confetti arc, coin flip, tag string, stopwatch and medal swing lines, sparkles.
-  - **Clusters per card**: Kategori (red) bunting + confetti, Paket (yellow) price tag + Rp coins, Jadwal (blue) stopwatch + calendar, Hasil (pink) trophy + medal hanging below the card. Small white clouds (`#cloud`) tuck behind card corners.
-  - **Ending**: three scalloped shrub layers from `$bush(y, radii)` (green-600 / green-300 / green, front matches the callout), `#sprig`s on the middle layer and `#flower`s (palette petals, yellow centre) on the front.
-- Shared symbols (`#cloud`, `#sprig`, `#flower`) live in a zero-size SVG at the top of the timeline so both the desktop layer and the mobile shrubs can `<use>` them.
-- `[data-float]` (inside a `[data-speed]` group, never on an element with its own `transform`) adds a slow idle drift: y -8px, ±3°, 1.6–2.4s.
-
-## Layout
-- Desktop timeline height is `365vw`. Cards are absolutely positioned with `--top` (%) and `--left` (vw), measured on the reference at 1440px (23% / 36.3% / 54.1% / 74%). The road is a 220-unit stroke. Decorations share one SVG (`viewBox 0 0 1440 5256`, `xMidYMax slice`).
-- Below 768px, cards stack, the illustration layer is hidden, a static shrubs-and-flowers SVG closes the section, and the inline nav links move into the menu.
+- Hero is sticky; timeline slides over it with a 50px rounded top while the hero darkens (`--progress * .4`).
+- Rive animations and Web Components (`c-rive`, `c-deluxe-callout`, `c-homepage-timeline`) render 1:1 MindMarket character and track interactions.
+- `prefers-reduced-motion`: transitions and continuous animations off.

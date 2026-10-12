@@ -49,26 +49,28 @@
 <body class="font-sans">
 
 {{-- Nav --}}
-<header class="nav fixed inset-x-4 top-4 z-50 mx-auto flex max-w-[1405px] gap-5 xl:inset-x-[7.5vw]">
-    <div class="flex h-16 grow items-center justify-between rounded-sm bg-white pr-2.5 pl-4">
-        <a href="/" class="flex items-center gap-3 text-[1.5rem] tracking-[-0.05em]">
-            <svg width="36" height="36" viewBox="0 0 36 36" aria-hidden="true">
-                <path d="M30 11a14 14 0 1 0 1 13" fill="none" stroke="var(--color-green)" stroke-width="5" stroke-linecap="round"/>
-                <path d="M11 22c3-6 7-8 13-8" fill="none" stroke="var(--color-charcoal)" stroke-width="3" stroke-linecap="round"/>
-                <circle cx="27" cy="14" r="3" fill="var(--color-charcoal)"/>
-            </svg>
-            Centaurian Run
+<header class="nav fixed inset-x-4 top-4 z-50 mx-auto flex max-w-[1405px] gap-4 xl:inset-x-[7.5vw]">
+    <div class="flex h-16 grow items-center justify-between rounded-[50px] bg-white pr-3 pl-3.5">
+        <a href="/" class="flex items-center gap-3 text-[1.1875rem] font-medium tracking-[-0.04em] text-charcoal">
+            <span class="grid size-10 place-items-center rounded-[12px] bg-beige">
+                <svg width="26" height="26" viewBox="0 0 36 36" aria-hidden="true">
+                    <path d="M30 11a14 14 0 1 0 1 13" fill="none" stroke="var(--color-green)" stroke-width="5" stroke-linecap="round"/>
+                    <path d="M11 22c3-6 7-8 13-8" fill="none" stroke="var(--color-charcoal)" stroke-width="3" stroke-linecap="round"/>
+                    <circle cx="27" cy="14" r="3" fill="var(--color-charcoal)"/>
+                </svg>
+            </span>
+            <span>Centaurian Run</span>
         </a>
         <nav class="hidden items-center gap-1 md:flex" aria-label="Utama">
             @foreach ($cards as $card)
-                <a href="#{{ $card['id'] }}" class="nav-link"><span>{{ ucfirst($card['id']) }}</span></a>
+                <a href="#{{ $card['id'] }}" class="nav-link text-[15px]"><span>{{ ucfirst($card['id']) }}</span></a>
             @endforeach
         </nav>
         <details class="relative ml-2">
-            <summary class="grid size-11 md:size-10 cursor-pointer list-none place-items-center rounded-full bg-green" aria-label="Menu">
-                <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><path d="M5 8h12M5 14h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            <summary class="grid size-10 cursor-pointer list-none place-items-center rounded-full bg-green text-charcoal transition-transform hover:scale-105" aria-label="Menu">
+                <svg width="20" height="20" viewBox="0 0 22 22" aria-hidden="true"><path d="M5 8h12M5 14h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
             </summary>
-            <div class="absolute top-14 right-0 flex w-56 flex-col rounded-sm bg-white p-2 shadow-lg">
+            <div class="absolute top-14 right-0 flex w-56 flex-col rounded-[20px] bg-white p-2 border border-sandstone">
                 @foreach ($cards as $card)
                     <a href="#{{ $card['id'] }}" class="nav-link md:hidden"><span>{{ ucfirst($card['id']) }}</span></a>
                 @endforeach
@@ -78,7 +80,7 @@
             </div>
         </details>
     </div>
-    <a href="#paket" class="nav-cta relative hidden h-16 items-center gap-4 rounded-sm bg-white pr-2.5 pl-5 text-[1.0625rem] md:flex">
+    <a href="#paket" class="nav-cta relative hidden h-16 items-center gap-4 rounded-[50px] bg-white pr-2.5 pl-5 text-[15px] font-medium md:flex">
         <span>Daftar sekarang</span>
         <span class="grid size-10 place-items-center rounded-full bg-green transition-transform duration-300">
             <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="m8 14 4-4-4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -140,7 +142,7 @@
                 <div class="absolute inset-0 pointer-events-none z-[5]">
                     @foreach ($cards as $card)
                         @php($cms = $c->get($card['id']))
-                        <article id="{{ $card['id'] }}" class="card c-homepage-timeline-cards pointer-events-auto scroll-mt-28 px-5 py-6 md:p-[3.125rem]" data-reveal>
+                        <article id="{{ $card['id'] }}" class="card c-homepage-timeline-cards pointer-events-auto scroll-mt-28 rounded-[50px] px-6 py-7 md:p-12" data-reveal>
                             <h2 class="heading-sm">{{ $cms?->title ?? $card['title'] }}</h2>
                             <p class="mt-4 text-[1.1875rem] leading-[1.25] tracking-[-0.04em]">
                                 {!! nl2br(e($cms?->body ?? $card['body'])) !!}
@@ -149,7 +151,7 @@
                             @if ($card['id'] === 'kategori' && $categories->isNotEmpty())
                                 <ul class="mt-5 flex flex-wrap gap-2">
                                     @foreach ($categories as $category)
-                                        <li class="rounded-full bg-beige px-3 py-1 text-[.9375rem]">{{ $category->name }}</li>
+                                        <li class="rounded-[10px] bg-beige px-3 py-1 text-[.9375rem] font-medium text-charcoal">{{ $category->name }}</li>
                                     @endforeach
                                 </ul>
                             @elseif ($card['id'] === 'paket' && $packages->isNotEmpty())
@@ -353,7 +355,27 @@
     </c-deluxe-callout>
 </main>
 
-<footer class="py-8 text-center text-[.9375rem] opacity-75">© {{ now()->year }} Alcent Centaurian Run</footer>
+{{-- Footer Accent Block (MindMarket Style Reference: #f5e211 Sunshine Pop closing surface) --}}
+<footer class="w-full bg-yellow py-16 md:py-20 px-6 text-center text-charcoal">
+    <div class="mx-auto max-w-[1200px] flex flex-col items-center gap-4">
+        <div class="flex items-center gap-3 text-[1.25rem] font-medium tracking-[-0.04em]">
+            <span class="grid size-9 place-items-center rounded-[10px] bg-white">
+                <svg width="22" height="22" viewBox="0 0 36 36" aria-hidden="true">
+                    <path d="M30 11a14 14 0 1 0 1 13" fill="none" stroke="var(--color-green)" stroke-width="5" stroke-linecap="round"/>
+                    <path d="M11 22c3-6 7-8 13-8" fill="none" stroke="var(--color-charcoal)" stroke-width="3" stroke-linecap="round"/>
+                    <circle cx="27" cy="14" r="3" fill="var(--color-charcoal)"/>
+                </svg>
+            </span>
+            <span>Centaurian Run</span>
+        </div>
+        <p class="text-[15px] max-w-md leading-relaxed text-charcoal opacity-85">
+            Fun run keluarga besar Alfa Centauri — siswa, guru, alumni, dan orang tua lari bersama.
+        </p>
+        <p class="text-[14px] text-charcoal font-medium mt-2 opacity-65">
+            © {{ now()->year }} Alcent Centaurian Run. All rights reserved.
+        </p>
+    </div>
+</footer>
 
 </body>
 </html>

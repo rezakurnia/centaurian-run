@@ -8,27 +8,63 @@
     --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 
-    --color-green: #8ed462;
+    /* MindMarket Canonical Color Tokens */
+    --color-fresh-grass: #8ed462;
+    --color-cream-paper: #f5f1e4;
+    --color-ink-black: #2c2e2a;
+    --color-pure-white: #ffffff;
+    --color-sandstone: #e0dbce;
+    --color-stone-gray: #80827f;
+    --color-hairline-mist: #d5d5d4;
+    --color-pure-ink: #000000;
+    --color-sky-pop: #2ba0ff;
+    --color-coral-pop: #ff705d;
+    --color-sunshine-pop: #f5e211;
+
+    /* Backward compatibility aliases */
+    --color-green: var(--color-fresh-grass);
     --color-green-600: #6fb846;
     --color-green-300: #b5e590;
-    --color-beige: #f5f1e4;
-    --color-beige-500: #e0dbce;
-    --color-charcoal: #2c2e2a;
-    --color-yellow: #f5e211;
-    --color-red: #ff705d;
-    --color-blue: #2ba0ff;
+    --color-beige: var(--color-cream-paper);
+    --color-beige-500: var(--color-sandstone);
+    --color-charcoal: var(--color-ink-black);
+    --color-yellow: var(--color-sunshine-pop);
+    --color-red: var(--color-coral-pop);
+    --color-blue: var(--color-sky-pop);
     --color-pink: #ebc1ff;
 
+    /* MindMarket Border Radii */
+    --radius-small: 10px;
     --radius-sm: 10px;
+    --radius-2xl: 20px;
+    --radius-nav: 50px;
+    --radius-cards: 50px;
+    --radius-buttons: 50px;
+    --radius-illustration-containers: 63.75px;
     --radius-lg: 50px;
+
+    /* MindMarket Spacing */
+    --spacing-4: 4px;
+    --spacing-20: 20px;
+    --spacing-60: 60px;
+    --spacing-136: 136px;
+    --spacing-216: 216px;
 
     --ease: cubic-bezier(.5, 0, 0, 1);
     --ease-bounce: cubic-bezier(.17, .67, .3, 1.33);
     --ease-smooth: cubic-bezier(.38, .005, .215, 1);
 
+    /* MindMarket Typography Scale */
+    --text-body-sm: 15px;
+    --text-body-lg: 18px;
+    --text-subheading: 20px;
+    --text-heading-sm: 30px;
+    --text-heading: 53px;
+    --text-heading-lg: 81px;
+    --text-display: 140px;
+    --text-display-lg: 144px;
+
     --text-heading-2xl: clamp(3.625rem, 1.1033rem + 12.6087vw, 10.875rem);
-    --text-heading-sm: clamp(1.625rem, 1.3641rem + 1.3043vw, 2.375rem);
-    --text-heading-xs: clamp(1.5rem, 1.413rem + .4348vw, 1.75rem);
     --text-md: clamp(1rem, .9783rem + .1087vw, 1.0625rem);
 }
 
@@ -104,7 +140,7 @@ html.is-loaded .nav {
 .nav-link:hover::before { opacity: 1; transform: scale(1); }
 .nav-link > span { position: relative; }
 
-.nav-cta { clip-path: inset(0 round var(--radius-sm)); }
+.nav-cta { clip-path: inset(0 round var(--radius-buttons, 50px)); }
 .nav-cta::after {
     content: '';
     position: absolute;
@@ -115,20 +151,20 @@ html.is-loaded .nav {
     transform: scale(0);
     transition: transform .25s var(--ease), border-radius .25s var(--ease), opacity .25s var(--ease);
 }
-.nav-cta:hover::after { opacity: 1; border-radius: var(--radius-sm); transform: scale(1); }
+.nav-cta:hover::after { opacity: 1; border-radius: var(--radius-buttons, 50px); transform: scale(1); }
 .nav-cta > * { position: relative; z-index: 1; }
 
-/* Button: arrow swaps from right to left on hover */
+/* Button: pill shape (50px radius), arrow swaps from right to left on hover */
 .btn {
     --btn-bg: #fff;
     --btn-icon: var(--color-green);
     position: relative;
     display: inline-flex;
     align-items: center;
-    padding: 10.625px;
-    border-radius: var(--radius-sm);
+    padding: 11px 20px;
+    border-radius: var(--radius-buttons, 50px);
     font-size: var(--text-md);
-    color: #000;
+    color: var(--color-ink-black, #2c2e2a);
 }
 .btn::before {
     content: '';
@@ -177,7 +213,7 @@ html.is-loaded .nav {
     position: absolute;
     inset: 0;
     background: #fff;
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-cards, 50px);
 }
 .card > * { position: relative; }
 
@@ -197,7 +233,7 @@ html.is-loaded .nav {
 }
 
 [data-character] img {
-    filter: drop-shadow(0 10px 20px rgba(44, 46, 42, 0.07));
+    /* Flat sticker aesthetic on cream canvas without digital drop-shadow */
 }
 
 /* MindMarket Rive & SVG component styles */
