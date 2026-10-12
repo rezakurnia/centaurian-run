@@ -281,11 +281,22 @@ html.is-loaded .nav {
 .c-homepage-timeline_end_cloud_4 { position: absolute; width: 8%; top: 46%; right: -2%; z-index: 1; }
 .c-homepage-timeline_end_cloud_5 { position: absolute; width: 5%; top: 49%; left: 23%; z-index: 1; }
 
+.c-homepage-timeline-cards {
+    position: absolute;
+    left: 1.25rem;
+    right: 1.25rem;
+}
+.c-homepage-timeline-cards:nth-child(1) { top: 10%; }
+.c-homepage-timeline-cards:nth-child(2) { top: 25.5%; }
+.c-homepage-timeline-cards:nth-child(3) { top: 45.5%; }
+.c-homepage-timeline-cards:nth-child(4) { top: 70%; }
+
 @media (min-width: 768px) {
     .c-homepage-timeline-cards {
-        position: absolute;
         width: 35.6vw;
         max-width: 580px;
+        left: auto;
+        right: auto;
         padding: 3.125rem;
     }
     .c-homepage-timeline-cards:nth-child(1) { top: 11%; right: 6vw; }

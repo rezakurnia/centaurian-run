@@ -89,18 +89,17 @@
 <main>
     <div class="relative">
         {{-- Hero: sticks while the timeline slides over it --}}
-        <section class="hero sticky top-0 flex h-[calc(100svh+50px)] flex-col items-center overflow-hidden bg-green px-4 pt-[clamp(130px,24vh,230px)] text-center md:pt-0">
-            {{-- Title bottom sits at 52.1% of the viewport height, as on the reference --}}
-            <div class="flex flex-col justify-end md:h-[52.1svh]">
+        <section class="hero sticky top-0 flex h-[calc(100svh+50px)] flex-col items-center justify-start overflow-hidden bg-green px-4 pt-[clamp(110px,16svh,160px)] text-center">
+            <div class="c-hero-home_content flex flex-col items-center">
                 <h1 class="heading-2xl" data-reveal>{{ $heroTop }}@if ($heroBottom)<br>{{ $heroBottom }}@endif</h1>
+                <p class="heading-xs mt-6 max-w-xl text-balance opacity-90" data-reveal>
+                    @if ($event)
+                        {{ $date }}@if ($event->location) · {{ $event->location }}@endif
+                    @else
+                        Segera hadir
+                    @endif
+                </p>
             </div>
-            <p class="heading-xs mt-12" data-reveal>
-                @if ($event)
-                    {{ $date }}@if ($event->location) · {{ $event->location }}@endif
-                @else
-                    Segera hadir
-                @endif
-            </p>
         </section>
 
         {{-- Timeline --}}
@@ -124,22 +123,24 @@
                     </div>
                 </div>
 
-                <div class="relative z-20 md:absolute md:top-[2.1%] md:left-[7.5vw] md:w-[42vw]">
-                    <p class="heading-xs text-balance max-md:text-[1.625rem]">
-                        {{ $event?->description ?: 'Centaurian Run adalah fun run keluarga besar Alfa Centauri. Siswa, guru, alumni, dan orang tua lari bersama: daftar online, check-in dengan barcode, dan lihat hasilmu langsung setelah finish.' }}
-                    </p>
-                    <div class="mt-8">@include('partials.btn', ['href' => '#paket', 'label' => 'Daftar sekarang'])</div>
+                <div class="container relative z-20 mx-auto px-5 xl:px-[7.5vw] max-w-[1405px]">
+                    <div class="md:w-[45vw] md:max-w-[620px] flex flex-col gap-8">
+                        <p class="heading-xs text-balance max-md:text-[1.625rem] leading-[1.2]">
+                            {{ $event?->description ?: 'Centaurian Run adalah fun run keluarga besar Alfa Centauri. Siswa, guru, alumni, dan orang tua lari bersama: daftar online, check-in dengan barcode, dan lihat hasilmu langsung setelah finish.' }}
+                        </p>
+                        <div>@include('partials.btn', ['href' => '#paket', 'label' => 'Daftar sekarang'])</div>
+                    </div>
                 </div>
-                <div class="c-homepage-timeline_intro_ghost hidden md:block aspect-[1430/600] w-[56%] mx-auto"></div>
+                <div class="c-homepage-timeline_intro_ghost aspect-[1430/600] w-[56%] mx-auto pointer-events-none"></div>
             </div>
 
             {{-- Relative wrapper containing Cards, Rives, and SVGs (MindMarket 1:1) --}}
             <div class="relative overflow-hidden w-full">
                 {{-- 4 Cards --}}
-                <div class="relative z-[5] max-md:mt-14 max-md:flex max-md:flex-col max-md:gap-5 md:absolute md:inset-0 pointer-events-none">
+                <div class="absolute inset-0 pointer-events-none z-[5]">
                     @foreach ($cards as $card)
                         @php($cms = $c->get($card['id']))
-                        <article id="{{ $card['id'] }}" class="card c-homepage-timeline-cards pointer-events-auto scroll-mt-28 px-5 py-6" data-reveal>
+                        <article id="{{ $card['id'] }}" class="card c-homepage-timeline-cards pointer-events-auto scroll-mt-28 px-5 py-6 md:p-[3.125rem]" data-reveal>
                             <h2 class="heading-sm">{{ $cms?->title ?? $card['title'] }}</h2>
                             <p class="mt-4 text-[1.1875rem] leading-[1.25] tracking-[-0.04em]">
                                 {!! nl2br(e($cms?->body ?? $card['body'])) !!}
