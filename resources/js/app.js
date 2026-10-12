@@ -4,6 +4,9 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { DrawSVGPlugin } from 'gsap/DrawSVGPlugin';
 import { CustomEase } from 'gsap/CustomEase';
+import './components/c-rive.js';
+import './components/c-deluxe-callout.js';
+import './components/c-homepage-timeline.js';
 
 const ease = 'brand'; // --ease, registered below via CustomEase
 const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -42,8 +45,8 @@ if (!reduceMotion) {
         onUpdate: (self) => hero.style.setProperty('--progress', self.progress),
     });
 
-    // Fade-up reveals
-    gsap.utils.toArray('[data-reveal]').forEach((el) => {
+    // Fade-up reveals (exclude c-rive which manages its own reveal internally)
+    gsap.utils.toArray('[data-reveal]:not(c-rive)').forEach((el) => {
         gsap.from(el, {
             opacity: 0,
             y: 40,
@@ -153,12 +156,38 @@ if (!reduceMotion) {
         });
 
         // Parallax: data-speed > 0 drifts down, < 0 drifts up
-        gsap.utils.toArray('[data-speed]').forEach((el) => {
-            const distance = parseFloat(el.dataset.speed) * 80;
+        gsap.utils.toArray('[data-speed], [data-scroll-speed]').forEach((el) => {
+            const raw = el.dataset.speed ?? el.getAttribute('data-scroll-speed');
+            const speed = parseFloat(raw || '0');
+            if (!speed) return;
+            const distance = speed * 120;
             gsap.fromTo(el, { y: -distance }, {
                 y: distance,
                 ease: 'none',
                 scrollTrigger: { trigger: el, start: 'top bottom', end: 'bottom top', scrub: true },
+            });
+        });
+
+        // Timeline end clouds drift horizontally
+        const clouds = [
+            { sel: '.c-homepage-timeline_end_cloud_1', start: 100, end: -100 },
+            { sel: '.c-homepage-timeline_end_cloud_2', start: 150, end: -150 },
+            { sel: '.c-homepage-timeline_end_cloud_3', start: 150, end: -50 },
+            { sel: '.c-homepage-timeline_end_cloud_4', start: 50, end: -150 },
+            { sel: '.c-homepage-timeline_end_cloud_5', start: 100, end: -100 },
+        ];
+        clouds.forEach(({ sel, start, end }) => {
+            const el = document.querySelector(sel);
+            if (!el) return;
+            gsap.fromTo(el, { x: start }, {
+                x: end,
+                ease: 'none',
+                scrollTrigger: {
+                    trigger: '.c-homepage-timeline_end',
+                    start: 'top bottom',
+                    end: 'bottom top',
+                    scrub: true,
+                },
             });
         });
     });
