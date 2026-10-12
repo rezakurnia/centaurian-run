@@ -180,6 +180,25 @@ html.is-loaded .nav {
     border-radius: var(--radius-sm);
 }
 .card > * { position: relative; }
+
+/* Callout pop-up runner (inspired by MindMarket pop_up_girl) */
+#callout-popup-runner {
+    transform: translateY(105%);
+    transition: transform .5s cubic-bezier(0.38, 0.005, 0.215, 1);
+}
+#callout-popup-runner.is-active,
+.callout:has([data-callout-action]:hover) #callout-popup-runner {
+    transform: translateY(12%) !important;
+}
+
+.nav-cta:hover span.rounded-full {
+    transform: rotate(360deg) scale(1.08);
+    transition: transform .45s var(--ease-bounce);
+}
+
+[data-character] img {
+    filter: drop-shadow(0 10px 20px rgba(44, 46, 42, 0.07));
+}
 }
 
 @media (prefers-reduced-motion: reduce) {

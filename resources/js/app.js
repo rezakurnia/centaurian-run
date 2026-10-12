@@ -13,6 +13,14 @@ requestAnimationFrame(() => document.documentElement.classList.add('is-loaded'))
 // Close the mobile menu after picking a link
 document.querySelectorAll('details a').forEach((a) => a.addEventListener('click', () => a.closest('details').removeAttribute('open')));
 
+// Callout pop-up runner on hover (inspired by MindMarket pop_up_girl)
+const calloutCta = document.querySelector('[data-callout-action]');
+const popupRunner = document.querySelector('#callout-popup-runner');
+if (calloutCta && popupRunner) {
+    calloutCta.addEventListener('mouseenter', () => popupRunner.classList.add('is-active'));
+    calloutCta.addEventListener('mouseleave', () => popupRunner.classList.remove('is-active'));
+}
+
 if (!reduceMotion) {
     gsap.registerPlugin(ScrollTrigger, DrawSVGPlugin, CustomEase);
     CustomEase.create(ease, '.5,0,0,1');
@@ -42,6 +50,29 @@ if (!reduceMotion) {
             duration: 0.8,
             ease,
             scrollTrigger: { trigger: el, start: 'top 90%' },
+        });
+    });
+
+    // Character elastic entrance reveals (inspired by MindMarket Rive character reveals)
+    gsap.utils.toArray('[data-character]').forEach((el) => {
+        gsap.from(el, {
+            scale: 0.72,
+            y: 50,
+            opacity: 0,
+            duration: 1.4,
+            ease: 'elastic.out(1, 0.4)',
+            scrollTrigger: { trigger: el, start: 'top 88%' },
+        });
+
+        const img = el.querySelector('img') || el;
+        gsap.to(img, {
+            y: -7,
+            rotation: gsap.utils.random(-2, 2),
+            duration: gsap.utils.random(1.2, 1.8),
+            delay: gsap.utils.random(0, 0.5),
+            ease: 'sine.inOut',
+            yoyo: true,
+            repeat: -1,
         });
     });
 

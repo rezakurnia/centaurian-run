@@ -25,25 +25,25 @@
 
     $cards = [
         [
-            'id' => 'kategori', 'bg' => 'var(--color-red)', 'href' => '/daftar', 'button' => 'Daftar',
+            'id' => 'kategori', 'bg' => 'var(--color-red)', 'href' => '#paket', 'button' => 'Daftar',
             'pos' => '--top:23%; --left:56.9vw',
             'title' => 'Semua bisa lari.',
             'body' => 'Siswa, guru, alumni, orang tua, sampai tamu dari luar. Centaurian Run terbuka untuk semua kalangan, pilih kategorimu saat mendaftar.',
         ],
         [
-            'id' => 'paket', 'bg' => 'var(--color-yellow)', 'href' => '/daftar', 'button' => 'Pilih paket',
+            'id' => 'paket', 'bg' => 'var(--color-yellow)', 'href' => '#paket', 'button' => 'Pilih paket',
             'pos' => '--top:36.3%; --left:7.6vw',
             'title' => 'Pilih paketmu.',
             'body' => 'Mulai dari gratis. Untuk paket berbayar, cukup transfer, unggah bukti pembayaran, dan tunggu verifikasi panitia.',
         ],
         [
-            'id' => 'jadwal', 'bg' => 'var(--color-blue)', 'href' => '/cek-status', 'button' => 'Cek status',
+            'id' => 'jadwal', 'bg' => 'var(--color-blue)', 'href' => '#jadwal', 'button' => 'Cek status',
             'pos' => '--top:54.1%; --left:32.6vw',
             'title' => 'Catat tanggalnya.',
             'body' => 'Datang lebih awal dan pemanasan bareng. Cek status pendaftaranmu kapan saja dengan nomor registrasi.',
         ],
         [
-            'id' => 'hasil', 'bg' => 'var(--color-pink)', 'href' => '/hasil', 'button' => 'Hasil lomba',
+            'id' => 'hasil', 'bg' => 'var(--color-pink)', 'href' => '#hasil', 'button' => 'Hasil lomba',
             'pos' => '--top:74%; --left:56.9vw',
             'title' => 'Lihat hasilmu.',
             'body' => 'Waktu tempuh dicatat dari scan start dan finish. Begitu kamu melewati garis finish, hasilmu langsung tercatat.',
@@ -86,15 +86,15 @@
                 @foreach ($cards as $card)
                     <a href="#{{ $card['id'] }}" class="nav-link md:hidden"><span>{{ ucfirst($card['id']) }}</span></a>
                 @endforeach
-                <a href="/daftar" class="nav-link"><span>Daftar</span></a>
-                <a href="/cek-status" class="nav-link"><span>Cek status</span></a>
-                <a href="/hasil" class="nav-link"><span>Hasil lomba</span></a>
+                <a href="#paket" class="nav-link"><span>Daftar</span></a>
+                <a href="#jadwal" class="nav-link"><span>Cek status</span></a>
+                <a href="#hasil" class="nav-link"><span>Hasil lomba</span></a>
             </div>
         </details>
     </div>
-    <a href="/daftar" class="nav-cta relative hidden h-16 items-center gap-4 rounded-sm bg-white pr-2.5 pl-5 text-[1.0625rem] md:flex">
+    <a href="#paket" class="nav-cta relative hidden h-16 items-center gap-4 rounded-sm bg-white pr-2.5 pl-5 text-[1.0625rem] md:flex">
         <span>Daftar sekarang</span>
-        <span class="grid size-10 place-items-center rounded-full bg-green">
+        <span class="grid size-10 place-items-center rounded-full bg-green transition-transform duration-300">
             <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="m8 14 4-4-4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </span>
     </a>
@@ -133,7 +133,7 @@
                 <p class="heading-xs text-balance max-md:text-[1.625rem]">
                     {{ $event?->description ?: 'Centaurian Run adalah fun run keluarga besar Alfa Centauri. Siswa, guru, alumni, dan orang tua lari bersama: daftar online, check-in dengan barcode, dan lihat hasilmu langsung setelah finish.' }}
                 </p>
-                <div class="mt-8">@include('partials.btn', ['href' => '/daftar', 'label' => 'Daftar sekarang'])</div>
+                <div class="mt-8">@include('partials.btn', ['href' => '#paket', 'label' => 'Daftar sekarang'])</div>
             </div>
 
             {{-- Runners (Open Doodles, recoloured): overlap the hero bottom, then trail the scroll down to where the route starts --}}
@@ -171,9 +171,10 @@
                 <use href="#cloud" x="390" y="3245" width="160" height="48" data-speed="-0.3"/>
                 <use href="#cloud" x="1235" y="3840" width="200" height="60" data-speed="-0.3"/>
 
-                {{-- Route: dotted plan + green road drawn on scroll --}}
+                {{-- Route: dotted plan + road shadow + green road drawn on scroll --}}
                 @php($route = 'M1000 860 C1000 1100 380 1100 380 1450 C380 1750 1050 1700 1050 2000 C1050 2300 1180 2450 1180 2750 C1180 3000 1250 3150 1200 3350 C1150 3600 300 3500 300 3800 C300 4150 300 4300 500 4450 C700 4600 720 4700 720 5050')
                 <path d="{{ $route }}" fill="none" stroke="var(--color-beige-500)" stroke-width="8" stroke-linecap="round" stroke-dasharray="1 22"/>
+                <path d="{{ $route }}" fill="none" stroke="var(--color-charcoal)" stroke-width="226" stroke-linecap="round" opacity="0.07" transform="translate(0 12)"/>
                 <path d="{{ $route }}" fill="none" stroke="var(--color-green)" stroke-width="220" stroke-linecap="round" data-draw/>
 
                 {{-- Kategori (red): bunting + confetti thrown toward the card --}}
@@ -299,6 +300,20 @@
                 @endforeach
             </svg>
 
+            {{-- Desktop distributed runners along the route --}}
+            <div class="pointer-events-none absolute top-[24%] left-[22vw] z-10 hidden md:block w-[18vw] max-w-[260px]" data-character aria-hidden="true">
+                <img src="/images/doodles/groovy.svg" alt="" class="w-full drop-shadow-sm">
+            </div>
+            <div class="pointer-events-none absolute top-[37%] left-[65vw] z-10 hidden md:block w-[19vw] max-w-[270px] -scale-x-100" data-character aria-hidden="true">
+                <img src="/images/doodles/rolling.svg" alt="" class="w-full drop-shadow-sm">
+            </div>
+            <div class="pointer-events-none absolute top-[52.5%] left-[72vw] z-10 hidden md:block w-[19vw] max-w-[270px]" data-character aria-hidden="true">
+                <img src="/images/doodles/jumping.svg" alt="" class="w-full drop-shadow-sm">
+            </div>
+            <div class="pointer-events-none absolute top-[83%] left-[26vw] z-10 hidden md:block w-[24vw] max-w-[340px]" data-character aria-hidden="true">
+                <img src="/images/doodles/running.svg" alt="" class="w-full drop-shadow-sm">
+            </div>
+
             {{-- Cards --}}
             <div class="mt-14 flex flex-col gap-5 md:mt-0">
                 @foreach ($cards as $card)
@@ -331,6 +346,25 @@
 
                         <div class="mt-6">@include('partials.btn', ['href' => $card['href'], 'label' => $card['button'], 'bg' => $card['bg'], 'primary' => true])</div>
                     </article>
+
+                    {{-- Mobile runner spots between stacked cards --}}
+                    @if ($card['id'] === 'kategori')
+                        <div class="flex justify-center md:hidden my-2" data-character aria-hidden="true">
+                            <img src="/images/doodles/groovy.svg" alt="" class="w-36 drop-shadow-sm">
+                        </div>
+                    @elseif ($card['id'] === 'paket')
+                        <div class="flex justify-center md:hidden my-2" data-character aria-hidden="true">
+                            <img src="/images/doodles/rolling.svg" alt="" class="w-36 drop-shadow-sm -scale-x-100">
+                        </div>
+                    @elseif ($card['id'] === 'jadwal')
+                        <div class="flex justify-center md:hidden my-2" data-character aria-hidden="true">
+                            <img src="/images/doodles/jumping.svg" alt="" class="w-36 drop-shadow-sm">
+                        </div>
+                    @elseif ($card['id'] === 'hasil')
+                        <div class="flex justify-center md:hidden my-2" data-character aria-hidden="true">
+                            <img src="/images/doodles/running.svg" alt="" class="w-44 drop-shadow-sm">
+                        </div>
+                    @endif
                 @endforeach
             </div>
 
@@ -347,7 +381,16 @@
     </div>
 
     {{-- Callout --}}
-    <section class="relative z-10 -mt-px rounded-b-[50px] bg-green px-5 pt-32 md:pt-40 pb-[clamp(60px,6vw,100px)] text-center">
+    <section class="callout relative z-10 -mt-px rounded-b-[50px] bg-green px-5 pt-32 md:pt-40 pb-[clamp(60px,6vw,100px)] text-center">
+        {{-- Pop-up runner on CTA hover (inspired by MindMarket pop_up_girl) --}}
+        <div class="pointer-events-none absolute top-[-100vh] bottom-0 left-0 w-[35vw] max-w-[440px] max-md:hidden z-20">
+            <div class="sticky top-0 flex h-screen w-full items-end overflow-hidden">
+                <div id="callout-popup-runner" class="w-full ml-[4vw]">
+                    <img src="/images/doodles/jumping.svg" alt="" class="w-full drop-shadow-2xl -scale-x-100">
+                </div>
+            </div>
+        </div>
+
         <h2 class="heading-2xl" data-lines>
             @foreach (preg_split('/\R/', $ctaTitle) as $line)
                 <span class="block overflow-hidden pb-[.08em]"><span class="block">{{ $line }}</span></span>
@@ -356,7 +399,7 @@
         <p class="heading-xs mx-auto mt-20 max-w-[35rem] text-balance" data-reveal>
             {{ $c->get('cta')?->body ?? 'Pilih kategori, pilih paket, dan amankan nomor pesertamu. Pendaftaran cuma butuh beberapa menit.' }}
         </p>
-        <div class="mt-8" data-reveal>@include('partials.btn', ['href' => '/daftar', 'label' => 'Daftar sekarang'])</div>
+        <div class="mt-8" data-reveal>@include('partials.btn', ['href' => '#paket', 'label' => 'Daftar sekarang', 'attributes' => 'data-callout-action'])</div>
 
         <ul class="mx-auto mt-[clamp(80px,12vw,220px)] grid max-w-[1200px] gap-12 text-[1.125rem] tracking-[-0.04em] md:grid-cols-3">
             <li class="flex flex-col items-center gap-5" data-reveal>
