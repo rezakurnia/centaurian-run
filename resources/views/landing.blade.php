@@ -137,7 +137,7 @@
             </div>
 
             {{-- Runners (Open Doodles, recoloured): overlap the hero bottom, then trail the scroll down to where the route starts --}}
-            <div class="pointer-events-none absolute top-[-38svh] left-[46vw] z-10 hidden h-[30vw] w-[50vw] md:block" aria-hidden="true" data-track>
+            <div class="pointer-events-none absolute top-[-32svh] md:top-[-38svh] inset-x-0 mx-auto z-10 block h-[52vw] w-[88vw] md:h-[30vw] md:w-[50vw] max-w-[750px]" aria-hidden="true" data-track>
                 <svg class="absolute inset-0 size-full overflow-visible" viewBox="0 0 720 432">
                     <use href="#cloud" x="575" y="-10" width="150" height="45"/>
                     <use href="#cloud" x="-60" y="360" width="140" height="42"/>

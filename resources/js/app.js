@@ -87,27 +87,47 @@ if (!reduceMotion) {
         });
     });
 
-    gsap.matchMedia().add('(min-width: 768px)', () => {
-        // Runners trail the scroll from the hero bottom to the route start (≈59.7vw into the timeline):
-        // 59.7vw - 30vw container height + 38svh start offset
-        gsap.to('[data-track]', {
-            y: () => innerWidth * 0.297 + innerHeight * 0.38,
-            ease: 'none',
-            scrollTrigger: { start: 0, end: () => innerHeight * 1.3, scrub: true, invalidateOnRefresh: true },
+    // Idle loop so the runners never stand still (stands in for the reference's Rive animation)
+    gsap.utils.toArray('[data-track] img').forEach((img, i) => {
+        gsap.to(img, {
+            y: -10,
+            rotation: i % 2 ? 2 : -2,
+            duration: gsap.utils.random(0.8, 1.2),
+            delay: gsap.utils.random(0, 0.5),
+            ease: 'sine.inOut',
+            yoyo: true,
+            repeat: -1,
         });
+    });
 
-        // Idle loop so the runners never stand still (stands in for the reference's Rive animation)
-        gsap.utils.toArray('[data-track] img').forEach((img, i) => {
-            gsap.to(img, {
-                y: -10,
-                rotation: i % 2 ? 2 : -2,
-                duration: gsap.utils.random(0.8, 1.2),
-                delay: gsap.utils.random(0, 0.5),
-                ease: 'sine.inOut',
-                yoyo: true,
-                repeat: -1,
+    gsap.matchMedia().add({
+        isDesktop: '(min-width: 768px)',
+        isMobile: '(max-width: 767px)',
+    }, (context) => {
+        const { isDesktop, isMobile } = context.conditions;
+
+        if (isDesktop) {
+            // Runners start centered in the hero, then steer smoothly towards the green route start while descending
+            gsap.to('[data-track]', {
+                x: () => innerWidth * 0.22,
+                y: () => innerWidth * 0.297 + innerHeight * 0.38,
+                ease: 'power2.inOut',
+                scrollTrigger: { start: 0, end: () => innerHeight * 1.2, scrub: true, invalidateOnRefresh: true },
             });
-        });
+        }
+
+        if (isMobile) {
+            // Runners start centered at bottom of hero, then fade out cleanly as timeline scrolls over
+            gsap.to('[data-track]', {
+                opacity: 0,
+                y: -30,
+                ease: 'power1.out',
+                scrollTrigger: { start: 0, end: 320, scrub: true },
+            });
+        }
+    });
+
+    gsap.matchMedia().add('(min-width: 768px)', () => {
 
         // Ornaments drift slowly; [data-float] sits inside its [data-speed] group so the two transforms don't collide
         gsap.utils.toArray('[data-float]').forEach((el, i) => {
