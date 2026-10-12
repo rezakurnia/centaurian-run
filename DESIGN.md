@@ -63,8 +63,14 @@ Behaviours (`resources/js/app.js`, Lenis + GSAP ScrollTrigger + DrawSVG):
 - Recolour rules: ink `#000000` → charcoal; the pink accent `#FF5678` → one palette colour per character (running red, jumping blue, rolling yellow, groovy pink); never green on the green hero.
 - Each file holds the art once in `<defs>`, coloured via `--ink` / `--accent`. A second `<use>` underneath sets them to white with a 28-unit round stroke, which fills the transparent body areas and leaves a thin white sticker edge. The viewBox is cropped to the drawing.
 - Flip a character with `-scale-x-100` on a wrapper, never on the animated `<img>`: GSAP's transform would fight the CSS `scale`.
-- Decorations (sun, stopwatch, bunting, 5K sign, medal, finish arch, hills) are hand-written inline SVG.
+- Decorations are hand-written inline SVG, following the reference's ornament rules:
+  - **Gloss**: every round prop (confetti dots, coins, medal, trophy, stopwatch glass) gets a small white rotated ellipse at its top-left.
+  - **Traces**: thin charcoal lines (3px, round caps; dashed `2 12` for thrown paths) show motion: confetti arc, coin flip, tag string, stopwatch and medal swing lines, sparkles.
+  - **Clusters per card**: Kategori (red) bunting + confetti, Paket (yellow) price tag + Rp coins, Jadwal (blue) stopwatch + calendar, Hasil (pink) trophy + medal hanging below the card. Small white clouds (`#cloud`) tuck behind card corners.
+  - **Ending**: three scalloped shrub layers from `$bush(y, radii)` (green-600 / green-300 / green, front matches the callout), `#sprig`s on the middle layer and `#flower`s (palette petals, yellow centre) on the front.
+- Shared symbols (`#cloud`, `#sprig`, `#flower`) live in a zero-size SVG at the top of the timeline so both the desktop layer and the mobile shrubs can `<use>` them.
+- `[data-float]` (inside a `[data-speed]` group, never on an element with its own `transform`) adds a slow idle drift: y -8px, ±3°, 1.6–2.4s.
 
 ## Layout
 - Desktop timeline height is `365vw`. Cards are absolutely positioned with `--top` (%) and `--left` (vw), measured on the reference at 1440px (23% / 36.3% / 54.1% / 74%). The road is a 220-unit stroke. Decorations share one SVG (`viewBox 0 0 1440 5256`, `xMidYMax slice`).
-- Below 768px, cards stack, the illustration layer is hidden, a static hills SVG closes the section, and the inline nav links move into the menu.
+- Below 768px, cards stack, the illustration layer is hidden, a static shrubs-and-flowers SVG closes the section, and the inline nav links move into the menu.

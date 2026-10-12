@@ -78,6 +78,20 @@ if (!reduceMotion) {
             });
         });
 
+        // Ornaments drift slowly; [data-float] sits inside its [data-speed] group so the two transforms don't collide
+        gsap.utils.toArray('[data-float]').forEach((el, i) => {
+            gsap.to(el, {
+                y: -8,
+                rotation: i % 2 ? 3 : -3,
+                transformOrigin: '50% 50%',
+                duration: gsap.utils.random(1.6, 2.4),
+                delay: gsap.utils.random(0, 1),
+                ease: 'sine.inOut',
+                yoyo: true,
+                repeat: -1,
+            });
+        });
+
         // Route draws itself, tip following ~70% of the viewport
         gsap.utils.toArray('[data-draw]').forEach((path) => {
             gsap.from(path, {
