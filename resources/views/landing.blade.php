@@ -5,6 +5,9 @@
     $time = $event?->start_time?->format('H:i');
     $minPrice = $packages->min('price');
     $ctaTitle = $c->get('cta')?->title ?? "Siap lari\nbareng?";
+    // Hero title breaks after the first word: "Centaurian" / "Run 2026"
+    $name = $event?->name ?? 'Centaurian Run ' . now()->year;
+    [$heroTop, $heroBottom] = explode(' ', $name, 2) + [1 => null];
 
     $cards = [
         [
@@ -38,7 +41,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ $event?->name ?? 'Centaurian Run' }}</title>
+    <title>{{ $name }}</title>
     <meta name="description" content="{{ Str::limit($event?->description ?? 'Fun run keluarga besar Alfa Centauri.', 155) }}">
     @fonts
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -86,8 +89,11 @@
 <main>
     <div class="relative">
         {{-- Hero: sticks while the timeline slides over it --}}
-        <section class="hero sticky top-0 flex h-[calc(100svh+50px)] flex-col items-center overflow-hidden bg-green px-4 pt-[clamp(130px,24vh,230px)] text-center md:justify-end md:pt-0 md:pb-[calc(38svh+50px)]">
-            <h1 class="heading-2xl max-w-[12ch] text-balance" data-reveal>{{ $event?->name ?? 'Centaurian Run' }}</h1>
+        <section class="hero sticky top-0 flex h-[calc(100svh+50px)] flex-col items-center overflow-hidden bg-green px-4 pt-[clamp(130px,24vh,230px)] text-center md:pt-0">
+            {{-- Title bottom sits at 52.1% of the viewport height, as on the reference --}}
+            <div class="flex flex-col justify-end md:h-[52.1svh]">
+                <h1 class="heading-2xl" data-reveal>{{ $heroTop }}@if ($heroBottom)<br>{{ $heroBottom }}@endif</h1>
+            </div>
             <p class="heading-xs mt-12" data-reveal>
                 @if ($event)
                     {{ $date }}@if ($event->location) · {{ $event->location }}@endif
@@ -106,19 +112,14 @@
                 <div class="mt-8">@include('partials.btn', ['href' => '/daftar', 'label' => 'Daftar sekarang'])</div>
             </div>
 
-            {{-- Stadium track: overlaps the hero bottom, then trails the scroll down to where the route starts --}}
-            <svg class="pointer-events-none absolute top-[-38svh] left-[41.7vw] z-10 hidden w-[48.6vw] md:block" viewBox="320 460 780 480" aria-hidden="true" data-track>
-                <rect x="330" y="470" width="760" height="460" rx="230" fill="var(--color-red)"/>
-                <rect x="352" y="492" width="716" height="416" rx="208" fill="none" stroke="#fff" stroke-width="3"/>
-                <rect x="374" y="514" width="672" height="372" rx="186" fill="none" stroke="#fff" stroke-width="3"/>
-                <rect x="396" y="536" width="628" height="328" rx="164" fill="var(--color-green)"/>
-                <rect x="560" y="620" width="300" height="160" rx="4" fill="none" stroke="#fff" stroke-width="3"/>
-                <path d="M710 620v160" stroke="#fff" stroke-width="3"/>
-                <circle cx="710" cy="700" r="34" fill="none" stroke="#fff" stroke-width="3"/>
-                <g fill="var(--color-charcoal)">
-                    <rect x="600" y="886" width="11" height="11"/><rect x="611" y="897" width="11" height="11"/><rect x="600" y="908" width="11" height="11"/><rect x="611" y="919" width="11" height="11"/>
-                </g>
-            </svg>
+            {{-- Runners (Open Doodles, recoloured): overlap the hero bottom, then trail the scroll down to where the route starts --}}
+            <div class="pointer-events-none absolute top-[-38svh] left-[46vw] z-10 hidden h-[30vw] w-[50vw] md:block" aria-hidden="true" data-track>
+                {{-- Flips live on wrappers: GSAP animates the <img> transform and would drop a CSS flip on the same element --}}
+                <img src="/images/doodles/groovy.svg" alt="" class="absolute top-[12%] left-0 w-[32%]">
+                <div class="absolute top-0 left-[24%] w-[34%] -scale-x-100"><img src="/images/doodles/jumping.svg" alt="" class="w-full"></div>
+                <div class="absolute top-[10%] left-[58%] w-[34%] -scale-x-100"><img src="/images/doodles/rolling.svg" alt="" class="w-full"></div>
+                <img src="/images/doodles/running.svg" alt="" class="absolute top-[44%] left-[22%] w-[50%]">
+            </div>
 
             {{-- Illustration layer (desktop) --}}
             <svg class="pointer-events-none absolute inset-0 hidden size-full md:block" viewBox="0 0 1440 5256" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
@@ -131,7 +132,7 @@
                 </g></g>
 
                 {{-- Route: dotted plan + green road drawn on scroll --}}
-                @php($route = 'M950 860 C950 1100 380 1100 380 1450 C380 1750 1050 1700 1050 2000 C1050 2300 1180 2450 1180 2750 C1180 3000 1250 3150 1200 3350 C1150 3600 300 3500 300 3800 C300 4150 300 4300 500 4450 C700 4600 720 4700 720 5050')
+                @php($route = 'M1000 860 C1000 1100 380 1100 380 1450 C380 1750 1050 1700 1050 2000 C1050 2300 1180 2450 1180 2750 C1180 3000 1250 3150 1200 3350 C1150 3600 300 3500 300 3800 C300 4150 300 4300 500 4450 C700 4600 720 4700 720 5050')
                 <path d="{{ $route }}" fill="none" stroke="var(--color-beige-500)" stroke-width="8" stroke-linecap="round" stroke-dasharray="1 22"/>
                 <path d="{{ $route }}" fill="none" stroke="var(--color-green)" stroke-width="220" stroke-linecap="round" data-draw/>
 

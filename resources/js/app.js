@@ -57,11 +57,25 @@ if (!reduceMotion) {
     });
 
     gsap.matchMedia().add('(min-width: 768px)', () => {
-        // Track trails the scroll from the hero bottom to the route start (≈59.7vw into the timeline)
+        // Runners trail the scroll from the hero bottom to the route start (≈59.7vw into the timeline):
+        // 59.7vw - 30vw container height + 38svh start offset
         gsap.to('[data-track]', {
-            y: () => innerWidth * 0.304 + innerHeight * 0.38,
+            y: () => innerWidth * 0.297 + innerHeight * 0.38,
             ease: 'none',
             scrollTrigger: { start: 0, end: () => innerHeight * 1.3, scrub: true, invalidateOnRefresh: true },
+        });
+
+        // Idle loop so the runners never stand still (stands in for the reference's Rive animation)
+        gsap.utils.toArray('[data-track] img').forEach((img, i) => {
+            gsap.to(img, {
+                y: -10,
+                rotation: i % 2 ? 2 : -2,
+                duration: gsap.utils.random(0.8, 1.2),
+                delay: gsap.utils.random(0, 0.5),
+                ease: 'sine.inOut',
+                yoyo: true,
+                repeat: -1,
+            });
         });
 
         // Route draws itself, tip following ~70% of the viewport

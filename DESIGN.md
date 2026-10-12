@@ -44,8 +44,8 @@ Root font-size is fluid on ≥768px: `clamp(15px, .48vw + 10.1px, 17px)` (15px a
 Behaviours (`resources/js/app.js`, Lenis + GSAP ScrollTrigger + DrawSVG):
 - Lenis smooth scroll; anchor links offset 100px for the fixed nav.
 - Nav slides down on load (`.4s var(--ease) .2s`).
-- Hero is sticky; timeline slides over it with a 50px rounded top while the hero darkens (`--progress * .4`). Hero text is bottom-anchored (`pb: 38svh + 50px`).
-- `[data-track]` stadium starts peeking into the hero (`top: -38svh`) and trails the scroll for `1.3 × viewport` until it sits where the route begins.
+- Hero is sticky; timeline slides over it with a 50px rounded top while the hero darkens (`--progress * .4`). Hero title bottom sits at `52.1svh` (desktop), subtitle `3rem` below; the title breaks after the first word ("Centaurian" / "Run 2026").
+- `[data-track]` runner group starts peeking into the hero (`top: -38svh`) and trails the scroll for `1.3 × viewport` until it sits where the route begins. Each runner has an idle loop (y -10px, ±2°, 0.8–1.2s, `sine.inOut`, yoyo) in place of the reference's Rive animation.
 - Green route draws with scroll, its tip at ~70% of the viewport.
 - `[data-speed]` parallax on decorations and hill layers (desktop only).
 - `[data-reveal]` fade-up 40px; `[data-lines]` masked line slide-up.
@@ -57,6 +57,13 @@ Behaviours (`resources/js/app.js`, Lenis + GSAP ScrollTrigger + DrawSVG):
 - **Nav CTA**: yellow fill grows from the centre on hover.
 - **Card**: white 10px box, `3.125rem` padding (desktop), `35.6vw` wide, `heading-sm` title, body, data list, coloured primary button.
 - **Menu button**: green 2.5rem circle in the nav bar on all sizes (`<details>`); lists the page links (Daftar, Cek status, Hasil lomba), plus section anchors on mobile.
+
+## Illustration
+- Characters: [Open Doodles](https://www.opendoodles.com) by Pablo Stanley (free for commercial use, no credit required), in `public/images/doodles/` (`running`, `jumping`, `rolling`, `groovy`).
+- Recolour rules: ink `#000000` → charcoal; the pink accent `#FF5678` → one palette colour per character (running red, jumping blue, rolling yellow, groovy pink); never green on the green hero.
+- Each file holds the art once in `<defs>`, coloured via `--ink` / `--accent`. A second `<use>` underneath sets them to white with a 28-unit round stroke, which fills the transparent body areas and leaves a thin white sticker edge. The viewBox is cropped to the drawing.
+- Flip a character with `-scale-x-100` on a wrapper, never on the animated `<img>`: GSAP's transform would fight the CSS `scale`.
+- Decorations (sun, stopwatch, bunting, 5K sign, medal, finish arch, hills) are hand-written inline SVG.
 
 ## Layout
 - Desktop timeline height is `365vw`. Cards are absolutely positioned with `--top` (%) and `--left` (vw), measured on the reference at 1440px (23% / 36.3% / 54.1% / 74%). The road is a 220-unit stroke. Decorations share one SVG (`viewBox 0 0 1440 5256`, `xMidYMax slice`).
