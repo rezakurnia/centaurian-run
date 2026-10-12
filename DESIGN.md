@@ -18,17 +18,20 @@ White is used for cards, nav bar and secondary buttons.
 ## Type
 Inter (400/500/700, via Bunny). Headings are weight 500 with `-0.06em` tracking.
 
+Root font-size is fluid on ≥768px: `clamp(15px, .48vw + 10.1px, 17px)` (15px at 1024, 17px from 1440); 16px below. Every rem token scales with it, as on the reference.
+
 | Utility | Size |
 |---|---|
-| `heading-2xl` | `clamp(3.625rem, 1.1033rem + 12.6087vw, 10.875rem)`, lh .95 |
+| `heading-2xl` | `clamp(3.625rem, 1.1033rem + 12.6087vw, 10.875rem)` on mobile, `9.7vw` from 768px; lh .95 |
 | `heading-sm` | `clamp(1.625rem, 1.3641rem + 1.3043vw, 2.375rem)`, lh 1.2 |
 | `heading-xs` | `clamp(1.5rem, 1.413rem + .4348vw, 1.75rem)`, lh 1.2 |
-| `text-md` | `clamp(1rem, .9783rem + .1087vw, 1.0625rem)` (nav, buttons) |
+| `text-md` | `clamp(1rem, .9783rem + .1087vw, 1.0625rem)` (buttons; nav links use 1rem) |
+| Card body | `1.1875rem`, lh 1.25, `-0.04em` |
 
 ## Shape
 - `radius-sm` 10px: nav bar, buttons, cards.
 - `radius-lg` 50px: section edges (timeline top, callout bottom).
-- Page gutter 16px (nav) / 20px (sections).
+- Page gutter 16px (nav) / 20px (sections). From 1280px the nav sits inside `7.5vw` side margins, max 1405px.
 
 ## Motion
 | Token | Value |
@@ -41,18 +44,20 @@ Inter (400/500/700, via Bunny). Headings are weight 500 with `-0.06em` tracking.
 Behaviours (`resources/js/app.js`, Lenis + GSAP ScrollTrigger + DrawSVG):
 - Lenis smooth scroll; anchor links offset 100px for the fixed nav.
 - Nav slides down on load (`.4s var(--ease) .2s`).
-- Hero is sticky; timeline slides over it with a 50px rounded top while the hero darkens (`--progress * .4`).
+- Hero is sticky; timeline slides over it with a 50px rounded top while the hero darkens (`--progress * .4`). Hero text is bottom-anchored (`pb: 38svh + 50px`).
+- `[data-track]` stadium starts peeking into the hero (`top: -38svh`) and trails the scroll for `1.3 × viewport` until it sits where the route begins.
 - Green route draws with scroll, its tip at ~70% of the viewport.
 - `[data-speed]` parallax on decorations and hill layers (desktop only).
 - `[data-reveal]` fade-up 40px; `[data-lines]` masked line slide-up.
 - `prefers-reduced-motion`: no Lenis, no GSAP, transitions off.
 
 ## Components
-- **Button** (`partials/btn.blade.php`): white (or `--btn-bg`) 10px box with a 43px circle arrow on the right. On hover the arrow moves to the left and the background scales to 1.04. `primary` makes the circle white.
+- **Button** (`partials/btn.blade.php`): black label, white (or `--btn-bg`) 10px box with a 43px circle arrow on the right. On hover the arrow moves to the left and the background scales to 1.04. `primary` makes the circle white.
 - **Nav link**: a beige pill scales in on hover.
 - **Nav CTA**: yellow fill grows from the centre on hover.
-- **Card**: white 10px box, `heading-sm` title, body, data list, coloured primary button.
+- **Card**: white 10px box, `3.125rem` padding (desktop), `35.6vw` wide, `heading-sm` title, body, data list, coloured primary button.
+- **Menu button**: green 2.5rem circle in the nav bar on all sizes (`<details>`); lists the page links (Daftar, Cek status, Hasil lomba), plus section anchors on mobile.
 
 ## Layout
-- Desktop timeline height is `365vw`. Cards are absolutely positioned with `--top` (%) and `--left` (vw). Decorations share one SVG (`viewBox 0 0 1440 5256`, `xMidYMax slice`).
-- Below 768px, cards stack, the illustration layer is hidden, a static hills SVG closes the section, and the nav collapses into a `<details>` menu.
+- Desktop timeline height is `365vw`. Cards are absolutely positioned with `--top` (%) and `--left` (vw), measured on the reference at 1440px (23% / 36.3% / 54.1% / 74%). The road is a 220-unit stroke. Decorations share one SVG (`viewBox 0 0 1440 5256`, `xMidYMax slice`).
+- Below 768px, cards stack, the illustration layer is hidden, a static hills SVG closes the section, and the inline nav links move into the menu.

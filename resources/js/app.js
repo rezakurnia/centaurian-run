@@ -57,6 +57,13 @@ if (!reduceMotion) {
     });
 
     gsap.matchMedia().add('(min-width: 768px)', () => {
+        // Track trails the scroll from the hero bottom to the route start (≈59.7vw into the timeline)
+        gsap.to('[data-track]', {
+            y: () => innerWidth * 0.304 + innerHeight * 0.38,
+            ease: 'none',
+            scrollTrigger: { start: 0, end: () => innerHeight * 1.3, scrub: true, invalidateOnRefresh: true },
+        });
+
         // Route draws itself, tip following ~70% of the viewport
         gsap.utils.toArray('[data-draw]').forEach((path) => {
             gsap.from(path, {

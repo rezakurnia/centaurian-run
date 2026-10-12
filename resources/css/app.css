@@ -37,6 +37,10 @@
     font-weight: 500;
     letter-spacing: -0.06em;
     line-height: .95;
+
+    @media (width >= 48rem) {
+        font-size: 9.7vw;
+    }
 }
 @utility heading-sm {
     font-size: var(--text-heading-sm);
@@ -51,7 +55,11 @@
     line-height: 1.2;
 }
 
+/* Fluid root like the reference: 15px at 1024 → 17px from 1440, so every rem token scales with it */
 html { scroll-padding-top: 6.5rem; }
+@media (width >= 48rem) {
+    html { font-size: clamp(15px, calc(.48vw + 10.1px), 17px); }
+}
 
 body {
     background: var(--color-beige);
@@ -80,7 +88,7 @@ html.is-loaded .nav {
     min-height: 2.75rem;
     padding: 0 1rem;
     border-radius: 50px;
-    font-size: var(--text-md);
+    font-size: 1rem;
     letter-spacing: -0.04em;
 }
 .nav-link::before {
@@ -120,8 +128,7 @@ html.is-loaded .nav {
     padding: 10.625px;
     border-radius: var(--radius-sm);
     font-size: var(--text-md);
-    letter-spacing: -0.02em;
-    color: var(--color-charcoal);
+    color: #000;
 }
 .btn::before {
     content: '';
