@@ -3,7 +3,179 @@
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 
+/* Tokens: see DESIGN.md */
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
+
+    --color-green: #8ed462;
+    --color-green-600: #6fb846;
+    --color-green-300: #b5e590;
+    --color-beige: #f5f1e4;
+    --color-beige-500: #e0dbce;
+    --color-charcoal: #2c2e2a;
+    --color-yellow: #f5e211;
+    --color-red: #ff705d;
+    --color-blue: #2ba0ff;
+    --color-pink: #ebc1ff;
+
+    --radius-sm: 10px;
+    --radius-lg: 50px;
+
+    --ease: cubic-bezier(.5, 0, 0, 1);
+    --ease-bounce: cubic-bezier(.17, .67, .3, 1.33);
+    --ease-smooth: cubic-bezier(.38, .005, .215, 1);
+
+    --text-heading-2xl: clamp(3.625rem, 1.1033rem + 12.6087vw, 10.875rem);
+    --text-heading-sm: clamp(1.625rem, 1.3641rem + 1.3043vw, 2.375rem);
+    --text-heading-xs: clamp(1.5rem, 1.413rem + .4348vw, 1.75rem);
+    --text-md: clamp(1rem, .9783rem + .1087vw, 1.0625rem);
+}
+
+@utility heading-2xl {
+    font-size: var(--text-heading-2xl);
+    font-weight: 500;
+    letter-spacing: -0.06em;
+    line-height: .95;
+}
+@utility heading-sm {
+    font-size: var(--text-heading-sm);
+    font-weight: 500;
+    letter-spacing: -0.06em;
+    line-height: 1.2;
+}
+@utility heading-xs {
+    font-size: var(--text-heading-xs);
+    font-weight: 500;
+    letter-spacing: -0.06em;
+    line-height: 1.2;
+}
+
+html { scroll-padding-top: 6.5rem; }
+
+body {
+    background: var(--color-beige);
+    color: var(--color-charcoal);
+    font-weight: 500;
+    -webkit-font-smoothing: antialiased;
+}
+
+::selection { background: var(--color-charcoal); color: var(--color-green); }
+
+:focus-visible { outline: 2px solid var(--color-charcoal); outline-offset: 3px; }
+
+@layer components {
+/* Nav: slides down once the page is ready */
+.nav {
+    transform: translateY(calc(-100% - 1rem));
+}
+html.is-loaded .nav {
+    transform: none;
+    transition: transform .4s var(--ease) .2s;
+}
+.nav-link {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    padding: 0 1rem;
+    border-radius: 50px;
+    font-size: var(--text-md);
+    letter-spacing: -0.04em;
+}
+.nav-link::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: var(--color-beige);
+    opacity: 0;
+    transform: scale(.6);
+    transition: transform .4s var(--ease-bounce), opacity .1s var(--ease);
+}
+.nav-link:hover::before { opacity: 1; transform: scale(1); }
+.nav-link > span { position: relative; }
+
+.nav-cta { clip-path: inset(0 round var(--radius-sm)); }
+.nav-cta::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--color-yellow);
+    opacity: 0;
+    border-radius: 50%;
+    transform: scale(0);
+    transition: transform .25s var(--ease), border-radius .25s var(--ease), opacity .25s var(--ease);
+}
+.nav-cta:hover::after { opacity: 1; border-radius: var(--radius-sm); transform: scale(1); }
+.nav-cta > * { position: relative; z-index: 1; }
+
+/* Button: arrow swaps from right to left on hover */
+.btn {
+    --btn-bg: #fff;
+    --btn-icon: var(--color-green);
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    padding: 10.625px;
+    border-radius: var(--radius-sm);
+    font-size: var(--text-md);
+    letter-spacing: -0.02em;
+    color: var(--color-charcoal);
+}
+.btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: var(--btn-bg);
+    transition: transform .4s var(--ease-bounce);
+}
+.btn:hover::before { transform: scale(1.04); }
+.btn-primary { --btn-icon: #fff; }
+.btn-label { position: relative; padding: 0 .6rem; }
+.btn-icon {
+    position: relative;
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 2.6875rem;
+    height: 2.6875rem;
+    border-radius: 50%;
+    background: var(--btn-icon);
+    transition: transform .4s var(--ease-bounce), width .4s var(--ease-bounce);
+}
+.btn-icon.-left { width: 0; transform: scale(0); }
+.btn:hover .btn-icon.-left { width: 2.6875rem; transform: scale(1); }
+.btn:hover .btn-icon.-right { width: 0; transform: scale(0); }
+
+/* Hero darkens while the timeline slides over it */
+.hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--color-charcoal);
+    opacity: calc(var(--progress, 0) * .4);
+    pointer-events: none;
+}
+
+/* Timeline is sized in vw so the absolute layout scales like the reference */
+@media (min-width: 768px) {
+    .timeline { height: 365vw; }
+}
+
+.card { position: relative; }
+.card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: #fff;
+    border-radius: var(--radius-sm);
+}
+.card > * { position: relative; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition-duration: 0s !important; animation-duration: 0s !important; }
+    .nav { transform: none; }
 }
