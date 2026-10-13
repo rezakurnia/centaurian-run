@@ -38,6 +38,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ $name }}</title>
     <meta name="description" content="{{ Str::limit($event?->description ?? 'Fun run keluarga besar Alfa Centauri.', 155) }}">
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="icon" href="/favicon.png" type="image/png">
     @fonts
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
