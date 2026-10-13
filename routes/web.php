@@ -30,3 +30,8 @@ Route::get('/daftar', function () {
 Route::view('/cek-status', 'cek-status');
 
 Route::get('/hasil', fn () => view('hasil', ['categories' => Category::orderBy('id')->get()]));
+
+// Console panitia/admin: halaman kosong, auth dan data lewat JS (token Sanctum di localStorage)
+Route::view('/login', 'login');
+Route::view('/panitia/scan', 'console.scan');
+Route::view('/panitia/rekap', 'console.rekap');

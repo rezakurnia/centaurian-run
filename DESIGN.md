@@ -107,6 +107,12 @@ Fluid root font-size: `--text-md` (16 → 17px) by default, 15px from 1000 to 11
 - **Role:** Closing line inside the green callout, under the CTA (no separate footer block).
 - Three centred columns (`body-md`, `md:grid-cols-3`, 60 × `--spacing` above on desktop; stacked below 1000px), text in `#3a1f3f`.
 
+### 7. Console (panitia/admin, `/login`, `/panitia/*`)
+- **Role:** Working screens for staff, not marketing. Same tokens as the public site, denser, no Locomotive/Rive (separate Vite entry `resources/js/console/main.js`).
+- Shell (`.k-shell`): white sidebar 15rem from 1000px (top bar with horizontally scrolling nav below), Sand Cream canvas, white `.k-card` panels, 10px radius, flat.
+- Nav link current page = Blush fill. Button `.k-btn` = Plum Night fill, `-ghost` = outlined. Scan result `.k-result` reuses badge colours: `-ok` Marigold, `-wait` Blush (duplicate), `-bad` Grape with white text; always text, never colour alone.
+- Forms and tables reuse `.c-input`, `.c-error`, `.c-table`, `.c-badge`.
+
 ---
 
 ## Surfaces & Elevation
