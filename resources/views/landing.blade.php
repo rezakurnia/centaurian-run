@@ -101,6 +101,7 @@
                         Segera hadir
                     @endif
                 </p>
+                <div class="mt-8" data-reveal>@include('partials.btn', ['href' => '#paket', 'label' => 'Daftar sekarang'])</div>
             </div>
         </section>
 
@@ -311,6 +312,24 @@
         </section>
     </div>
 
+    {{-- Stats band: "A few numbers" block (MindMarket 1:1), fed by event data --}}
+    <section class="bg-beige px-5 pt-20 pb-24 md:pb-32 text-center">
+        <div class="mx-auto grid max-w-[1200px] gap-12 md:grid-cols-3">
+            <div class="flex flex-col gap-3" data-reveal>
+                <p class="text-[clamp(2.5rem,5vw,4rem)] leading-none font-medium tracking-[-0.06em]">{{ $categories->count() }}</p>
+                <p class="text-[1.125rem] tracking-[-0.04em] opacity-75 text-balance">Kategori peserta, dari siswa sampai tamu luar.</p>
+            </div>
+            <div class="flex flex-col gap-3" data-reveal>
+                <p class="text-[clamp(2.5rem,5vw,4rem)] leading-none font-medium tracking-[-0.06em]">{{ $minPrice === null ? '—' : ($minPrice === 0 ? 'Gratis' : $rupiah($minPrice)) }}</p>
+                <p class="text-[1.125rem] tracking-[-0.04em] opacity-75 text-balance">{{ $minPrice === null ? 'Paket segera diumumkan.' : 'Harga paket termurah.' }}</p>
+            </div>
+            <div class="flex flex-col gap-3" data-reveal>
+                <p class="text-[clamp(2.5rem,5vw,4rem)] leading-none font-medium tracking-[-0.06em]">{{ $date ?? 'Segera' }}</p>
+                <p class="text-[1.125rem] tracking-[-0.04em] opacity-75 text-balance">{{ $date ? 'Tanggal lomba.' : 'Tanggal segera diumumkan.' }}</p>
+            </div>
+        </div>
+    </section>
+
     {{-- Callout Section: Deluxe Callout with Pop-up Girl Rive Animation (MindMarket 1:1) --}}
     <c-deluxe-callout class="callout group relative block rounded-b-[50px] bg-green px-5 pt-32 md:pt-40 pb-[clamp(60px,6vw,100px)] text-center overflow-hidden">
         {{-- Pop-up Girl Rive Animation --}}
@@ -338,20 +357,6 @@
             @include('partials.btn', ['href' => '#paket', 'label' => 'Daftar sekarang', 'attributes' => 'data-deluxe-callout-action="true" data-callout-action'])
         </div>
 
-        <ul class="mx-auto mt-[clamp(80px,12vw,220px)] grid max-w-[1200px] gap-12 text-[1.125rem] tracking-[-0.04em] md:grid-cols-3">
-            <li class="flex flex-col items-center gap-5" data-reveal>
-                <svg width="96" height="72" viewBox="0 0 96 72" aria-hidden="true"><circle cx="24" cy="24" r="12" fill="var(--color-yellow)"/><circle cx="48" cy="18" r="14" fill="var(--color-red)"/><circle cx="72" cy="24" r="12" fill="var(--color-blue)"/><path d="M6 66a18 18 0 0 1 36 0M28 66a20 20 0 0 1 40 0M54 66a18 18 0 0 1 36 0" fill="var(--color-charcoal)"/></svg>
-                {{ $categories->count() }} kategori peserta
-            </li>
-            <li class="flex flex-col items-center gap-5" data-reveal>
-                <svg width="96" height="72" viewBox="0 0 96 72" aria-hidden="true"><path d="M20 8h34l34 34-30 26L20 34z" fill="var(--color-pink)" stroke="var(--color-charcoal)" stroke-width="4" stroke-linejoin="round"/><circle cx="36" cy="22" r="6" fill="var(--color-charcoal)"/></svg>
-                {{ $minPrice === null ? 'Paket segera diumumkan' : ($minPrice === 0 ? 'Mulai gratis' : 'Mulai ' . $rupiah($minPrice)) }}
-            </li>
-            <li class="flex flex-col items-center gap-5" data-reveal>
-                <svg width="96" height="72" viewBox="0 0 96 72" aria-hidden="true"><rect x="16" y="10" width="64" height="58" rx="8" fill="#fff" stroke="var(--color-charcoal)" stroke-width="4"/><path d="M16 26h64" stroke="var(--color-charcoal)" stroke-width="4"/><path d="M32 4v12M64 4v12" stroke="var(--color-charcoal)" stroke-width="4" stroke-linecap="round"/><rect x="40" y="36" width="16" height="16" rx="3" fill="var(--color-red)"/></svg>
-                {{ $date ?? 'Tanggal segera diumumkan' }}
-            </li>
-        </ul>
     </c-deluxe-callout>
 </main>
 
