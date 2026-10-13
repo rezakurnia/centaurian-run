@@ -49,7 +49,7 @@ if (main) {
     if (!a) location.replace('/login');
     else if (need === 'admin' && a.user.role !== 'admin') location.replace(home(a.user));
     else {
-        document.getElementById('k-user').textContent = `${a.user.username} (${a.user.role})`;
+        document.getElementById('k-user').textContent = a.user.username === a.user.role ? a.user.username : `${a.user.username} (${a.user.role})`;
         document.getElementById('k-nav').innerHTML = NAV
             .filter(([, , r]) => r === 'panitia' || a.user.role === 'admin')
             .map(([label, href]) => `<a href="${href}"${location.pathname === href ? ' aria-current="page"' : ''}>${label}</a>`)
