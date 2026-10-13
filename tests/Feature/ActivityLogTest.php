@@ -4,7 +4,6 @@ namespace Tests\Feature;
 
 use App\Models\ActivityLog;
 use App\Models\Content;
-use App\Models\Event;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
@@ -12,6 +11,7 @@ use Tests\TestCase;
 class ActivityLogTest extends TestCase
 {
     protected User $admin;
+
     protected string $tokenAdmin;
 
     protected function setUp(): void
@@ -21,8 +21,8 @@ class ActivityLogTest extends TestCase
         $this->admin = User::create([
             'username' => 'admin',
             'password' => Hash::make('admin123'),
-            'email'    => 'admin@centaurian.test',
-            'role'     => 'admin',
+            'email' => 'admin@centaurian.test',
+            'role' => 'admin',
         ]);
         $this->tokenAdmin = $this->admin->createToken('test')->plainTextToken;
     }
@@ -37,14 +37,14 @@ class ActivityLogTest extends TestCase
         $this->withHeaders($this->adminHeaders())
             ->postJson('/api/admin/contents', [
                 'target_site' => 'utama',
-                'title'       => 'Test Konten',
-                'status'      => 'published',
+                'title' => 'Test Konten',
+                'status' => 'published',
             ])
             ->assertStatus(201);
 
         $this->assertDatabaseHas('activity_logs', [
-            'user_id'      => $this->admin->id,
-            'action'       => 'create_content',
+            'user_id' => $this->admin->id,
+            'action' => 'create_content',
             'target_table' => 'contents',
         ]);
     }
@@ -53,8 +53,8 @@ class ActivityLogTest extends TestCase
     {
         $content = Content::create([
             'target_site' => 'utama',
-            'title'       => 'Judul Awal',
-            'status'      => 'draft',
+            'title' => 'Judul Awal',
+            'status' => 'draft',
         ]);
 
         $this->withHeaders($this->adminHeaders())
@@ -64,9 +64,9 @@ class ActivityLogTest extends TestCase
             ->assertStatus(200);
 
         $this->assertDatabaseHas('activity_logs', [
-            'action'       => 'update_content',
+            'action' => 'update_content',
             'target_table' => 'contents',
-            'target_id'    => $content->id,
+            'target_id' => $content->id,
         ]);
     }
 
@@ -74,8 +74,8 @@ class ActivityLogTest extends TestCase
     {
         $content = Content::create([
             'target_site' => 'utama',
-            'title'       => 'Akan Dihapus',
-            'status'      => 'published',
+            'title' => 'Akan Dihapus',
+            'status' => 'published',
         ]);
 
         $this->withHeaders($this->adminHeaders())
@@ -83,9 +83,9 @@ class ActivityLogTest extends TestCase
             ->assertStatus(200);
 
         $this->assertDatabaseHas('activity_logs', [
-            'action'       => 'delete_content',
+            'action' => 'delete_content',
             'target_table' => 'contents',
-            'target_id'    => $content->id,
+            'target_id' => $content->id,
         ]);
     }
 
@@ -93,13 +93,13 @@ class ActivityLogTest extends TestCase
     {
         $this->withHeaders($this->adminHeaders())
             ->postJson('/api/admin/events', [
-                'name'       => 'Event Test',
+                'name' => 'Event Test',
                 'event_date' => '2026-05-15',
             ])
             ->assertStatus(201);
 
         $this->assertDatabaseHas('activity_logs', [
-            'action'       => 'create_event',
+            'action' => 'create_event',
             'target_table' => 'events',
         ]);
     }
@@ -110,12 +110,12 @@ class ActivityLogTest extends TestCase
             ->postJson('/api/admin/users', [
                 'username' => 'panitia2',
                 'password' => 'rahasia123',
-                'role'     => 'panitia',
+                'role' => 'panitia',
             ])
             ->assertStatus(201);
 
         $this->assertDatabaseHas('activity_logs', [
-            'action'       => 'create_user',
+            'action' => 'create_user',
             'target_table' => 'users',
         ]);
     }
@@ -125,8 +125,8 @@ class ActivityLogTest extends TestCase
         $this->withHeaders($this->adminHeaders())
             ->postJson('/api/admin/contents', [
                 'target_site' => 'utama',
-                'title'       => 'Test',
-                'status'      => 'published',
+                'title' => 'Test',
+                'status' => 'published',
             ]);
 
         $log = ActivityLog::latest()->first();
@@ -141,8 +141,8 @@ class ActivityLogTest extends TestCase
         $this->withHeaders($this->adminHeaders())
             ->postJson('/api/admin/contents', [
                 'target_site' => 'utama',
-                'title'       => 'Konten Spesial',
-                'status'      => 'published',
+                'title' => 'Konten Spesial',
+                'status' => 'published',
             ]);
 
         $log = ActivityLog::where('action', 'create_content')->latest()->first();

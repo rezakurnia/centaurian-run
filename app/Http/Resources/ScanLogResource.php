@@ -10,23 +10,23 @@ class ScanLogResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id'             => $this->id,
-            'barcode'        => $this->barcode,
-            'scan_status'    => $this->scan_status,
-            'participant'    => $this->participant ? [
-                'id'        => $this->participant->id,
+            'id' => $this->id,
+            'barcode' => $this->barcode,
+            'scan_status' => $this->scan_status,
+            'participant' => $this->participant ? [
+                'id' => $this->participant->id,
                 'full_name' => $this->participant->full_name,
-                'email'     => $this->participant->email,
+                'email' => $this->participant->email,
             ] : null,
-            'scanned_by'     => $this->scannedBy ? [
-                'id'       => $this->scannedBy->id,
+            'scanned_by' => $this->scannedBy ? [
+                'id' => $this->scannedBy->id,
                 'username' => $this->scannedBy->username,
-                'role'     => $this->scannedBy->role,
+                'role' => $this->scannedBy->role,
             ] : null,
-            'ip_address'     => $this->ip_address,
-            'user_agent'     => $this->user_agent,
-            'scanned_at'     => $this->scanned_at,
-            'created_at'     => $this->created_at,
+            'ip_address' => $this->ip_address,
+            'user_agent' => $this->user_agent,
+            'scanned_at' => $this->scanned_at,
+            'created_at' => $this->created_at,
         ];
     }
 }

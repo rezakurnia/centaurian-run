@@ -4,14 +4,14 @@ namespace App\Http\Controllers\Api\Panitia;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ScanBarcodeRequest;
-use App\Models\Event;
 use App\Services\ScanService;
-use Illuminate\Http\Request;
 use App\Traits\LogsActivity;
+use Illuminate\Http\Request;
 
 class ScanController extends Controller
 {
     use LogsActivity;
+
     public function start(Request $request, ScanService $scanService)
     {
         $request->validate([
@@ -26,15 +26,15 @@ class ScanController extends Controller
         );
 
         $this->logActivity(
-    'start_event',
-    'events',
-    $request->event_id,
-    "Memulai acara event ID: {$request->event_id}"
-);
+            'start_event',
+            'events',
+            $request->event_id,
+            "Memulai acara event ID: {$request->event_id}"
+        );
 
         return response()->json([
             'message' => 'Acara telah dimulai. Waktu start tercatat.',
-            'data'    => $result,
+            'data' => $result,
         ]);
     }
 
@@ -48,15 +48,15 @@ class ScanController extends Controller
         );
 
         $httpCode = match ($result['status']) {
-            'valid'     => 200,
+            'valid' => 200,
             'duplicate' => 409,
-            'invalid'   => 404,
-            default     => 400,
+            'invalid' => 404,
+            default => 400,
         };
 
         return response()->json([
             'message' => $result['message'],
-            'data'    => $result['data'],
+            'data' => $result['data'],
         ], $httpCode);
     }
 }

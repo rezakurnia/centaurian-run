@@ -12,7 +12,9 @@ use Tests\TestCase;
 class CheckStatusTest extends TestCase
 {
     protected Event $event;
+
     protected Category $category;
+
     protected Package $package;
 
     protected function setUp(): void
@@ -20,12 +22,12 @@ class CheckStatusTest extends TestCase
         parent::setUp();
 
         $this->event = Event::create([
-            'name'       => 'Centaurian FunRun 2026',
+            'name' => 'Centaurian FunRun 2026',
             'event_date' => '2026-05-15',
-            'is_active'  => true,
+            'is_active' => true,
         ]);
         $this->category = Category::create(['name' => 'Siswa', 'code' => 'SW']);
-        $this->package  = Package::create(['name' => 'Paket 100K', 'price' => 100000]);
+        $this->package = Package::create(['name' => 'Paket 100K', 'price' => 100000]);
     }
 
     private function buatRegistrasi(
@@ -36,20 +38,20 @@ class CheckStatusTest extends TestCase
         string $bayar = 'unpaid'
     ): Registration {
         $participant = Participant::create([
-            'full_name' => 'Peserta ' . $email,
-            'email'     => $email,
+            'full_name' => 'Peserta '.$email,
+            'email' => $email,
         ]);
 
         return Registration::create([
             'registration_number' => $noPeserta,
-            'sequence_number'     => 1,
-            'barcode'             => $barcode,
-            'participant_id'      => $participant->id,
-            'event_id'            => $this->event->id,
-            'category_id'         => $this->category->id,
-            'package_id'          => $this->package->id,
+            'sequence_number' => 1,
+            'barcode' => $barcode,
+            'participant_id' => $participant->id,
+            'event_id' => $this->event->id,
+            'category_id' => $this->category->id,
+            'package_id' => $this->package->id,
             'registration_status' => $status,
-            'payment_status'      => $bayar,
+            'payment_status' => $bayar,
         ]);
     }
 
@@ -86,33 +88,33 @@ class CheckStatusTest extends TestCase
         // Peserta sama daftar di 2 event
         $participant = Participant::create([
             'full_name' => 'Budi',
-            'email'     => 'budi@example.com',
+            'email' => 'budi@example.com',
         ]);
 
         $event2 = Event::create([
-            'name'       => 'FunRun 2027',
+            'name' => 'FunRun 2027',
             'event_date' => '2027-05-15',
-            'is_active'  => false,
+            'is_active' => false,
         ]);
 
         Registration::create([
             'registration_number' => 'SW-0001',
-            'sequence_number'     => 1,
-            'barcode'             => 'BUDI-SW-0001',
-            'participant_id'      => $participant->id,
-            'event_id'            => $this->event->id,
-            'category_id'         => $this->category->id,
-            'package_id'          => $this->package->id,
+            'sequence_number' => 1,
+            'barcode' => 'BUDI-SW-0001',
+            'participant_id' => $participant->id,
+            'event_id' => $this->event->id,
+            'category_id' => $this->category->id,
+            'package_id' => $this->package->id,
         ]);
 
         Registration::create([
             'registration_number' => 'SW-0002',
-            'sequence_number'     => 2,
-            'barcode'             => 'BUDI-SW-0002',
-            'participant_id'      => $participant->id,
-            'event_id'            => $event2->id,
-            'category_id'         => $this->category->id,
-            'package_id'          => $this->package->id,
+            'sequence_number' => 2,
+            'barcode' => 'BUDI-SW-0002',
+            'participant_id' => $participant->id,
+            'event_id' => $event2->id,
+            'category_id' => $this->category->id,
+            'package_id' => $this->package->id,
         ]);
 
         $response = $this->postJson('/api/registrations/check-status', [

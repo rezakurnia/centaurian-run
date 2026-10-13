@@ -20,7 +20,7 @@ class UserController extends Controller
 
         return response()->json([
             'message' => 'Daftar user.',
-            'data'    => UserResource::collection($users),
+            'data' => UserResource::collection($users),
         ]);
     }
 
@@ -29,8 +29,8 @@ class UserController extends Controller
         $user = User::create([
             'username' => $request->username,
             'password' => Hash::make($request->password),
-            'email'    => $request->email,
-            'role'     => $request->role,
+            'email' => $request->email,
+            'role' => $request->role,
         ]);
 
         $this->logActivity(
@@ -42,7 +42,7 @@ class UserController extends Controller
 
         return response()->json([
             'message' => 'User berhasil dibuat.',
-            'data'    => new UserResource($user),
+            'data' => new UserResource($user),
         ], 201);
     }
 
@@ -50,16 +50,16 @@ class UserController extends Controller
     {
         $user = User::find($id);
 
-        if (!$user) {
+        if (! $user) {
             return response()->json([
                 'message' => 'User tidak ditemukan.',
-                'data'    => null,
+                'data' => null,
             ], 404);
         }
 
         return response()->json([
             'message' => 'Detail user.',
-            'data'    => new UserResource($user),
+            'data' => new UserResource($user),
         ]);
     }
 
@@ -67,10 +67,10 @@ class UserController extends Controller
     {
         $user = User::find($id);
 
-        if (!$user) {
+        if (! $user) {
             return response()->json([
                 'message' => 'User tidak ditemukan.',
-                'data'    => null,
+                'data' => null,
             ], 404);
         }
 
@@ -93,7 +93,7 @@ class UserController extends Controller
 
         return response()->json([
             'message' => 'User berhasil diperbarui.',
-            'data'    => new UserResource($user->fresh()),
+            'data' => new UserResource($user->fresh()),
         ]);
     }
 
@@ -101,17 +101,17 @@ class UserController extends Controller
     {
         $user = User::find($id);
 
-        if (!$user) {
+        if (! $user) {
             return response()->json([
                 'message' => 'User tidak ditemukan.',
-                'data'    => null,
+                'data' => null,
             ], 404);
         }
 
         if ($user->id === auth()->id()) {
             return response()->json([
                 'message' => 'Tidak dapat menghapus akun sendiri.',
-                'data'    => null,
+                'data' => null,
             ], 403);
         }
 
@@ -126,7 +126,7 @@ class UserController extends Controller
 
         return response()->json([
             'message' => 'User berhasil dihapus.',
-            'data'    => null,
+            'data' => null,
         ]);
     }
 }

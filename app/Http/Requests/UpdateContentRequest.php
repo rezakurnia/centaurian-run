@@ -15,11 +15,11 @@ class UpdateContentRequest extends FormRequest
     {
         return [
             'target_site' => 'sometimes|in:utama,panitia',
-            'section'     => 'nullable|string|max:50',
-            'title'       => 'nullable|string|max:150',
-            'body'        => 'nullable|string',
-            'status'      => 'sometimes|in:draft,published',
-            'sort_order'  => 'nullable|integer',
+            'section' => 'nullable|string|max:50',
+            'title' => 'nullable|string|max:150',
+            'body' => 'nullable|string',
+            'status' => 'sometimes|in:draft,published',
+            'sort_order' => 'nullable|integer',
         ];
     }
 }

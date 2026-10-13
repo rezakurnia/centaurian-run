@@ -20,9 +20,9 @@ class ExportController extends Controller
             });
         }
 
-        $participants = $query->orderBy('id')->get();
+        $participants = $query->orderBy('id')->cursor();
 
-        $filename = 'participants_' . now()->format('Ymd_His') . '.csv';
+        $filename = 'participants_'.now()->format('Ymd_His').'.csv';
 
         return response()->streamDownload(function () use ($participants) {
             $handle = fopen('php://output', 'w');
@@ -76,9 +76,9 @@ class ExportController extends Controller
             $query->where('payment_status', $request->payment_status);
         }
 
-        $registrations = $query->orderBy('created_at', 'desc')->get();
+        $registrations = $query->orderBy('created_at', 'desc')->cursor();
 
-        $filename = 'registrations_' . now()->format('Ymd_His') . '.csv';
+        $filename = 'registrations_'.now()->format('Ymd_His').'.csv';
 
         return response()->streamDownload(function () use ($registrations) {
             $handle = fopen('php://output', 'w');

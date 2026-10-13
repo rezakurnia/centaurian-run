@@ -3,9 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Registration extends Model
 {
@@ -26,9 +26,9 @@ class Registration extends Model
 
     public function getPaymentProofUrlAttribute(): ?string
     {
-    return $this->payment_proof
-        ? asset('storage/' . $this->payment_proof)
-        : null;
+        return $this->payment_proof
+            ? asset('storage/'.$this->payment_proof)
+            : null;
     }
 
     public function participant(): BelongsTo

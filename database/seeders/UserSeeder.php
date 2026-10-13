@@ -12,18 +12,18 @@ class UserSeeder extends Seeder
     {
         DB::table('users')->insert([
             [
-                'username'   => 'admin',
-                'password'   => Hash::make('admin123'),
-                'email'      => 'admin@centaurian.test',
-                'role'       => 'admin',
+                'username' => 'admin',
+                'password' => Hash::make('admin123'),
+                'email' => 'admin@centaurian.test',
+                'role' => 'admin',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
-                'username'   => 'panitia',
-                'password'   => Hash::make('panitia123'),
-                'email'      => 'panitia@centaurian.test',
-                'role'       => 'panitia',
+                'username' => 'panitia',
+                'password' => Hash::make('panitia123'),
+                'email' => 'panitia@centaurian.test',
+                'role' => 'panitia',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],

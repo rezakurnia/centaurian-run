@@ -14,8 +14,11 @@ use Tests\TestCase;
 class AdminEventTest extends TestCase
 {
     protected User $admin;
+
     protected User $panitia;
+
     protected string $tokenAdmin;
+
     protected string $tokenPanitia;
 
     protected function setUp(): void
@@ -25,16 +28,16 @@ class AdminEventTest extends TestCase
         $this->admin = User::create([
             'username' => 'admin',
             'password' => Hash::make('admin123'),
-            'email'    => 'admin@centaurian.test',
-            'role'     => 'admin',
+            'email' => 'admin@centaurian.test',
+            'role' => 'admin',
         ]);
         $this->tokenAdmin = $this->admin->createToken('test')->plainTextToken;
 
         $this->panitia = User::create([
             'username' => 'panitia',
             'password' => Hash::make('panitia123'),
-            'email'    => 'panitia@centaurian.test',
-            'role'     => 'panitia',
+            'email' => 'panitia@centaurian.test',
+            'role' => 'panitia',
         ]);
         $this->tokenPanitia = $this->panitia->createToken('test')->plainTextToken;
     }
@@ -62,11 +65,11 @@ class AdminEventTest extends TestCase
     {
         $response = $this->withHeaders($this->adminHeaders())
             ->postJson('/api/admin/events', [
-                'name'        => 'Centaurian FunRun 2026',
+                'name' => 'Centaurian FunRun 2026',
                 'description' => 'Lari santai',
-                'location'    => 'Lapangan Sekolah',
-                'event_date'  => '2026-05-15',
-                'is_active'   => true,
+                'location' => 'Lapangan Sekolah',
+                'event_date' => '2026-05-15',
+                'is_active' => true,
             ]);
 
         $response->assertStatus(201)
@@ -88,9 +91,9 @@ class AdminEventTest extends TestCase
     public function test_detail_event(): void
     {
         $event = Event::create([
-            'name'       => 'Event Test',
+            'name' => 'Event Test',
             'event_date' => '2026-05-15',
-            'is_active'  => true,
+            'is_active' => true,
         ]);
 
         $response = $this->withHeaders($this->adminHeaders())
@@ -112,14 +115,14 @@ class AdminEventTest extends TestCase
     public function test_update_event_berhasil(): void
     {
         $event = Event::create([
-            'name'       => 'Nama Lama',
+            'name' => 'Nama Lama',
             'event_date' => '2026-05-15',
-            'is_active'  => true,
+            'is_active' => true,
         ]);
 
         $response = $this->withHeaders($this->adminHeaders())
             ->putJson("/api/admin/events/{$event->id}", [
-                'name'     => 'Nama Baru',
+                'name' => 'Nama Baru',
                 'location' => 'Lokasi Baru',
             ]);
 
@@ -131,9 +134,9 @@ class AdminEventTest extends TestCase
     public function test_hapus_event_berhasil(): void
     {
         $event = Event::create([
-            'name'       => 'Akan Dihapus',
+            'name' => 'Akan Dihapus',
             'event_date' => '2026-05-15',
-            'is_active'  => true,
+            'is_active' => true,
         ]);
 
         $response = $this->withHeaders($this->adminHeaders())
@@ -147,24 +150,24 @@ class AdminEventTest extends TestCase
     public function test_tidak_bisa_hapus_event_yang_sudah_ada_peserta(): void
     {
         $event = Event::create([
-            'name'       => 'Event Aktif',
+            'name' => 'Event Aktif',
             'event_date' => '2026-05-15',
-            'is_active'  => true,
+            'is_active' => true,
         ]);
         $category = Category::create(['name' => 'Siswa', 'code' => 'SW']);
-        $package  = Package::create(['name' => 'Gratis', 'price' => 0]);
-        $peserta  = Participant::create([
+        $package = Package::create(['name' => 'Gratis', 'price' => 0]);
+        $peserta = Participant::create([
             'full_name' => 'Budi',
-            'email'     => 'budi@example.com',
+            'email' => 'budi@example.com',
         ]);
         Registration::create([
             'registration_number' => 'SW-0001',
-            'sequence_number'     => 1,
-            'barcode'             => 'BUDI-SW-0001',
-            'participant_id'      => $peserta->id,
-            'event_id'            => $event->id,
-            'category_id'         => $category->id,
-            'package_id'          => $package->id,
+            'sequence_number' => 1,
+            'barcode' => 'BUDI-SW-0001',
+            'participant_id' => $peserta->id,
+            'event_id' => $event->id,
+            'category_id' => $category->id,
+            'package_id' => $package->id,
         ]);
 
         $response = $this->withHeaders($this->adminHeaders())
@@ -178,9 +181,9 @@ class AdminEventTest extends TestCase
     public function test_toggle_active_berhasil(): void
     {
         $event = Event::create([
-            'name'       => 'Event Test',
+            'name' => 'Event Test',
             'event_date' => '2026-05-15',
-            'is_active'  => true,
+            'is_active' => true,
         ]);
 
         $response = $this->withHeaders($this->adminHeaders())
@@ -204,7 +207,7 @@ class AdminEventTest extends TestCase
 
         $this->withHeaders($this->panitiaHeaders())
             ->postJson('/api/admin/events', [
-                'name'       => 'Test',
+                'name' => 'Test',
                 'event_date' => '2026-05-15',
             ])
             ->assertStatus(403);

@@ -1,0 +1,1572 @@
+{
+ "summary": [
+  {
+   "viewport": "375x812",
+   "mismatches": 33,
+   "high": 30,
+   "medium": 3,
+   "low": 0
+  },
+  {
+   "viewport": "768x1024",
+   "mismatches": 27,
+   "high": 25,
+   "medium": 2,
+   "low": 0
+  },
+  {
+   "viewport": "1280x800",
+   "mismatches": 34,
+   "high": 31,
+   "medium": 3,
+   "low": 0
+  },
+  {
+   "viewport": "1440x900",
+   "mismatches": 34,
+   "high": 31,
+   "medium": 3,
+   "low": 0
+  },
+  {
+   "viewport": "1920x1080",
+   "mismatches": 36,
+   "high": 33,
+   "medium": 3,
+   "low": 0
+  }
+ ],
+ "all": {
+  "375x812": [
+   {
+    "section": "Timeline intro",
+    "element": "timeline",
+    "property": "rel.h",
+    "ref": 4683.66,
+    "target": 4651.5,
+    "delta": -32.16,
+    "severity": "high"
+   },
+   {
+    "section": "Timeline intro",
+    "element": "intro",
+    "property": "rel.h",
+    "ref": 692.16,
+    "target": 660,
+    "delta": -32.16,
+    "severity": "high"
+   },
+   {
+    "section": "Timeline intro",
+    "element": "intro.text",
+    "property": "rel.h",
+    "ref": 289.41,
+    "target": 257.25,
+    "delta": -32.16,
+    "severity": "high"
+   },
+   {
+    "section": "Timeline intro",
+    "element": "intro.button",
+    "property": "rel.y",
+    "ref": 367.72,
+    "target": 335.56,
+    "delta": -32.16,
+    "severity": "high"
+   },
+   {
+    "section": "Timeline intro",
+    "element": "intro.button",
+    "property": "rel.w",
+    "ref": 179.19,
+    "target": 213.11,
+    "delta": 33.92,
+    "severity": "high"
+   },
+   {
+    "section": "Timeline intro",
+    "element": "intro.ghost",
+    "property": "rel.y",
+    "ref": 429.92,
+    "target": 397.77,
+    "delta": -32.15,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card1",
+    "property": "rel.h",
+    "ref": 365.53,
+    "target": 295.83,
+    "delta": -69.7,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card1.body",
+    "property": "rel.h",
+    "ref": 162.64,
+    "target": 92.94,
+    "delta": -69.7,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card1.button",
+    "property": "rel.y",
+    "ref": 686.53,
+    "target": 616.83,
+    "delta": -69.7,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card1.button",
+    "property": "rel.w",
+    "ref": 157.39,
+    "target": 137.53,
+    "delta": -19.86,
+    "severity": "medium"
+   },
+   {
+    "section": "Cards",
+    "element": "card2",
+    "property": "rel.h",
+    "ref": 475.55,
+    "target": 295.83,
+    "delta": -179.72,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card2.title",
+    "property": "rel.h",
+    "ref": 80.63,
+    "target": 40.31,
+    "delta": -40.32,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card2.body",
+    "property": "rel.y",
+    "ref": 1171.97,
+    "target": 1131.66,
+    "delta": -40.31,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card2.body",
+    "property": "rel.h",
+    "ref": 232.34,
+    "target": 92.94,
+    "delta": -139.4,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card2.button",
+    "property": "rel.y",
+    "ref": 1429.4,
+    "target": 1249.69,
+    "delta": -179.71,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card2.button",
+    "property": "rel.w",
+    "ref": 192.09,
+    "target": 169.64,
+    "delta": -22.45,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card3",
+    "property": "rel.h",
+    "ref": 452.31,
+    "target": 345.02,
+    "delta": -107.29,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card3.title",
+    "property": "rel.h",
+    "ref": 80.63,
+    "target": 40.31,
+    "delta": -40.32,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card3.body",
+    "property": "rel.y",
+    "ref": 1988.56,
+    "target": 1948.25,
+    "delta": -40.31,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card3.body",
+    "property": "rel.h",
+    "ref": 209.11,
+    "target": 92.94,
+    "delta": -116.17,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card3.button",
+    "property": "rel.y",
+    "ref": 2222.76,
+    "target": 2115.47,
+    "delta": -107.29,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card3.button",
+    "property": "rel.w",
+    "ref": 217.36,
+    "target": 172.11,
+    "delta": -45.25,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card4",
+    "property": "rel.h",
+    "ref": 412,
+    "target": 295.83,
+    "delta": -116.17,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card4.body",
+    "property": "rel.h",
+    "ref": 209.11,
+    "target": 92.94,
+    "delta": -116.17,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card4.button",
+    "property": "rel.y",
+    "ref": 3182.79,
+    "target": 3066.63,
+    "delta": -116.16,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card4.button",
+    "property": "rel.w",
+    "ref": 188.56,
+    "target": 179.89,
+    "delta": -8.67,
+    "severity": "medium"
+   },
+   {
+    "section": "Callout",
+    "element": "callout",
+    "property": "rel.h",
+    "ref": 764.95,
+    "target": 644.83,
+    "delta": -120.12,
+    "severity": "high"
+   },
+   {
+    "section": "Callout",
+    "element": "callout.title",
+    "property": "rel.h",
+    "ref": 185.25,
+    "target": 123.5,
+    "delta": -61.75,
+    "severity": "high"
+   },
+   {
+    "section": "Callout",
+    "element": "callout.body",
+    "property": "rel.y",
+    "ref": 373.2,
+    "target": 311.45,
+    "delta": -61.75,
+    "severity": "high"
+   },
+   {
+    "section": "Callout",
+    "element": "callout.body",
+    "property": "rel.h",
+    "ref": 175.13,
+    "target": 116.75,
+    "delta": -58.38,
+    "severity": "high"
+   },
+   {
+    "section": "Callout",
+    "element": "callout.button",
+    "property": "rel.x",
+    "ref": 97.91,
+    "target": 80.94,
+    "delta": -16.97,
+    "severity": "medium"
+   },
+   {
+    "section": "Callout",
+    "element": "callout.button",
+    "property": "rel.y",
+    "ref": 572.4,
+    "target": 452.28,
+    "delta": -120.12,
+    "severity": "high"
+   },
+   {
+    "section": "Callout",
+    "element": "callout.button",
+    "property": "rel.w",
+    "ref": 179.19,
+    "target": 213.11,
+    "delta": 33.92,
+    "severity": "high"
+   },
+   {
+    "section": "Page",
+    "element": "document",
+    "property": "breakpoints (ref only)",
+    "ref": "640px 860px~1000px 860px~1000px~1400px",
+    "target": "",
+    "delta": "—",
+    "severity": "info"
+   }
+  ],
+  "768x1024": [
+   {
+    "section": "Timeline intro",
+    "element": "timeline",
+    "property": "rel.h",
+    "ref": 8376.88,
+    "target": 8337.88,
+    "delta": -39,
+    "severity": "high"
+   },
+   {
+    "section": "Timeline intro",
+    "element": "intro",
+    "property": "rel.h",
+    "ref": 800.89,
+    "target": 761.89,
+    "delta": -39,
+    "severity": "high"
+   },
+   {
+    "section": "Timeline intro",
+    "element": "intro.text",
+    "property": "rel.h",
+    "ref": 195,
+    "target": 156,
+    "delta": -39,
+    "severity": "high"
+   },
+   {
+    "section": "Timeline intro",
+    "element": "intro.button",
+    "property": "rel.y",
+    "ref": 298.84,
+    "target": 259.84,
+    "delta": -39,
+    "severity": "high"
+   },
+   {
+    "section": "Timeline intro",
+    "element": "intro.button",
+    "property": "rel.w",
+    "ref": 186.23,
+    "target": 221.94,
+    "delta": 35.71,
+    "severity": "high"
+   },
+   {
+    "section": "Timeline intro",
+    "element": "intro.ghost",
+    "property": "rel.y",
+    "ref": 362.66,
+    "target": 323.66,
+    "delta": -39,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card1",
+    "property": "rel.h",
+    "ref": 336.41,
+    "target": 288.19,
+    "delta": -48.22,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card1.body",
+    "property": "rel.h",
+    "ref": 120.55,
+    "target": 72.33,
+    "delta": -48.22,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card1.button",
+    "property": "rel.y",
+    "ref": 1097.09,
+    "target": 1048.87,
+    "delta": -48.22,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card1.button",
+    "property": "rel.w",
+    "ref": 163.3,
+    "target": 142.39,
+    "delta": -20.91,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card2",
+    "property": "rel.h",
+    "ref": 384.63,
+    "target": 288.19,
+    "delta": -96.44,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card2.body",
+    "property": "rel.h",
+    "ref": 168.77,
+    "target": 72.33,
+    "delta": -96.44,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card2.button",
+    "property": "rel.y",
+    "ref": 2343.39,
+    "target": 2246.95,
+    "delta": -96.44,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card2.button",
+    "property": "rel.w",
+    "ref": 199.83,
+    "target": 176.19,
+    "delta": -23.64,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card3",
+    "property": "rel.h",
+    "ref": 360.52,
+    "target": 338.66,
+    "delta": -21.86,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card3.body",
+    "property": "rel.h",
+    "ref": 144.66,
+    "target": 72.33,
+    "delta": -72.33,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card3.button",
+    "property": "rel.y",
+    "ref": 3903.84,
+    "target": 3881.98,
+    "delta": -21.86,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card3.button",
+    "property": "rel.w",
+    "ref": 226.42,
+    "target": 178.78,
+    "delta": -47.64,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card4",
+    "property": "rel.h",
+    "ref": 384.63,
+    "target": 288.19,
+    "delta": -96.44,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card4.body",
+    "property": "rel.h",
+    "ref": 168.77,
+    "target": 72.33,
+    "delta": -96.44,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card4.button",
+    "property": "rel.y",
+    "ref": 5860.34,
+    "target": 5763.9,
+    "delta": -96.44,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card4.button",
+    "property": "rel.w",
+    "ref": 196.11,
+    "target": 186.97,
+    "delta": -9.14,
+    "severity": "medium"
+   },
+   {
+    "section": "Callout",
+    "element": "callout",
+    "property": "rel.h",
+    "ref": 794.16,
+    "target": 762.19,
+    "delta": -31.97,
+    "severity": "high"
+   },
+   {
+    "section": "Callout",
+    "element": "callout.body",
+    "property": "rel.h",
+    "ref": 159.84,
+    "target": 127.88,
+    "delta": -31.96,
+    "severity": "high"
+   },
+   {
+    "section": "Callout",
+    "element": "callout.button",
+    "property": "rel.x",
+    "ref": 290.88,
+    "target": 273.03,
+    "delta": -17.85,
+    "severity": "medium"
+   },
+   {
+    "section": "Callout",
+    "element": "callout.button",
+    "property": "rel.y",
+    "ref": 583.2,
+    "target": 551.23,
+    "delta": -31.97,
+    "severity": "high"
+   },
+   {
+    "section": "Callout",
+    "element": "callout.button",
+    "property": "rel.w",
+    "ref": 186.23,
+    "target": 221.94,
+    "delta": 35.71,
+    "severity": "high"
+   },
+   {
+    "section": "Page",
+    "element": "document",
+    "property": "breakpoints (ref only)",
+    "ref": "640px 860px~1000px 860px~1000px~1400px",
+    "target": "",
+    "delta": "—",
+    "severity": "info"
+   }
+  ],
+  "1280x800": [
+   {
+    "section": "Header",
+    "element": "nav.bar",
+    "property": "w",
+    "ref": 870.06,
+    "target": 832.11,
+    "delta": -37.95,
+    "severity": "high"
+   },
+   {
+    "section": "Header",
+    "element": "nav.link[0]",
+    "property": "x",
+    "ref": 356.98,
+    "target": 542.67,
+    "delta": 185.69,
+    "severity": "high"
+   },
+   {
+    "section": "Header",
+    "element": "nav.link[0]",
+    "property": "w",
+    "ref": 94.8,
+    "target": 92.61,
+    "delta": -2.19,
+    "severity": "medium"
+   },
+   {
+    "section": "Header",
+    "element": "nav.cta",
+    "property": "x",
+    "ref": 988.81,
+    "target": 950.86,
+    "delta": -37.95,
+    "severity": "high"
+   },
+   {
+    "section": "Header",
+    "element": "nav.cta",
+    "property": "w",
+    "ref": 192.44,
+    "target": 230.39,
+    "delta": 37.95,
+    "severity": "high"
+   },
+   {
+    "section": "Header",
+    "element": "nav.cta.label",
+    "property": "x",
+    "ref": 1000.44,
+    "target": 962.48,
+    "delta": -37.96,
+    "severity": "high"
+   },
+   {
+    "section": "Header",
+    "element": "nav.cta.label",
+    "property": "w",
+    "ref": 120.69,
+    "target": 158.64,
+    "delta": 37.95,
+    "severity": "high"
+   },
+   {
+    "section": "Timeline intro",
+    "element": "timeline",
+    "property": "rel.h",
+    "ref": 4744.61,
+    "target": 4709.11,
+    "delta": -35.5,
+    "severity": "high"
+   },
+   {
+    "section": "Timeline intro",
+    "element": "intro",
+    "property": "rel.h",
+    "ref": 721.52,
+    "target": 686.02,
+    "delta": -35.5,
+    "severity": "high"
+   },
+   {
+    "section": "Timeline intro",
+    "element": "intro.text",
+    "property": "rel.h",
+    "ref": 213,
+    "target": 177.5,
+    "delta": -35.5,
+    "severity": "high"
+   },
+   {
+    "section": "Timeline intro",
+    "element": "intro.button",
+    "property": "rel.y",
+    "ref": 350,
+    "target": 314.5,
+    "delta": -35.5,
+    "severity": "high"
+   },
+   {
+    "section": "Timeline intro",
+    "element": "intro.button",
+    "property": "rel.w",
+    "ref": 194.94,
+    "target": 232.89,
+    "delta": 37.95,
+    "severity": "high"
+   },
+   {
+    "section": "Timeline intro",
+    "element": "intro.ghost",
+    "property": "rel.y",
+    "ref": 415.75,
+    "target": 380.25,
+    "delta": -35.5,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card1",
+    "property": "rel.h",
+    "ref": 345.88,
+    "target": 295.47,
+    "delta": -50.41,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card1.body",
+    "property": "rel.h",
+    "ref": 126.02,
+    "target": 75.61,
+    "delta": -50.41,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card1.button",
+    "property": "rel.y",
+    "ref": 621.11,
+    "target": 570.7,
+    "delta": -50.41,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card1.button",
+    "property": "rel.w",
+    "ref": 170.58,
+    "target": 148.36,
+    "delta": -22.22,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card2",
+    "property": "rel.h",
+    "ref": 371.08,
+    "target": 295.47,
+    "delta": -75.61,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card2.body",
+    "property": "rel.h",
+    "ref": 151.22,
+    "target": 75.61,
+    "delta": -75.61,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card2.button",
+    "property": "rel.y",
+    "ref": 1299.73,
+    "target": 1224.12,
+    "delta": -75.61,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card2.button",
+    "property": "rel.w",
+    "ref": 209.39,
+    "target": 184.27,
+    "delta": -25.12,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card3",
+    "property": "rel.h",
+    "ref": 371.08,
+    "target": 322.33,
+    "delta": -48.75,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card3.body",
+    "property": "rel.h",
+    "ref": 151.22,
+    "target": 50.41,
+    "delta": -100.81,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card3.button",
+    "property": "rel.y",
+    "ref": 2075.67,
+    "target": 2026.92,
+    "delta": -48.75,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card3.button",
+    "property": "rel.w",
+    "ref": 237.64,
+    "target": 187.03,
+    "delta": -50.61,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card4",
+    "property": "rel.h",
+    "ref": 371.08,
+    "target": 270.27,
+    "delta": -100.81,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card4.body",
+    "property": "rel.h",
+    "ref": 151.22,
+    "target": 50.41,
+    "delta": -100.81,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card4.button",
+    "property": "rel.y",
+    "ref": 3137.48,
+    "target": 3036.67,
+    "delta": -100.81,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card4.button",
+    "property": "rel.w",
+    "ref": 205.44,
+    "target": 195.72,
+    "delta": -9.72,
+    "severity": "medium"
+   },
+   {
+    "section": "Callout",
+    "element": "callout",
+    "property": "rel.h",
+    "ref": 1168.03,
+    "target": 855.02,
+    "delta": -313.01,
+    "severity": "high"
+   },
+   {
+    "section": "Callout",
+    "element": "callout.body",
+    "property": "rel.h",
+    "ref": 142,
+    "target": 106.5,
+    "delta": -35.5,
+    "severity": "high"
+   },
+   {
+    "section": "Callout",
+    "element": "callout.button",
+    "property": "rel.x",
+    "ref": 542.53,
+    "target": 523.55,
+    "delta": -18.98,
+    "severity": "medium"
+   },
+   {
+    "section": "Callout",
+    "element": "callout.button",
+    "property": "rel.y",
+    "ref": 656.08,
+    "target": 620.58,
+    "delta": -35.5,
+    "severity": "high"
+   },
+   {
+    "section": "Callout",
+    "element": "callout.button",
+    "property": "rel.w",
+    "ref": 194.94,
+    "target": 232.89,
+    "delta": 37.95,
+    "severity": "high"
+   },
+   {
+    "section": "Page",
+    "element": "document",
+    "property": "breakpoints (ref only)",
+    "ref": "640px 860px~1000px 860px~1000px~1400px",
+    "target": "",
+    "delta": "—",
+    "severity": "info"
+   }
+  ],
+  "1440x900": [
+   {
+    "section": "Header",
+    "element": "nav.bar",
+    "property": "w",
+    "ref": 1009.84,
+    "target": 971.81,
+    "delta": -38.03,
+    "severity": "high"
+   },
+   {
+    "section": "Header",
+    "element": "nav.link[0]",
+    "property": "x",
+    "ref": 450.73,
+    "target": 657.91,
+    "delta": 207.18,
+    "severity": "high"
+   },
+   {
+    "section": "Header",
+    "element": "nav.link[0]",
+    "property": "w",
+    "ref": 103.45,
+    "target": 101.25,
+    "delta": -2.2,
+    "severity": "medium"
+   },
+   {
+    "section": "Header",
+    "element": "nav.cta",
+    "property": "x",
+    "ref": 1138.59,
+    "target": 1100.56,
+    "delta": -38.03,
+    "severity": "high"
+   },
+   {
+    "section": "Header",
+    "element": "nav.cta",
+    "property": "w",
+    "ref": 192.66,
+    "target": 230.69,
+    "delta": 38.03,
+    "severity": "high"
+   },
+   {
+    "section": "Header",
+    "element": "nav.cta.label",
+    "property": "x",
+    "ref": 1150.22,
+    "target": 1112.19,
+    "delta": -38.03,
+    "severity": "high"
+   },
+   {
+    "section": "Header",
+    "element": "nav.cta.label",
+    "property": "w",
+    "ref": 120.91,
+    "target": 158.94,
+    "delta": 38.03,
+    "severity": "high"
+   },
+   {
+    "section": "Timeline intro",
+    "element": "timeline",
+    "property": "rel.h",
+    "ref": 5296.42,
+    "target": 5260.73,
+    "delta": -35.69,
+    "severity": "high"
+   },
+   {
+    "section": "Timeline intro",
+    "element": "intro",
+    "property": "rel.h",
+    "ref": 770.41,
+    "target": 734.72,
+    "delta": -35.69,
+    "severity": "high"
+   },
+   {
+    "section": "Timeline intro",
+    "element": "intro.text",
+    "property": "rel.h",
+    "ref": 214.13,
+    "target": 178.44,
+    "delta": -35.69,
+    "severity": "high"
+   },
+   {
+    "section": "Timeline intro",
+    "element": "intro.button",
+    "property": "rel.y",
+    "ref": 361.13,
+    "target": 325.44,
+    "delta": -35.69,
+    "severity": "high"
+   },
+   {
+    "section": "Timeline intro",
+    "element": "intro.button",
+    "property": "rel.w",
+    "ref": 195.16,
+    "target": 233.19,
+    "delta": 38.03,
+    "severity": "high"
+   },
+   {
+    "section": "Timeline intro",
+    "element": "intro.ghost",
+    "property": "rel.y",
+    "ref": 426.88,
+    "target": 391.19,
+    "delta": -35.69,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card1",
+    "property": "rel.h",
+    "ref": 424.97,
+    "target": 374.5,
+    "delta": -50.47,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card1.body",
+    "property": "rel.h",
+    "ref": 151.41,
+    "target": 100.94,
+    "delta": -50.47,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card1.button",
+    "property": "rel.y",
+    "ref": 811.46,
+    "target": 761,
+    "delta": -50.46,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card1.button",
+    "property": "rel.w",
+    "ref": 170.73,
+    "target": 148.47,
+    "delta": -22.26,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card2",
+    "property": "rel.h",
+    "ref": 450.2,
+    "target": 349.27,
+    "delta": -100.93,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card2.body",
+    "property": "rel.h",
+    "ref": 176.64,
+    "target": 75.7,
+    "delta": -100.94,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card2.button",
+    "property": "rel.y",
+    "ref": 1479.92,
+    "target": 1378.98,
+    "delta": -100.94,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card2.button",
+    "property": "rel.w",
+    "ref": 209.64,
+    "target": 184.47,
+    "delta": -25.17,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card3",
+    "property": "rel.h",
+    "ref": 450.2,
+    "target": 401.33,
+    "delta": -48.87,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card3.body",
+    "property": "rel.h",
+    "ref": 176.64,
+    "target": 75.7,
+    "delta": -100.94,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card3.button",
+    "property": "rel.y",
+    "ref": 2398.79,
+    "target": 2349.92,
+    "delta": -48.87,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card3.button",
+    "property": "rel.w",
+    "ref": 237.95,
+    "target": 187.23,
+    "delta": -50.72,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card4",
+    "property": "rel.h",
+    "ref": 450.2,
+    "target": 349.27,
+    "delta": -100.93,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card4.body",
+    "property": "rel.h",
+    "ref": 176.64,
+    "target": 75.7,
+    "delta": -100.94,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card4.button",
+    "property": "rel.y",
+    "ref": 3547.4,
+    "target": 3446.47,
+    "delta": -100.93,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card4.button",
+    "property": "rel.w",
+    "ref": 205.67,
+    "target": 195.95,
+    "delta": -9.72,
+    "severity": "medium"
+   },
+   {
+    "section": "Callout",
+    "element": "callout",
+    "property": "rel.h",
+    "ref": 1201.98,
+    "target": 888.72,
+    "delta": -313.26,
+    "severity": "high"
+   },
+   {
+    "section": "Callout",
+    "element": "callout.body",
+    "property": "rel.h",
+    "ref": 142.75,
+    "target": 107.06,
+    "delta": -35.69,
+    "severity": "high"
+   },
+   {
+    "section": "Callout",
+    "element": "callout.button",
+    "property": "rel.x",
+    "ref": 622.42,
+    "target": 603.41,
+    "delta": -19.01,
+    "severity": "medium"
+   },
+   {
+    "section": "Callout",
+    "element": "callout.button",
+    "property": "rel.y",
+    "ref": 688.66,
+    "target": 652.97,
+    "delta": -35.69,
+    "severity": "high"
+   },
+   {
+    "section": "Callout",
+    "element": "callout.button",
+    "property": "rel.w",
+    "ref": 195.16,
+    "target": 233.19,
+    "delta": 38.03,
+    "severity": "high"
+   },
+   {
+    "section": "Page",
+    "element": "document",
+    "property": "breakpoints (ref only)",
+    "ref": "640px 860px~1000px 860px~1000px~1400px",
+    "target": "",
+    "delta": "—",
+    "severity": "info"
+   }
+  ],
+  "1920x1080": [
+   {
+    "section": "Header",
+    "element": "nav.bar",
+    "property": "w",
+    "ref": 1192.34,
+    "target": 1154.31,
+    "delta": -38.03,
+    "severity": "high"
+   },
+   {
+    "section": "Header",
+    "element": "nav.link[0]",
+    "property": "x",
+    "ref": 773.48,
+    "target": 980.66,
+    "delta": 207.18,
+    "severity": "high"
+   },
+   {
+    "section": "Header",
+    "element": "nav.link[0]",
+    "property": "w",
+    "ref": 103.45,
+    "target": 101.25,
+    "delta": -2.2,
+    "severity": "medium"
+   },
+   {
+    "section": "Header",
+    "element": "nav.cta",
+    "property": "x",
+    "ref": 1469.84,
+    "target": 1431.81,
+    "delta": -38.03,
+    "severity": "high"
+   },
+   {
+    "section": "Header",
+    "element": "nav.cta",
+    "property": "w",
+    "ref": 192.66,
+    "target": 230.69,
+    "delta": 38.03,
+    "severity": "high"
+   },
+   {
+    "section": "Header",
+    "element": "nav.cta.label",
+    "property": "x",
+    "ref": 1481.47,
+    "target": 1443.44,
+    "delta": -38.03,
+    "severity": "high"
+   },
+   {
+    "section": "Header",
+    "element": "nav.cta.label",
+    "property": "w",
+    "ref": 120.91,
+    "target": 158.94,
+    "delta": 38.03,
+    "severity": "high"
+   },
+   {
+    "section": "Timeline intro",
+    "element": "timeline",
+    "property": "rel.h",
+    "ref": 6912.66,
+    "target": 6876.97,
+    "delta": -35.69,
+    "severity": "high"
+   },
+   {
+    "section": "Timeline intro",
+    "element": "intro",
+    "property": "rel.h",
+    "ref": 878,
+    "target": 842.31,
+    "delta": -35.69,
+    "severity": "high"
+   },
+   {
+    "section": "Timeline intro",
+    "element": "intro.text",
+    "property": "rel.h",
+    "ref": 178.44,
+    "target": 142.75,
+    "delta": -35.69,
+    "severity": "high"
+   },
+   {
+    "section": "Timeline intro",
+    "element": "intro.button",
+    "property": "rel.y",
+    "ref": 355.44,
+    "target": 319.75,
+    "delta": -35.69,
+    "severity": "high"
+   },
+   {
+    "section": "Timeline intro",
+    "element": "intro.button",
+    "property": "rel.w",
+    "ref": 195.16,
+    "target": 233.19,
+    "delta": 38.03,
+    "severity": "high"
+   },
+   {
+    "section": "Timeline intro",
+    "element": "intro.ghost",
+    "property": "rel.y",
+    "ref": 421.19,
+    "target": 385.5,
+    "delta": -35.69,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card1",
+    "property": "rel.h",
+    "ref": 387.16,
+    "target": 361.92,
+    "delta": -25.24,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card1.body",
+    "property": "rel.h",
+    "ref": 100.94,
+    "target": 75.7,
+    "delta": -25.24,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card1.button",
+    "property": "rel.y",
+    "ref": 942.11,
+    "target": 916.87,
+    "delta": -25.24,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card1.button",
+    "property": "rel.w",
+    "ref": 170.73,
+    "target": 148.47,
+    "delta": -22.26,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card2",
+    "property": "rel.h",
+    "ref": 412.39,
+    "target": 336.69,
+    "delta": -75.7,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card2.body",
+    "property": "rel.h",
+    "ref": 126.17,
+    "target": 50.47,
+    "delta": -75.7,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card2.button",
+    "property": "rel.y",
+    "ref": 1855.6,
+    "target": 1779.89,
+    "delta": -75.71,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card2.button",
+    "property": "rel.w",
+    "ref": 209.64,
+    "target": 184.47,
+    "delta": -25.17,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card3",
+    "property": "rel.h",
+    "ref": 498.72,
+    "target": 413.98,
+    "delta": -84.74,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card3.title",
+    "property": "rel.h",
+    "ref": 122.19,
+    "target": 61.09,
+    "delta": -61.1,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card3.body",
+    "property": "rel.y",
+    "ref": 3081.02,
+    "target": 3019.92,
+    "delta": -61.1,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card3.body",
+    "property": "rel.h",
+    "ref": 151.41,
+    "target": 75.7,
+    "delta": -75.71,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card3.button",
+    "property": "rel.y",
+    "ref": 3258.99,
+    "target": 3174.25,
+    "delta": -84.74,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card3.button",
+    "property": "rel.w",
+    "ref": 237.95,
+    "target": 187.23,
+    "delta": -50.72,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card4",
+    "property": "rel.h",
+    "ref": 412.39,
+    "target": 336.69,
+    "delta": -75.7,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card4.body",
+    "property": "rel.h",
+    "ref": 126.17,
+    "target": 50.47,
+    "delta": -75.7,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card4.button",
+    "property": "rel.y",
+    "ref": 4581.6,
+    "target": 4505.89,
+    "delta": -75.71,
+    "severity": "high"
+   },
+   {
+    "section": "Cards",
+    "element": "card4.button",
+    "property": "rel.w",
+    "ref": 205.67,
+    "target": 195.95,
+    "delta": -9.72,
+    "severity": "medium"
+   },
+   {
+    "section": "Callout",
+    "element": "callout",
+    "property": "rel.h",
+    "ref": 1290.42,
+    "target": 977.16,
+    "delta": -313.26,
+    "severity": "high"
+   },
+   {
+    "section": "Callout",
+    "element": "callout.body",
+    "property": "rel.h",
+    "ref": 142.75,
+    "target": 107.06,
+    "delta": -35.69,
+    "severity": "high"
+   },
+   {
+    "section": "Callout",
+    "element": "callout.button",
+    "property": "rel.x",
+    "ref": 862.42,
+    "target": 843.41,
+    "delta": -19.01,
+    "severity": "medium"
+   },
+   {
+    "section": "Callout",
+    "element": "callout.button",
+    "property": "rel.y",
+    "ref": 777.09,
+    "target": 741.41,
+    "delta": -35.68,
+    "severity": "high"
+   },
+   {
+    "section": "Callout",
+    "element": "callout.button",
+    "property": "rel.w",
+    "ref": 195.16,
+    "target": 233.19,
+    "delta": 38.03,
+    "severity": "high"
+   },
+   {
+    "section": "Page",
+    "element": "document",
+    "property": "breakpoints (ref only)",
+    "ref": "640px 860px~1000px 860px~1000px~1400px",
+    "target": "",
+    "delta": "—",
+    "severity": "info"
+   }
+  ]
+ }
+}

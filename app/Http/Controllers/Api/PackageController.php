@@ -14,7 +14,7 @@ class PackageController extends Controller
 
         return response()->json([
             'message' => 'Daftar paket pendaftaran.',
-            'data'    => PackageResource::collection($packages),
+            'data' => PackageResource::collection($packages),
         ]);
     }
 }

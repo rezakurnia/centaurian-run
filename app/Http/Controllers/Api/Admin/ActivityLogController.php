@@ -18,7 +18,7 @@ class ActivityLogController extends Controller
         }
 
         if ($request->filled('action')) {
-            $query->where('action', 'like', '%' . $request->action . '%');
+            $query->where('action', 'like', '%'.$request->action.'%');
         }
 
         if ($request->filled('target_table')) {
@@ -37,12 +37,12 @@ class ActivityLogController extends Controller
 
         return response()->json([
             'message' => 'Daftar activity logs.',
-            'data'    => ActivityLogResource::collection($logs),
-            'meta'    => [
+            'data' => ActivityLogResource::collection($logs),
+            'meta' => [
                 'current_page' => $logs->currentPage(),
-                'last_page'    => $logs->lastPage(),
-                'per_page'     => $logs->perPage(),
-                'total'        => $logs->total(),
+                'last_page' => $logs->lastPage(),
+                'per_page' => $logs->perPage(),
+                'total' => $logs->total(),
             ],
         ]);
     }
@@ -51,16 +51,16 @@ class ActivityLogController extends Controller
     {
         $log = ActivityLog::with('user')->find($id);
 
-        if (!$log) {
+        if (! $log) {
             return response()->json([
                 'message' => 'Activity log tidak ditemukan.',
-                'data'    => null,
+                'data' => null,
             ], 404);
         }
 
         return response()->json([
             'message' => 'Detail activity log.',
-            'data'    => new ActivityLogResource($log),
+            'data' => new ActivityLogResource($log),
         ]);
     }
 }

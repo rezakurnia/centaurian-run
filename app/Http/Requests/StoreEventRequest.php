@@ -14,12 +14,12 @@ class StoreEventRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'        => 'required|string|max:100',
+            'name' => 'required|string|max:100',
             'description' => 'nullable|string',
-            'location'    => 'nullable|string|max:150',
-            'event_date'  => 'required|date',
-            'start_time'  => 'nullable|date',
-            'is_active'   => 'boolean',
+            'location' => 'nullable|string|max:150',
+            'event_date' => 'required|date',
+            'start_time' => 'nullable|date',
+            'is_active' => 'boolean',
         ];
     }
 }

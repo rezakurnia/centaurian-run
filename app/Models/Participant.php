@@ -3,9 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Participant extends Model
 {
@@ -17,7 +17,7 @@ class Participant extends Model
     ];
 
     protected $casts = [
-        'birth_date'    => 'date',
+        'birth_date' => 'date',
         'email_sent_at' => 'datetime',
     ];
 

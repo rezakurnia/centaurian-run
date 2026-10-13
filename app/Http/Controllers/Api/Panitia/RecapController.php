@@ -24,7 +24,7 @@ class RecapController extends Controller
 
         return response()->json([
             'message' => 'Rekap jumlah peserta per kategori.',
-            'data'    => $recap,
+            'data' => $recap,
         ]);
     }
 
@@ -36,17 +36,17 @@ class RecapController extends Controller
             ->map(function ($reg) {
                 return [
                     'registration_number' => $reg->registration_number,
-                    'full_name'           => $reg->participant->full_name ?? null,
-                    'category'            => $reg->category->name ?? null,
-                    'package'             => $reg->package->name ?? null,
+                    'full_name' => $reg->participant->full_name ?? null,
+                    'category' => $reg->category->name ?? null,
+                    'package' => $reg->package->name ?? null,
                     'registration_status' => $reg->registration_status,
-                    'payment_status'      => $reg->payment_status,
+                    'payment_status' => $reg->payment_status,
                 ];
             });
 
         return response()->json([
             'message' => 'Rekap peserta berdasarkan nomor peserta.',
-            'data'    => $recap,
+            'data' => $recap,
         ]);
     }
 }

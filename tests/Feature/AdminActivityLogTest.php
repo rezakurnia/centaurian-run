@@ -10,8 +10,11 @@ use Tests\TestCase;
 class AdminActivityLogTest extends TestCase
 {
     protected User $admin;
+
     protected User $panitia;
+
     protected string $tokenAdmin;
+
     protected string $tokenPanitia;
 
     protected function setUp(): void
@@ -21,16 +24,16 @@ class AdminActivityLogTest extends TestCase
         $this->admin = User::create([
             'username' => 'admin',
             'password' => Hash::make('admin123'),
-            'email'    => 'admin@centaurian.test',
-            'role'     => 'admin',
+            'email' => 'admin@centaurian.test',
+            'role' => 'admin',
         ]);
         $this->tokenAdmin = $this->admin->createToken('test')->plainTextToken;
 
         $this->panitia = User::create([
             'username' => 'panitia',
             'password' => Hash::make('panitia123'),
-            'email'    => 'panitia@centaurian.test',
-            'role'     => 'panitia',
+            'email' => 'panitia@centaurian.test',
+            'role' => 'panitia',
         ]);
         $this->tokenPanitia = $this->panitia->createToken('test')->plainTextToken;
     }
@@ -52,14 +55,14 @@ class AdminActivityLogTest extends TestCase
         ?string $createdAt = null
     ): ActivityLog {
         return ActivityLog::create([
-            'user_id'      => $userId ?? $this->admin->id,
-            'action'       => $action,
+            'user_id' => $userId ?? $this->admin->id,
+            'action' => $action,
             'target_table' => $table,
-            'target_id'    => 1,
-            'detail'       => "Detail untuk {$action}",
-            'ip_address'   => '127.0.0.1',
-            'user_agent'   => 'PHPUnit',
-            'created_at'   => $createdAt ?? now(),
+            'target_id' => 1,
+            'detail' => "Detail untuk {$action}",
+            'ip_address' => '127.0.0.1',
+            'user_agent' => 'PHPUnit',
+            'created_at' => $createdAt ?? now(),
         ]);
     }
 
@@ -118,7 +121,7 @@ class AdminActivityLogTest extends TestCase
         $this->buatLog('update_content', $this->panitia->id, 'contents');
 
         $response = $this->withHeaders($this->adminHeaders())
-            ->getJson('/api/admin/activity-logs?user_id=' . $this->panitia->id);
+            ->getJson('/api/admin/activity-logs?user_id='.$this->panitia->id);
 
         $response->assertStatus(200)
             ->assertJsonCount(1, 'data')

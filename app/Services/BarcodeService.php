@@ -8,6 +8,6 @@ class BarcodeService
 {
     public function generate(string $registrationNumber): string
     {
-        return strtoupper(Str::random(8)) . '-' . $registrationNumber;
+        return strtoupper(Str::random(8)).'-'.$registrationNumber;
     }
 }

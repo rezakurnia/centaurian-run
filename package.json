@@ -15,5 +15,10 @@
     },
     "optionalDependencies": {
         "@laravel/multiplex": "^0.4.1"
+    },
+    "dependencies": {
+        "@rive-app/canvas-lite": "2.31.5",
+        "gsap": "^3.15.0",
+        "locomotive-scroll": "^5.0.1"
     }
 }

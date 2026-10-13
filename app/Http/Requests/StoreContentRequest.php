@@ -15,11 +15,11 @@ class StoreContentRequest extends FormRequest
     {
         return [
             'target_site' => 'required|in:utama,panitia',
-            'section'     => 'nullable|string|max:50',
-            'title'       => 'nullable|string|max:150',
-            'body'        => 'nullable|string',
-            'status'      => 'required|in:draft,published',
-            'sort_order'  => 'nullable|integer',
+            'section' => 'nullable|string|max:50',
+            'title' => 'nullable|string|max:150',
+            'body' => 'nullable|string',
+            'status' => 'required|in:draft,published',
+            'sort_order' => 'nullable|integer',
         ];
     }
 }

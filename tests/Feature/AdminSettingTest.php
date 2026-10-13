@@ -10,8 +10,11 @@ use Tests\TestCase;
 class AdminSettingTest extends TestCase
 {
     protected User $admin;
+
     protected User $panitia;
+
     protected string $tokenAdmin;
+
     protected string $tokenPanitia;
 
     protected function setUp(): void
@@ -21,16 +24,16 @@ class AdminSettingTest extends TestCase
         $this->admin = User::create([
             'username' => 'admin',
             'password' => Hash::make('admin123'),
-            'email'    => 'admin@centaurian.test',
-            'role'     => 'admin',
+            'email' => 'admin@centaurian.test',
+            'role' => 'admin',
         ]);
         $this->tokenAdmin = $this->admin->createToken('test')->plainTextToken;
 
         $this->panitia = User::create([
             'username' => 'panitia',
             'password' => Hash::make('panitia123'),
-            'email'    => 'panitia@centaurian.test',
-            'role'     => 'panitia',
+            'email' => 'panitia@centaurian.test',
+            'role' => 'panitia',
         ]);
         $this->tokenPanitia = $this->panitia->createToken('test')->plainTextToken;
     }
@@ -58,7 +61,7 @@ class AdminSettingTest extends TestCase
     {
         $response = $this->withHeaders($this->adminHeaders())
             ->postJson('/api/admin/settings', [
-                'key'   => 'app_name',
+                'key' => 'app_name',
                 'value' => 'Centaurian FunRun 2026',
             ]);
 
@@ -67,7 +70,7 @@ class AdminSettingTest extends TestCase
             ->assertJsonPath('data.value', 'Centaurian FunRun 2026');
 
         $this->assertDatabaseHas('settings', [
-            'key'   => 'app_name',
+            'key' => 'app_name',
             'value' => 'Centaurian FunRun 2026',
         ]);
     }
@@ -78,7 +81,7 @@ class AdminSettingTest extends TestCase
 
         $response = $this->withHeaders($this->adminHeaders())
             ->postJson('/api/admin/settings', [
-                'key'   => 'app_name',
+                'key' => 'app_name',
                 'value' => 'B',
             ]);
 
@@ -129,7 +132,7 @@ class AdminSettingTest extends TestCase
             ->assertJsonPath('data.value', 'Baru');
 
         $this->assertDatabaseHas('settings', [
-            'key'   => 'app_name',
+            'key' => 'app_name',
             'value' => 'Baru',
         ]);
     }

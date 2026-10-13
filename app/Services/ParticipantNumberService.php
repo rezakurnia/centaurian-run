@@ -18,11 +18,11 @@ class ParticipantNumberService
                 ->max('sequence_number') ?? 0;
 
             $nextSequence = $lastSequence + 1;
-            $number = $category->code . '-' . str_pad($nextSequence, 4, '0', STR_PAD_LEFT);
+            $number = $category->code.'-'.str_pad($nextSequence, 4, '0', STR_PAD_LEFT);
 
             return [
                 'registration_number' => $number,
-                'sequence_number'     => $nextSequence,
+                'sequence_number' => $nextSequence,
             ];
         });
     }

@@ -17,7 +17,7 @@ class ContentController extends Controller
 
         return response()->json([
             'message' => 'Daftar konten website utama.',
-            'data'    => ContentResource::collection($contents),
+            'data' => ContentResource::collection($contents),
         ]);
     }
 }

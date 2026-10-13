@@ -15,10 +15,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 
-
 class DataController extends Controller
 {
-    use LogsActivity;    
+    use LogsActivity;
+
     public function participants(Request $request)
     {
         $query = Participant::with(['registrations.category', 'registrations.package']);
@@ -33,10 +33,10 @@ class DataController extends Controller
             $search = $request->search;
             $query->where(function ($q) use ($search) {
                 $q->where('full_name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%")
-                  ->orWhereHas('registrations', function ($sub) use ($search) {
-                      $sub->where('registration_number', 'like', "%{$search}%");
-                  });
+                    ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhereHas('registrations', function ($sub) use ($search) {
+                        $sub->where('registration_number', 'like', "%{$search}%");
+                    });
             });
         }
 
@@ -44,7 +44,7 @@ class DataController extends Controller
 
         return response()->json([
             'message' => 'Daftar peserta.',
-            'data'    => ParticipantResource::collection($participants),
+            'data' => ParticipantResource::collection($participants),
         ]);
     }
 
@@ -68,7 +68,7 @@ class DataController extends Controller
 
         return response()->json([
             'message' => 'Daftar pendaftaran.',
-            'data'    => RegistrationResource::collection($registrations),
+            'data' => RegistrationResource::collection($registrations),
         ]);
     }
 
@@ -77,61 +77,61 @@ class DataController extends Controller
         $registration = Registration::with(['participant', 'category', 'package', 'event'])
             ->find($id);
 
-        if (!$registration) {
+        if (! $registration) {
             return response()->json([
                 'message' => 'Pendaftaran tidak ditemukan.',
-                'data'    => null,
+                'data' => null,
             ], 404);
         }
 
         return response()->json([
             'message' => 'Detail pendaftaran.',
-            'data'    => new RegistrationResource($registration),
+            'data' => new RegistrationResource($registration),
         ]);
     }
 
     public function verifyRegistration(VerifyRegistrationRequest $request, string $id)
     {
-    $registration = Registration::with(['participant', 'category', 'package', 'event'])->find($id);
+        $registration = Registration::with(['participant', 'category', 'package', 'event'])->find($id);
 
-    if (!$registration) {
+        if (! $registration) {
+            return response()->json([
+                'message' => 'Pendaftaran tidak ditemukan.',
+                'data' => null,
+            ], 404);
+        }
+
+        $registration->update([
+            'registration_status' => $request->registration_status,
+            'payment_status' => $request->payment_status,
+            'verified_by' => $request->user()->id,
+            'verified_at' => now(),
+        ]);
+
+        // Kirim email notifikasi
+        try {
+            Mail::to($registration->participant->email)
+                ->send(new RegistrationVerifiedMail($registration->fresh()));
+        } catch (\Exception $e) {
+            // Log error, tapi jangan gagalkan request
+            \Log::error('Gagal kirim email verifikasi: '.$e->getMessage());
+        }
+        $this->logActivity(
+            'verify_registration',
+            'registrations',
+            $registration->id,
+            "Verifikasi pendaftaran {$registration->registration_number}: {$request->registration_status}, {$request->payment_status}"
+        );
+
         return response()->json([
-            'message' => 'Pendaftaran tidak ditemukan.',
-            'data'    => null,
-        ], 404);
-    }
-
-    $registration->update([
-        'registration_status' => $request->registration_status,
-        'payment_status'      => $request->payment_status,
-        'verified_by'         => $request->user()->id,
-        'verified_at'         => now(),
-    ]);
-
-    // Kirim email notifikasi
-    try {
-        Mail::to($registration->participant->email)
-            ->send(new RegistrationVerifiedMail($registration->fresh()));
-    } catch (\Exception $e) {
-        // Log error, tapi jangan gagalkan request
-        \Log::error('Gagal kirim email verifikasi: ' . $e->getMessage());
-    }
-    $this->logActivity(
-    'verify_registration',
-    'registrations',
-    $registration->id,
-    "Verifikasi pendaftaran {$registration->registration_number}: {$request->registration_status}, {$request->payment_status}"
-    );
-
-    return response()->json([
-        'message' => 'Pendaftaran berhasil diverifikasi. Email notifikasi telah dikirim ke peserta.',
-        'data'    => new RegistrationResource($registration->fresh()),
-    ]);
+            'message' => 'Pendaftaran berhasil diverifikasi. Email notifikasi telah dikirim ke peserta.',
+            'data' => new RegistrationResource($registration->fresh()),
+        ]);
     }
 
     public function dashboard()
     {
-        $totalParticipants  = Participant::count();
+        $totalParticipants = Participant::count();
         $totalRegistrations = Registration::count();
 
         $byCategory = Category::leftJoin('registrations', 'registrations.category_id', '=', 'categories.id')
@@ -155,11 +155,11 @@ class DataController extends Controller
 
         return response()->json([
             'message' => 'Ringkasan data untuk dashboard admin.',
-            'data'    => [
-                'total_participants'     => $totalParticipants,
-                'total_registrations'    => $totalRegistrations,
-                'by_category'            => $byCategory,
-                'by_payment_status'      => $byPayment,
+            'data' => [
+                'total_participants' => $totalParticipants,
+                'total_registrations' => $totalRegistrations,
+                'by_category' => $byCategory,
+                'by_payment_status' => $byPayment,
                 'by_registration_status' => $byRegistrationStatus,
             ],
         ]);

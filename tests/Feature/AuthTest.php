@@ -8,8 +8,6 @@ use Tests\TestCase;
 
 class AuthTest extends TestCase
 {
-   
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -17,15 +15,15 @@ class AuthTest extends TestCase
         User::create([
             'username' => 'admin',
             'password' => Hash::make('admin123'),
-            'email'    => 'admin@centaurian.test',
-            'role'     => 'admin',
+            'email' => 'admin@centaurian.test',
+            'role' => 'admin',
         ]);
 
         User::create([
             'username' => 'panitia',
             'password' => Hash::make('panitia123'),
-            'email'    => 'panitia@centaurian.test',
-            'role'     => 'panitia',
+            'email' => 'panitia@centaurian.test',
+            'role' => 'panitia',
         ]);
     }
 

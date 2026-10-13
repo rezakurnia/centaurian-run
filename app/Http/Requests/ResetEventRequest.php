@@ -16,7 +16,7 @@ class ResetEventRequest extends FormRequest
     {
         return [
             'confirmation' => 'required|string|in:RESET',
-            'password'     => 'required|string',
+            'password' => 'required|string',
         ];
     }
 
@@ -24,8 +24,8 @@ class ResetEventRequest extends FormRequest
     {
         return [
             'confirmation.required' => 'Konfirmasi wajib diisi.',
-            'confirmation.in'       => 'Ketik "RESET" (huruf kapital) untuk konfirmasi.',
-            'password.required'     => 'Password admin wajib diisi.',
+            'confirmation.in' => 'Ketik "RESET" (huruf kapital) untuk konfirmasi.',
+            'password.required' => 'Password admin wajib diisi.',
         ];
     }
 
@@ -34,7 +34,7 @@ class ResetEventRequest extends FormRequest
         $validator->after(function ($validator) {
             if ($this->filled('password')) {
                 $user = $this->user();
-                if (!$user || !Hash::check($this->password, $user->password)) {
+                if (! $user || ! Hash::check($this->password, $user->password)) {
                     $validator->errors()->add(
                         'password',
                         'Password admin salah.'

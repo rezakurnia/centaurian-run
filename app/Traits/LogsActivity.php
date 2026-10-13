@@ -14,14 +14,14 @@ trait LogsActivity
         ?string $detail = null
     ): void {
         ActivityLog::create([
-            'user_id'      => Auth::id(),
-            'action'       => $action,
+            'user_id' => Auth::id(),
+            'action' => $action,
             'target_table' => $targetTable,
-            'target_id'    => $targetId,
-            'detail'       => $detail,
-            'ip_address'   => request()->ip(),
-            'user_agent'   => request()->userAgent(),
-            'created_at'   => now(),
+            'target_id' => $targetId,
+            'detail' => $detail,
+            'ip_address' => request()->ip(),
+            'user_agent' => request()->userAgent(),
+            'created_at' => now(),
         ]);
     }
 }

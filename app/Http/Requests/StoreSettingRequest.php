@@ -14,7 +14,7 @@ class StoreSettingRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'key'   => 'required|string|max:50|unique:settings,key',
+            'key' => 'required|string|max:50|unique:settings,key',
             'value' => 'nullable|string',
         ];
     }

@@ -12,7 +12,7 @@ class Event extends Model
     protected $casts = [
         'event_date' => 'date',
         'start_time' => 'datetime',
-        'is_active'  => 'boolean',
+        'is_active' => 'boolean',
     ];
 
     public function registrations(): HasMany

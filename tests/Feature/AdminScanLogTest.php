@@ -11,8 +11,11 @@ use Tests\TestCase;
 class AdminScanLogTest extends TestCase
 {
     protected User $admin;
+
     protected User $panitia;
+
     protected string $tokenAdmin;
+
     protected string $tokenPanitia;
 
     protected function setUp(): void
@@ -22,16 +25,16 @@ class AdminScanLogTest extends TestCase
         $this->admin = User::create([
             'username' => 'admin',
             'password' => Hash::make('admin123'),
-            'email'    => 'admin@centaurian.test',
-            'role'     => 'admin',
+            'email' => 'admin@centaurian.test',
+            'role' => 'admin',
         ]);
         $this->tokenAdmin = $this->admin->createToken('test')->plainTextToken;
 
         $this->panitia = User::create([
             'username' => 'panitia',
             'password' => Hash::make('panitia123'),
-            'email'    => 'panitia@centaurian.test',
-            'role'     => 'panitia',
+            'email' => 'panitia@centaurian.test',
+            'role' => 'panitia',
         ]);
         $this->tokenPanitia = $this->panitia->createToken('test')->plainTextToken;
     }
@@ -54,12 +57,12 @@ class AdminScanLogTest extends TestCase
     ): ScanLog {
         return ScanLog::create([
             'participant_id' => $participantId,
-            'barcode'        => $barcode,
-            'scan_status'    => $status,
-            'scanned_by'     => $this->panitia->id,
-            'ip_address'     => '127.0.0.1',
-            'user_agent'     => 'PHPUnit',
-            'scanned_at'     => $scannedAt ?? now(),
+            'barcode' => $barcode,
+            'scan_status' => $status,
+            'scanned_by' => $this->panitia->id,
+            'ip_address' => '127.0.0.1',
+            'user_agent' => 'PHPUnit',
+            'scanned_at' => $scannedAt ?? now(),
         ]);
     }
 
@@ -131,7 +134,7 @@ class AdminScanLogTest extends TestCase
     {
         $participant = Participant::create([
             'full_name' => 'Budi Santoso',
-            'email'     => 'budi@example.com',
+            'email' => 'budi@example.com',
         ]);
 
         $log = $this->buatLog('BUDI-SW-0001', 'valid', $participant->id);

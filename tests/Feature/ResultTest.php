@@ -13,10 +13,15 @@ use Tests\TestCase;
 class ResultTest extends TestCase
 {
     protected Event $event;
+
     protected Category $categorySiswa;
+
     protected Category $categoryGuru;
+
     protected Package $package;
+
     protected Registration $regSiswa;
+
     protected Registration $regGuru;
 
     protected function setUp(): void
@@ -24,48 +29,48 @@ class ResultTest extends TestCase
         parent::setUp();
 
         $this->event = Event::create([
-            'name'       => 'Centaurian FunRun 2026',
+            'name' => 'Centaurian FunRun 2026',
             'event_date' => '2026-05-15',
             'start_time' => now()->subMinutes(30),
-            'is_active'  => true,
+            'is_active' => true,
         ]);
 
         $this->categorySiswa = Category::create(['name' => 'Siswa', 'code' => 'SW']);
-        $this->categoryGuru  = Category::create(['name' => 'Guru Karyawan', 'code' => 'GK']);
-        $this->package       = Package::create(['name' => 'Paket 100K', 'price' => 100000]);
+        $this->categoryGuru = Category::create(['name' => 'Guru Karyawan', 'code' => 'GK']);
+        $this->package = Package::create(['name' => 'Paket 100K', 'price' => 100000]);
 
         // Registrasi Siswa
         $participantSiswa = Participant::create([
             'full_name' => 'Budi Santoso',
-            'email'     => 'budi@example.com',
+            'email' => 'budi@example.com',
         ]);
         $this->regSiswa = Registration::create([
             'registration_number' => 'SW-0001',
-            'sequence_number'     => 1,
-            'barcode'             => 'BUDI-SW-0001',
-            'participant_id'      => $participantSiswa->id,
-            'event_id'            => $this->event->id,
-            'category_id'         => $this->categorySiswa->id,
-            'package_id'          => $this->package->id,
+            'sequence_number' => 1,
+            'barcode' => 'BUDI-SW-0001',
+            'participant_id' => $participantSiswa->id,
+            'event_id' => $this->event->id,
+            'category_id' => $this->categorySiswa->id,
+            'package_id' => $this->package->id,
             'registration_status' => 'confirmed',
-            'payment_status'      => 'paid',
+            'payment_status' => 'paid',
         ]);
 
         // Registrasi Guru
         $participantGuru = Participant::create([
             'full_name' => 'Ibu Sari',
-            'email'     => 'sari@example.com',
+            'email' => 'sari@example.com',
         ]);
         $this->regGuru = Registration::create([
             'registration_number' => 'GK-0001',
-            'sequence_number'     => 1,
-            'barcode'             => 'SARI-GK-0001',
-            'participant_id'      => $participantGuru->id,
-            'event_id'            => $this->event->id,
-            'category_id'         => $this->categoryGuru->id,
-            'package_id'          => $this->package->id,
+            'sequence_number' => 1,
+            'barcode' => 'SARI-GK-0001',
+            'participant_id' => $participantGuru->id,
+            'event_id' => $this->event->id,
+            'category_id' => $this->categoryGuru->id,
+            'package_id' => $this->package->id,
             'registration_status' => 'confirmed',
-            'payment_status'      => 'paid',
+            'payment_status' => 'paid',
         ]);
     }
 
@@ -73,12 +78,12 @@ class ResultTest extends TestCase
     {
         return Result::create([
             'registration_id' => $reg->id,
-            'participant_id'  => $reg->participant_id,
-            'event_id'        => $reg->event_id,
-            'start_time'      => now()->subMinutes(30),
-            'finish_time'     => now()->subMinutes(30)->addSeconds($duration),
-            'duration'        => $duration,
-            'scan_status'     => $status,
+            'participant_id' => $reg->participant_id,
+            'event_id' => $reg->event_id,
+            'start_time' => now()->subMinutes(30),
+            'finish_time' => now()->subMinutes(30)->addSeconds($duration),
+            'duration' => $duration,
+            'scan_status' => $status,
         ]);
     }
 
@@ -115,7 +120,7 @@ class ResultTest extends TestCase
         $this->createResult($this->regSiswa, 220);
         $this->createResult($this->regGuru, 300);
 
-        $response = $this->getJson('/api/results?category_id=' . $this->categorySiswa->id);
+        $response = $this->getJson('/api/results?category_id='.$this->categorySiswa->id);
 
         $response->assertStatus(200)
             ->assertJsonCount(1, 'data')
