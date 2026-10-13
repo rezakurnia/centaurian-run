@@ -115,11 +115,15 @@ class RegistrationController extends Controller
 
     public function checkStatus(CheckRegistrationStatusRequest $request)
     {
-        $query = Registration::with(['participant', 'category', 'package', 'event'])
-            ->where('registration_number', $request->registration_number)
-            ->whereHas('participant', function ($q) use ($request) {
+        $query = Registration::with(['participant', 'category', 'package', 'event']);
+
+        if ($request->filled('registration_number')) {
+            $query->where('registration_number', $request->registration_number);
+        } else {
+            $query->whereHas('participant', function ($q) use ($request) {
                 $q->where('email', $request->email);
             });
+        }
 
         $registrations = $query->orderBy('created_at', 'desc')->get();
 
