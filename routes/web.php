@@ -41,3 +41,6 @@ Route::view('/admin/peserta', 'console.peserta', ['role' => 'admin']);
 foreach (['event' => ['Event', 'events'], 'konten' => ['Konten', 'contents'], 'pengguna' => ['Pengguna', 'users'], 'pengaturan' => ['Pengaturan', 'settings']] as $slug => [$title, $resource]) {
     Route::view("/admin/$slug", 'console.crud', ['role' => 'admin', 'title' => $title, 'resource' => $resource]);
 }
+Route::view('/admin/scan-log', 'console.logs', ['role' => 'admin', 'title' => 'Log scan', 'log' => 'scan']);
+Route::view('/admin/log-aktivitas', 'console.logs', ['role' => 'admin', 'title' => 'Log aktivitas', 'log' => 'activity']);
+Route::view('/admin/ekspor', 'console.ekspor', ['role' => 'admin']);
