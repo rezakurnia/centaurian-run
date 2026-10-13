@@ -107,14 +107,8 @@ function measure({ probes, anchors, boxProps, textProps, side }) {
 /** Runs in the page (parity mode): copies the reference's copy into the target so that
  *  geometry can be compared independent of text length. Layout, not content, is under test. */
 function applyParity({ probes, copy }) {
-  // Target-only content (data-driven lists/schedule) and the reference-only stats row would otherwise
-  // change card/callout heights; drop the former, mirror the latter with an empty placeholder row.
+  // Target-only content (data-driven lists/schedule) would otherwise change card heights; drop it.
   document.querySelectorAll('.c-tile-animated_inner > :is(ul, dl)').forEach((e) => e.remove());
-  const callout = document.querySelector('c-deluxe-callout .col-span-full');
-  if (callout && innerWidth >= 1000 && !callout.querySelector('[data-parity-row]')) {
-    callout.insertAdjacentHTML('beforeend', '<div data-parity-row class="max-md:hidden" style="visibility:hidden;display:grid;grid-template-columns:repeat(3,1fr);gap:var(--spacing-gutter);margin-top:calc(var(--spacing)*60);font-size:var(--text-md);letter-spacing:-.04em;line-height:1.25"><div>x</div><div>x</div><div>x</div></div>');
-  }
-  const visible = (el) => { const r = el.getBoundingClientRect(); return r.width > 0 && r.height > 0; };
   for (const p of probes) {
     const c = copy[p.key];
     if (!c) continue;

@@ -119,16 +119,13 @@
             <div class="c-hero-home_container container">
                 <div class="c-hero-home_content">
                     <div class="anim-first-hit -delay-2"><h1 class="c-hero-home_title">{{ $heroTop }}@if ($heroBottom)<br>{{ $heroBottom }}@endif</h1></div>
-                    <div class="anim-first-hit -delay-1">
-                        <p class="c-hero-home_tagline">
-                            @if ($event)
-                                {{ $date }}@if ($event->location) · {{ $event->location }}@endif
-                            @else
-                                Segera hadir
-                            @endif
-                        </p>
-                    </div>
-                    <div class="c-hero-home_cta anim-first-hit -delay-3">@include('partials.btn', ['href' => '#paket', 'label' => 'Daftar sekarang', 'color' => 'green'])</div>
+                    @if ($event)
+                        <div class="anim-first-hit -delay-1">
+                            <p class="c-hero-home_tagline">{{ $date }}@if ($event->location) · {{ $event->location }}@endif</p>
+                        </div>
+                    @endif
+                    {{-- With an event the CTA hangs below the tagline; without one it takes the tagline's slot --}}
+                    <div class="c-hero-home_cta {{ $event ? '-below' : '' }} anim-first-hit -delay-{{ $event ? 3 : 1 }}">@include('partials.btn', ['href' => '#paket', 'label' => 'Daftar sekarang', 'color' => 'green'])</div>
                 </div>
             </div>
         </div>
@@ -380,6 +377,13 @@
                         </p>
                         @include('partials.btn', ['href' => '#paket', 'label' => 'Daftar sekarang', 'color' => 'green', 'attributes' => 'data-deluxe-callout-action="true" data-callout-action'])
                     </div>
+
+                    {{-- Footer row: same position and style as the reference's three taglines under the CTA --}}
+                    <footer class="body-md mt-fluid-2xl grid gap-gutter text-center md:mt-60 md:grid-cols-3">
+                        <div>Centaurian Run</div>
+                        <div>Fun run keluarga besar Alfa Centauri: siswa, guru, alumni, dan orang tua lari bersama.</div>
+                        <div>© {{ now()->year }} Alcent Centaurian Run. All rights reserved.</div>
+                    </footer>
                 </div>
             </div>
         </div>
@@ -398,28 +402,6 @@
         </div>
     </c-deluxe-callout>
 </main>
-
-{{-- Footer Accent Block (MindMarket Style Reference: #f5e211 Sunshine Pop closing surface) --}}
-<footer class="relative w-full bg-yellow py-16 sm:py-20 px-6 text-center text-charcoal">
-    <div class="mx-auto max-w-[1200px] flex flex-col items-center gap-4">
-        <div class="flex items-center gap-3 text-[1.25rem] font-medium tracking-[-0.04em]">
-            <span class="grid size-9 place-items-center rounded-[10px] bg-white">
-                <svg width="22" height="22" viewBox="0 0 36 36" aria-hidden="true">
-                    <path d="M30 11a14 14 0 1 0 1 13" fill="none" stroke="var(--color-green)" stroke-width="5" stroke-linecap="round"/>
-                    <path d="M11 22c3-6 7-8 13-8" fill="none" stroke="var(--color-charcoal)" stroke-width="3" stroke-linecap="round"/>
-                    <circle cx="27" cy="14" r="3" fill="var(--color-charcoal)"/>
-                </svg>
-            </span>
-            <span>Centaurian Run</span>
-        </div>
-        <p class="text-[15px] max-w-md leading-relaxed text-charcoal opacity-85">
-            Fun run keluarga besar Alfa Centauri — siswa, guru, alumni, dan orang tua lari bersama.
-        </p>
-        <p class="text-[14px] text-charcoal font-medium mt-2 opacity-65">
-            © {{ now()->year }} Alcent Centaurian Run. All rights reserved.
-        </p>
-    </div>
-</footer>
 
 </body>
 </html>

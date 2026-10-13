@@ -23,7 +23,7 @@ Tokens live in `resources/css/app.css` (`@theme` and `:root`). Values are measur
 | Pure Ink | `#000000` | `--color-pure-ink` | Icon fills, body text on light surfaces, high-contrast borders where maximum contrast is needed. |
 | Sky Pop | `#2ba0ff` | `--color-sky-pop` (`--color-blue`) | Decorative illustration accent and card border accent; Jadwal card button. |
 | Coral Pop | `#ff705d` | `--color-coral-pop` (`--color-red`) | Red outline accent for tags, dividers, and Kategori card CTA button. |
-| Sunshine Pop | `#f5e211` | `--color-sunshine-pop` (`--color-yellow`) | Footer accent block highlight, Paket card button, warm closing band. |
+| Sunshine Pop | `#f5e211` | `--color-sunshine-pop` (`--color-yellow`) | Paket card button, hover fill of the nav CTA. |
 | Blossom Pop | `#ebc1ff` | `--color-pink` | Decorative card accent; Hasil card button. |
 | Forest Back / Middle | `#6fb846` / `#b5e590` | `--color-green-600` / `--color-green-300` | Timeline end hill layers. |
 
@@ -90,11 +90,9 @@ Fluid root font-size: `--text-md` (16 → 17px) by default, 15px from 1000 to 11
 ### 4. Content Card (`.c-homepage-timeline-cards` > `.c-tile-animated`)
 - White (`#ffffff`) panel, **10px radius**, `heading-md`/`heading-sm` title, `body-lg` copy, button at the bottom. Flat (no shadow).
 
-### 5. Footer Accent Block
-- **Role:** Footer highlight surface.
-- Full-width **#f5e211 Sunshine Pop** yellow fill section at the page bottom.
-- 50px+ vertical padding (`py-16 md:py-20`).
-- Serves as the warm closing band contrasting sharply with the cream canvas.
+### 5. Footer Row
+- **Role:** Closing line inside the green callout, under the CTA (no separate footer block).
+- Three centred columns (`body-md`, `md:grid-cols-3`, 60 × `--spacing` above on desktop; stacked below 1000px), text in `#2c2e2a`.
 
 ---
 

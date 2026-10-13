@@ -655,8 +655,9 @@ html.has-menu-mobile-open .c-menu-mobile_nav_contact { opacity: 1; transform: tr
 }
 /* Keep the hero CTA from showing through the open mobile menu */
 html.has-menu-mobile-open .c-hero-home_cta { visibility: hidden; }
-/* The CTA hangs below the tagline without taking part in the vertical centring. */
-.c-hero-home_cta { position: absolute; top: 100%; left: 0; right: 0; display: flex; justify-content: center; margin-top: calc(var(--spacing) * 8); }
+/* With a tagline the CTA hangs below it without taking part in the vertical centring; otherwise it sits in the tagline's slot. */
+.c-hero-home_cta { display: flex; justify-content: center; }
+.c-hero-home_cta.-below { position: absolute; top: 100%; left: 0; right: 0; margin-top: calc(var(--spacing) * 8); }
 
 /* Scroll-progress transform: [data-scroll-css-progress] sets --progress (0 to 1) on the element */
 .transform-element {
