@@ -21,33 +21,35 @@
     --font-sans: 'Inter', sans-serif;
 
     /* Colors */
-    --color-fresh-grass: #8ed462;
-    --color-cream-paper: #f5f1e4;
-    --color-ink-black: #2c2e2a;
+    --color-rose-pop: #ea6592;
+    --color-sand-cream: #fff6e5;
+    --color-plum-night: #3a1f3f;
     --color-pure-white: #ffffff;
-    --color-sandstone: #e0dbce;
-    --color-stone-gray: #80827f;
-    --color-hairline-mist: #d5d5d4;
+    --color-sand: #f3d9a8;
+    --color-mauve-gray: #7a6580;
+    --color-hairline-mist: #e8d9dd;
     --color-pure-ink: #000000;
-    --color-sky-pop: #2ba0ff;
-    --color-coral-pop: #ff705d;
-    --color-sunshine-pop: #f5e211;
+    --color-orchid: #b5568b;
+    --color-peach: #f2a28e;
+    --color-logo-yellow: #fdea00;
+    --color-grape: #8b4a80;
+    --color-marigold: #eec15a;
 
-    /* Aliases used by the markup */
-    --color-green: var(--color-fresh-grass);
-    --color-green-600: #6fb846;
-    --color-green-300: #b5e590;
-    --color-beige: var(--color-cream-paper);
-    --color-beige-400: #f5f1e4;
-    --color-beige-500: var(--color-sandstone);
-    --color-beige-600: #c2bcad;
-    --color-charcoal: var(--color-ink-black);
+    /* Aliases used by the markup (names kept from the previous palette) */
+    --color-green: var(--color-rose-pop);
+    --color-green-600: #c94f7e;
+    --color-green-300: #f6a9c0;
+    --color-beige: var(--color-sand-cream);
+    --color-beige-400: var(--color-sand-cream);
+    --color-beige-500: var(--color-sand);
+    --color-beige-600: #e2c48c;
+    --color-charcoal: var(--color-plum-night);
     --color-primary: var(--color-charcoal);
-    --color-yellow: var(--color-sunshine-pop);
-    --color-yellow-600: #f9d314;
-    --color-red: var(--color-coral-pop);
-    --color-blue: var(--color-sky-pop);
-    --color-pink: #ebc1ff;
+    --color-yellow: var(--color-logo-yellow);
+    --color-yellow-600: var(--color-marigold);
+    --color-red: var(--color-peach);
+    --color-blue: var(--color-orchid);
+    --color-pink: #f9c9da;
 
     /* Radii (--radius-lg widens to 50px from md up, see :root below) */
     --radius-sm: 10px;
@@ -84,6 +86,7 @@
 }
 
 :root {
+    --gradient-hero: linear-gradient(160deg, var(--color-rose-pop) 0%, var(--color-peach) 55%, var(--color-marigold) 100%);
     --unit-md: 20px;
     --grid-margin: var(--spacing-gutter);
     --grid-gutter: var(--spacing-gutter);
@@ -583,10 +586,10 @@ html.has-menu-mobile-open .c-menu-mobile_nav_contact { opacity: 1; transform: tr
         min-height: calc(100svh + var(--radius-lg));
         margin-bottom: calc(var(--radius-lg) * -1);
         overflow: hidden;
-        background-color: var(--color-green);
+        background: var(--gradient-hero);
     }
 }
-.c-hero-home_inner { background-color: var(--color-green); }
+.c-hero-home_inner { background: var(--gradient-hero); }
 @media (width >= 1000px) {
     .c-hero-home_inner::before {
         content: '';

@@ -145,8 +145,8 @@
                                 </div>
                             </c-rive>
                             <img src="/timeline/hero-background-illustration.svg" alt="" class="c-homepage-timeline_intro_illustration_background" width="971" height="540" aria-hidden="true" fetchpriority="high">
-                            <svg aria-hidden="true" focusable="false" class="c-homepage-timeline_intro_path max-md:hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 824.5 590.8"><path fill="none" stroke="#8ED462" stroke-linecap="round" stroke-width="500" d="M549.4,251c-48.6,7.1-94.8,16.2-138.5,27.3-52.2,13.2-100.9,29.1-146,47.4"/></svg>
-                            <svg aria-hidden="true" focusable="false" class="c-homepage-timeline_intro_path md:hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 477.7 350.6"><path fill="none" stroke="#8ED462" stroke-linecap="round" stroke-width="250" d="M344.2,131.1c-87.3,2.2-154.5,26.3-204.3,66.8"/></svg>
+                            <svg aria-hidden="true" focusable="false" class="c-homepage-timeline_intro_path max-md:hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 824.5 590.8"><path fill="none" stroke="#ea6592" stroke-linecap="round" stroke-width="500" d="M549.4,251c-48.6,7.1-94.8,16.2-138.5,27.3-52.2,13.2-100.9,29.1-146,47.4"/></svg>
+                            <svg aria-hidden="true" focusable="false" class="c-homepage-timeline_intro_path md:hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 477.7 350.6"><path fill="none" stroke="#ea6592" stroke-linecap="round" stroke-width="250" d="M344.2,131.1c-87.3,2.2-154.5,26.3-204.3,66.8"/></svg>
                         </div>
                     </div>
                 </div>
@@ -286,27 +286,27 @@
                 <c-homepage-timeline class="c-homepage-timeline_path md:aspect-[1944.2/6151.5]" data-scroll data-scroll-event-progress="pathProgress" data-scroll-offset="-27%,100%">
                     <!-- Desktop Path -->
                     <svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" xml:space="preserve" viewBox="0 0 1944.2 6151.5" class="absolute inset-0 h-full w-full max-md:hidden" id="desktop-svg" preserveAspectRatio="none">
-                        <path fill="none" stroke="#8ED462" stroke-linecap="round" stroke-width="500" d="M1085 250c-868 126.5-961 907-29.5 1453S1397 3353 733 3318s-606-718-53.6-808" id="main-path"></path>
+                        <path fill="none" stroke="#ea6592" stroke-linecap="round" stroke-width="500" d="M1085 250c-868 126.5-961 907-29.5 1453S1397 3353 733 3318s-606-718-53.6-808" id="main-path"></path>
                         <linearGradient id="path-gradient" x1="1020.4" x2="1550.5" y1="2766.3" y2="3624.5" gradientTransform="matrix(1 0 0 -1 -242 5807.4)" gradientUnits="userSpaceOnUse">
-                            <stop offset="0" stop-color="#8ED462"></stop>
-                            <stop offset=".3" stop-color="#378e43"></stop>
-                            <stop offset=".7" stop-color="#439745"></stop>
-                            <stop offset="1" stop-color="#8ED462"></stop>
+                            <stop offset="0" stop-color="#ea6592"></stop>
+                            <stop offset=".3" stop-color="#c94f7e"></stop>
+                            <stop offset=".7" stop-color="#d95c89"></stop>
+                            <stop offset="1" stop-color="#ea6592"></stop>
                         </linearGradient>
                         <path fill="none" stroke="url(#path-gradient)" stroke-linecap="round" stroke-linejoin="round" stroke-width="500" d="M1055.5 1703C1987 2249 1397 3353 733 3318" opacity="1" id="shadow-path"></path>
-                        <path fill="none" stroke="#8ED462" stroke-linecap="round" stroke-width="500" d="M679.3 2510c552.3-90 1689.3 743.4 475.6 1689-985 767.5-234 1313-234 1702.5" id="secondary-path" style="z-index:3;"></path>
+                        <path fill="none" stroke="#ea6592" stroke-linecap="round" stroke-width="500" d="M679.3 2510c552.3-90 1689.3 743.4 475.6 1689-985 767.5-234 1313-234 1702.5" id="secondary-path" style="z-index:3;"></path>
                     </svg>
                     <!-- Mobile Path -->
                     <svg aria-hidden="true" focusable="false" version="1.1" id="mobile-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 847.9 4471" style="enable-background:new 0 0 847.9 4471;" xml:space="preserve" preserveAspectRatio="none" class="mr-[-64%] ml-[-50%] max-md:block max-md:aspect-[847/4471] sm:mr-[-54%] sm:ml-[-45%] md:hidden">
-                        <path id="mobile-main-path" style="fill:none;stroke:#8ED462;stroke-width:250;stroke-linecap:round;" d="M508,131.1c-474,11.9-357.9,671.3-49,1079.1,308.8,407.8,263,1206.2-79.6,1206.2s-335.9-596.5-5.8-603.4"></path>
+                        <path id="mobile-main-path" style="fill:none;stroke:#ea6592;stroke-width:250;stroke-linecap:round;" d="M508,131.1c-474,11.9-357.9,671.3-49,1079.1,308.8,407.8,263,1206.2-79.6,1206.2s-335.9-596.5-5.8-603.4"></path>
                         <linearGradient id="shadow_mob" gradientUnits="userSpaceOnUse" x1="208.1258" y1="2481.6191" x2="627.7878" y2="2783.1492" gradientTransform="matrix(1 0 0 -1 0 4470.0039)">
-                            <stop offset="0" style="stop-color:#8ED462"></stop>
-                            <stop offset="0.3317" style="stop-color:#368D32"></stop>
-                            <stop offset="0.7356" style="stop-color:#439739"></stop>
-                            <stop offset="1" style="stop-color:#8ED462"></stop>
+                            <stop offset="0" style="stop-color:#ea6592"></stop>
+                            <stop offset="0.3317" style="stop-color:#c94f7e"></stop>
+                            <stop offset="0.7356" style="stop-color:#d95c89"></stop>
+                            <stop offset="1" style="stop-color:#ea6592"></stop>
                         </linearGradient>
                         <path id="mobile-shadow-path" style="opacity:0.5;fill:none;stroke:url(#shadow_mob);stroke-width:250;stroke-linecap:round;stroke-linejoin:round;" d="M459,1210.2c308.8,407.8,265.5,1206.2-81.5,1206.2"></path>
-                        <path id="mobile-overlap-end" style="fill:none;stroke:#8ED462;stroke-width:250;stroke-linecap:round;" d="M373.6,1813 c1.9,0,3.9-0.1,5.8-0.1c335.8,0,514.9,555.2,112.5,1261.5c-326.6,573.2-77.6,980.7-77.6,1271.6"></path>
+                        <path id="mobile-overlap-end" style="fill:none;stroke:#ea6592;stroke-width:250;stroke-linecap:round;" d="M373.6,1813 c1.9,0,3.9-0.1,5.8-0.1c335.8,0,514.9,555.2,112.5,1261.5c-326.6,573.2-77.6,980.7-77.6,1271.6"></path>
                     </svg>
                 </c-homepage-timeline>
 

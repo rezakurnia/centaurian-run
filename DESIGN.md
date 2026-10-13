@@ -1,6 +1,6 @@
 # Design — MindMarket Style Reference (Centaurian Run)
 
-> Warm storybook on cream paper — a friendly editorial canvas where oversized Inter headlines and paper-cut characters share a sunlit, sticker-soft surface.
+> Warm storybook on sand-cream paper — a friendly editorial canvas where oversized Inter headlines and paper-cut characters share a sunlit, sticker-soft surface.
 
 **Theme:** light  
 Public UI style, modelled 1:1 on MindMarket (layout, tokens, motion, components).
@@ -13,19 +13,23 @@ Tokens live in `resources/css/app.css` (`@theme` and `:root`). Values are measur
 
 | Name | Value | Token | Role |
 |------|-------|-------|------|
-| Fresh Grass | `#8ed462` | `--color-fresh-grass` (`--color-green`) | Primary brand accent — navigation strokes, card borders, hero fills, callout, route path. The chromatic anchor. |
-| Cream Paper | `#f5f1e4` | `--color-cream-paper` (`--color-beige`) | Dominant page background and soft card surface. Warm off-white canvas replacing stark white. |
-| Ink Black | `#2c2e2a` | `--color-ink-black` (`--color-charcoal`) | Primary text, icons, nav borders, dominant hairline border color. |
+| Rose Pop | `#ea6592` | `--color-rose-pop` (`--color-green`) | Primary brand accent — navigation strokes, card borders, hero fill, callout, route path. The chromatic anchor. |
+| Sand Cream | `#fff6e5` | `--color-sand-cream` (`--color-beige`) | Dominant page background and soft card surface. Warm canvas. |
+| Plum Night | `#3a1f3f` | `--color-plum-night` (`--color-charcoal`) | Primary text, icons, nav borders, dominant hairline border color; dark surface behind the logo. |
 | Pure White | `#ffffff` | `--color-pure-white` | Elevated card surfaces, floating nav background. The highest surface level in the stack. |
-| Sandstone | `#e0dbce` | `--color-sandstone` (`--color-beige-500`) | Secondary surface tone for inset or recessed card states, subtle dividers. |
-| Stone Gray | `#80827f` | `--color-stone-gray` | Muted body text and secondary link borders. The mid-gray for de-emphasized content. |
-| Hairline Mist | `#d5d5d4` | `--color-hairline-mist` | Subtle nav dividers and low-contrast borders. Barely visible structural lines. |
-| Pure Ink | `#000000` | `--color-pure-ink` | Icon fills, body text on light surfaces, high-contrast borders where maximum contrast is needed. |
-| Sky Pop | `#2ba0ff` | `--color-sky-pop` (`--color-blue`) | Decorative illustration accent and card border accent; Jadwal card button. |
-| Coral Pop | `#ff705d` | `--color-coral-pop` (`--color-red`) | Red outline accent for tags, dividers, and Kategori card CTA button. |
-| Sunshine Pop | `#f5e211` | `--color-sunshine-pop` (`--color-yellow`) | Paket card button, hover fill of the nav CTA. |
-| Blossom Pop | `#ebc1ff` | `--color-pink` | Decorative card accent; Hasil card button. |
-| Forest Back / Middle | `#6fb846` / `#b5e590` | `--color-green-600` / `--color-green-300` | Timeline end hill layers. |
+| Sand | `#f3d9a8` | `--color-sand` (`--color-beige-500`) | Secondary surface tone for inset or recessed card states, subtle dividers. |
+| Mauve Gray | `#7a6580` | `--color-mauve-gray` | Muted body text and secondary link borders. |
+| Hairline Mist | `#e8d9dd` | `--color-hairline-mist` | Subtle nav dividers and low-contrast borders. |
+| Pure Ink | `#000000` | `--color-pure-ink` | Icon fills and high-contrast borders where maximum contrast is needed. |
+| Orchid | `#b5568b` | `--color-orchid` (`--color-blue`) | Decorative illustration accent, card border accent; Jadwal card button. |
+| Peach | `#f2a28e` | `--color-peach` (`--color-red`) | Tags, dividers, Kategori card CTA button. |
+| Logo Yellow | `#fdea00` | `--color-logo-yellow` (`--color-yellow`) | Logo colour, Paket card button, hover fill of the nav CTA. Use on plum or the gradient, not on cream/white. |
+| Marigold | `#eec15a` | `--color-marigold` (`--color-yellow-600`) | Badges, mobile contact icon, hero gradient end. |
+| Grape | `#8b4a80` | `--color-grape` | Deep brand tone for dark sections and headings on cream. |
+| Blush | `#f9c9da` | `--color-pink` | Decorative card accent; Hasil card button. |
+| Rose Dark / Light | `#c94f7e` / `#f6a9c0` | `--color-green-600` / `--color-green-300` | Timeline end hill layers. |
+
+**Hero gradient:** `--gradient-hero` = `linear-gradient(160deg, Rose Pop 0%, Peach 55%, Marigold 100%)`, used on `.c-hero-home_inner` (and the hero below 1000px). Palette is sampled from the Centaurian Run background (plum → magenta → peach → gold). Text on rose, peach, marigold and cream is Plum Night; white on rose is large text only.
 
 ---
 
@@ -82,7 +86,7 @@ Fluid root font-size: `--text-md` (16 → 17px) by default, 15px from 1000 to 11
 ### 2. Button (`.c-button`)
 - **Role:** Every call to action. White (`button-secondary`) or colour-filled (`button-primary`), **10px radius**, 15 × spacing tall, 2.5 × spacing padding, `--text-md` Inter 500.
 - 40px circular icon on the right; on hover the label slides right and the icon swaps sides (`--ease-bounce`).
-- Colours: green, yellow `#f5e211`, pink `#ebc1ff`, red `#ff705d`, blue `#2ba0ff`.
+- Colours: rose (`green`), yellow `#fdea00`, blush (`pink`) `#f9c9da`, peach (`red`) `#f2a28e`, orchid (`blue`) `#b5568b`.
 
 ### 3. Nav Quote Button (`<c-button-quote>`)
 - White **10px** button whose 40px icon is a Rive face (`mindmarket_cursor_crop.riv`, state machine "State Machine 1") that follows the cursor and smiles on hover.
@@ -92,7 +96,7 @@ Fluid root font-size: `--text-md` (16 → 17px) by default, 15px from 1000 to 11
 
 ### 5. Footer Row
 - **Role:** Closing line inside the green callout, under the CTA (no separate footer block).
-- Three centred columns (`body-md`, `md:grid-cols-3`, 60 × `--spacing` above on desktop; stacked below 1000px), text in `#2c2e2a`.
+- Three centred columns (`body-md`, `md:grid-cols-3`, 60 × `--spacing` above on desktop; stacked below 1000px), text in `#3a1f3f`.
 
 ---
 
@@ -100,9 +104,9 @@ Fluid root font-size: `--text-md` (16 → 17px) by default, 15px from 1000 to 11
 
 | Level | Name | Value | Purpose |
 |-------|------|-------|---------|
-| 0 | Cream Paper | `#f5f1e4` | Page canvas — the dominant warm background |
+| 0 | Sand Cream | `#fff6e5` | Page canvas — the dominant warm background |
 | 1 | Pure White | `#ffffff` | Elevated cards, floating navigation |
-| 2 | Sandstone | `#e0dbce` | Inset or secondary surface tone, hairline borders |
+| 2 | Sand | `#f3d9a8` | Inset or secondary surface tone, hairline borders |
 
 **Elevation Rule:**  
 MindMarket uses a cream-to-white surface stack and generous border-radii instead of box-shadows for elevation. Drop shadows are avoided to maintain the flat, editorial, printed storybook feel.
