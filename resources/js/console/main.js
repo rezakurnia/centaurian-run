@@ -1,16 +1,21 @@
 import { api, auth, errText, setErr } from './api.js';
 import { initScan } from './scan.js';
 import { initRekap } from './rekap.js';
+import { initAdmin } from './admin.js';
 
 // Menu per role; tambahkan item admin di sini saat halamannya jadi.
 const NAV = [
     ['Scan finish', '/panitia/scan', 'panitia'],
     ['Rekap peserta', '/panitia/rekap', 'panitia'],
+    ['Dashboard', '/admin', 'admin'],
+    ['Pendaftaran', '/admin/pendaftaran', 'admin'],
+    ['Peserta', '/admin/peserta', 'admin'],
 ];
+const home = (u) => (u.role === 'admin' ? '/admin' : '/panitia/scan');
 
 const login = document.getElementById('login-form');
 if (login) {
-    if (auth.get()) location.replace('/panitia/scan');
+    if (auth.get()) location.replace(home(auth.get().user));
     const err = document.getElementById('login-error');
     const btn = document.getElementById('login-submit');
     login.addEventListener('submit', async (e) => {
@@ -24,7 +29,7 @@ if (login) {
         btn.disabled = false;
         if (!r.ok) return setErr(err, errText(r));
         auth.set({ token: r.data.token, user: r.data.user });
-        location.href = '/panitia/scan';
+        location.href = home(r.data.user);
     });
 }
 
@@ -33,7 +38,7 @@ if (main) {
     const a = auth.get();
     const need = document.body.dataset.role;
     if (!a) location.replace('/login');
-    else if (need === 'admin' && a.user.role !== 'admin') location.replace('/panitia/scan');
+    else if (need === 'admin' && a.user.role !== 'admin') location.replace(home(a.user));
     else {
         document.getElementById('k-user').textContent = `${a.user.username} (${a.user.role})`;
         document.getElementById('k-nav').innerHTML = NAV
@@ -48,5 +53,6 @@ if (main) {
         main.hidden = false;
         initScan();
         initRekap();
+        initAdmin();
     }
 }

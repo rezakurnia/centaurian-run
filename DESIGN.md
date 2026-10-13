@@ -111,6 +111,7 @@ Fluid root font-size: `--text-md` (16 → 17px) by default, 15px from 1000 to 11
 - **Role:** Working screens for staff, not marketing. Same tokens as the public site, denser, no Locomotive/Rive (separate Vite entry `resources/js/console/main.js`).
 - Shell (`.k-shell`): white sidebar 15rem from 1000px (top bar with horizontally scrolling nav below), Sand Cream canvas, white `.k-card` panels, 10px radius, flat.
 - Nav link current page = Blush fill. Button `.k-btn` = Plum Night fill, `-ghost` = outlined. Scan result `.k-result` reuses badge colours: `-ok` Marigold, `-wait` Blush (duplicate), `-bad` Grape with white text; always text, never colour alone.
+- Admin: stat tiles (`.k-stats` > `.k-card` + `.k-stat`, heading-sm bold), native `<dialog class="k-dialog">` for verification (white, 10px radius, plum 50% backdrop).
 - Forms and tables reuse `.c-input`, `.c-error`, `.c-table`, `.c-badge`.
 
 ---

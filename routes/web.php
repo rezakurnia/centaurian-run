@@ -35,3 +35,6 @@ Route::get('/hasil', fn () => view('hasil', ['categories' => Category::orderBy('
 Route::view('/login', 'login');
 Route::view('/panitia/scan', 'console.scan');
 Route::view('/panitia/rekap', 'console.rekap');
+Route::view('/admin', 'console.dashboard', ['role' => 'admin']);
+Route::view('/admin/pendaftaran', 'console.pendaftaran', ['role' => 'admin']);
+Route::view('/admin/peserta', 'console.peserta', ['role' => 'admin']);

@@ -991,3 +991,7 @@ c-deluxe-callout { display: block; }
 .k-login { display: grid; place-items: center; min-height: 100svh; padding: calc(var(--spacing) * 5); }
 .k-login_card { width: 100%; max-width: 26rem; }
 .k-card .c-table :is(td, th) { white-space: nowrap; }
+.k-stats { display: grid; gap: calc(var(--spacing) * 3); grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr)); }
+.k-stat { font-size: var(--text-heading-sm); font-weight: 700; letter-spacing: -0.06em; line-height: 1.1; }
+.k-dialog { width: min(28rem, calc(100% - 2rem)); margin: auto; padding: calc(var(--spacing) * 6); border: 0; border-radius: var(--radius-sm); background: var(--color-white); color: var(--color-plum-night); }
+.k-dialog::backdrop { background: rgb(58 31 63 / .5); }
