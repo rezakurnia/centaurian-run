@@ -6,6 +6,9 @@ import './components/c-rive.js';
 import './components/c-button-quote.js';
 import './components/c-deluxe-callout.js';
 import './components/c-homepage-timeline.js';
+import './components/c-register.js';
+import './components/c-check-status.js';
+import './components/c-results.js';
 
 const root = document.documentElement;
 const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;

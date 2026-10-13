@@ -18,3 +18,15 @@ Route::get('/', function () {
             ->keyBy('section'),
     ]);
 });
+
+Route::get('/daftar', function () {
+    return view('daftar', [
+        'event' => Event::where('is_active', true)->first(),
+        'categories' => Category::orderBy('id')->get(),
+        'packages' => Package::orderBy('price')->get(),
+    ]);
+});
+
+Route::view('/cek-status', 'cek-status');
+
+Route::get('/hasil', fn () => view('hasil', ['categories' => Category::orderBy('id')->get()]));

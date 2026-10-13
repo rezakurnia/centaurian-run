@@ -94,7 +94,16 @@ Fluid root font-size: `--text-md` (16 → 17px) by default, 15px from 1000 to 11
 ### 4. Content Card (`.c-homepage-timeline-cards` > `.c-tile-animated`)
 - White (`#ffffff`) panel, **10px radius**, `heading-md`/`heading-sm` title, `body-lg` copy, button at the bottom. Flat (no shadow).
 
-### 5. Footer Row
+### 5. Form (`/daftar`)
+- **Role:** Registration, modelled on the reference's cost estimator: numbered steps (`.c-step`: white panel, **10px radius**, 40px plum number badge) and a sticky white summary panel beside them.
+- **Option card** (`.c-option_card`): a native radio drives it. Sand Cream fill, 2px Hairline Mist border, 10px radius, 20px ring indicator top-right. Checked = Blush (`--color-pink`) fill, Plum Night border, filled ring. Focus = 2px Rose Pop outline.
+- **Input** (`.c-input`): 13 × spacing tall, white, 1px Hairline Mist border, 10px radius, label above in `--text-md`. Focus = 2px Rose Pop outline, Plum Night border. Placeholders are not used as labels.
+- **Error** (`.c-error`): Grape (`#8b4a80`, 6.4:1 on white) text under the field with a "!" badge, input gets a 2px Grape border. Never colour alone.
+- **Status badge** (`.c-badge`): 10px radius, always text, never colour alone. `-ok` Marigold (confirmed, paid, free), `-wait` Blush (pending, unpaid), `-bad` Grape with white text (cancelled). Used on `/cek-status`, which also hosts the payment-proof file input (`.c-input.c-file`).
+- **Table** (`.c-table`, `/hasil`): inside a `.c-step`; 2px Plum Night header rule, 1px Hairline Mist row rules, `--text-lg` rows, no zebra or shadow, scrolls horizontally in its wrapper below 34rem. The category filter is a native `select.c-input`.
+- Submit is a `.c-button` rendered as `<button>`; it dims and shows a progress cursor while sending.
+
+### 6. Footer Row
 - **Role:** Closing line inside the green callout, under the CTA (no separate footer block).
 - Three centred columns (`body-md`, `md:grid-cols-3`, 60 × `--spacing` above on desktop; stacked below 1000px), text in `#3a1f3f`.
 

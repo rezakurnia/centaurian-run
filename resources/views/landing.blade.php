@@ -10,22 +10,22 @@
 
     $cards = [
         [
-            'id' => 'kategori', 'color' => 'red', 'href' => '#paket', 'button' => 'Daftar',
+            'id' => 'kategori', 'color' => 'red', 'href' => '/daftar', 'button' => 'Daftar',
             'title' => 'Semua bisa lari.',
             'body' => 'Siswa, guru, alumni, orang tua, sampai tamu dari luar. Centaurian Run terbuka untuk semua kalangan, pilih kategorimu saat mendaftar.',
         ],
         [
-            'id' => 'paket', 'color' => 'yellow', 'href' => '#paket', 'button' => 'Pilih paket',
+            'id' => 'paket', 'color' => 'yellow', 'href' => '/daftar', 'button' => 'Pilih paket',
             'title' => 'Pilih paketmu.',
             'body' => 'Mulai dari gratis. Untuk paket berbayar, cukup transfer, unggah bukti pembayaran, dan tunggu verifikasi panitia.',
         ],
         [
-            'id' => 'jadwal', 'color' => 'blue', 'href' => '#jadwal', 'button' => 'Cek status',
+            'id' => 'jadwal', 'color' => 'blue', 'href' => '/cek-status', 'button' => 'Cek status',
             'title' => 'Catat tanggalnya.',
             'body' => 'Datang lebih awal dan pemanasan bareng. Cek status pendaftaranmu kapan saja dengan nomor registrasi.',
         ],
         [
-            'id' => 'hasil', 'color' => 'pink', 'href' => '#hasil', 'button' => 'Hasil lomba',
+            'id' => 'hasil', 'color' => 'pink', 'href' => '/hasil', 'button' => 'Hasil lomba',
             'title' => 'Lihat hasilmu.',
             'body' => 'Waktu tempuh dicatat dari scan start dan finish. Begitu kamu melewati garis finish, hasilmu langsung tercatat.',
         ],
@@ -45,73 +45,7 @@
 </head>
 <body class="font-sans">
 
-{{-- Logo (shared by the desktop and mobile bars): 36x30 mark + wordmark --}}
-@php
-    $logo = '<span class="c-logo_mark"><img src="/images/logo.png" alt="" width="824" height="490"></span><span class="c-logo_text">Centaurian Run</span>';
-    $burger = '<svg viewBox="0 0 22 22" aria-hidden="true"><path d="M5 8h12M5 14h12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
-@endphp
-
-{{-- Desktop menu (md and up) --}}
-<nav class="c-menu-desktop" aria-label="Utama">
-    <div class="c-menu-desktop_bar">
-        <a href="/" class="c-menu-desktop_logo">{!! $logo !!}</a>
-        <div class="c-menu-desktop_inner">
-            <ul class="c-menu-desktop_list">
-                @foreach ($cards as $card)
-                    <li class="c-menu-desktop_item"><a href="#{{ $card['id'] }}" class="c-menu-desktop_link"><span class="c-menu-desktop_link_label">{{ ucfirst($card['id']) }}</span></a></li>
-                @endforeach
-                <li class="c-menu-desktop_item -buger-menu">
-                    <details class="relative">
-                        <summary class="c-menu-desktop_button" aria-label="Menu">{!! $burger !!}</summary>
-                        <div class="c-menu-desktop_dropdown">
-                            <a href="#paket" class="c-menu-desktop_dropdown_link">Daftar</a>
-                            <a href="#jadwal" class="c-menu-desktop_dropdown_link">Cek status</a>
-                            <a href="#hasil" class="c-menu-desktop_dropdown_link">Hasil lomba</a>
-                        </div>
-                    </details>
-                </li>
-            </ul>
-        </div>
-    </div>
-    <div>
-        <c-button-quote>
-            <a href="#paket" class="c-button-quote c-menu-desktop_contact">
-                <span class="c-button-quote_label">Daftar sekarang</span>
-                <span class="c-button-quote_icon"><canvas class="c-button-quote_icon_canvas" width="40" height="40" aria-hidden="true"></canvas></span>
-            </a>
-        </c-button-quote>
-    </div>
-</nav>
-
-{{-- Mobile menu (below md) --}}
-<div class="c-menu-mobile">
-    <div class="c-menu-mobile_bar">
-        <a href="/" class="c-menu-mobile_logo">{!! $logo !!}</a>
-        <div class="c-menu-mobile_cta">
-            <div><a href="#paket" class="c-menu-mobile_contact max-2xs:hidden">Daftar</a></div>
-            <button type="button" class="c-menu-mobile_burger" aria-label="Menu" aria-expanded="false" aria-controls="menu-mobile-nav">
-                <span class="c-menu-mobile_burger_icon -default"><span class="c-menu-mobile_burger_icon_line"></span><span class="c-menu-mobile_burger_icon_line"></span></span>
-                <span class="c-menu-mobile_burger_icon -close"><span class="c-menu-mobile_burger_icon_line"></span><span class="c-menu-mobile_burger_icon_line"></span></span>
-            </button>
-        </div>
-    </div>
-    <nav id="menu-mobile-nav" class="c-menu-mobile_nav" aria-label="Utama">
-        <div class="c-menu-mobile_nav_inner">
-            <ul class="c-menu-mobile_list">
-                @foreach ($cards as $card)
-                    <li class="c-menu-mobile_list_item" style="--index: {{ $loop->index }}"><a href="#{{ $card['id'] }}" class="c-menu-mobile_nav_link"><span class="c-menu-mobile_nav_label">{{ ucfirst($card['id']) }}</span></a></li>
-                @endforeach
-                <li class="c-menu-mobile_list_item" style="--index: 4"><a href="#paket" class="c-menu-mobile_nav_link"><span class="c-menu-mobile_nav_label">Daftar</span></a></li>
-                <li class="c-menu-mobile_list_item" style="--index: 5"><a href="#jadwal" class="c-menu-mobile_nav_link"><span class="c-menu-mobile_nav_label">Cek status</span></a></li>
-                <li class="c-menu-mobile_list_item" style="--index: 6"><a href="#hasil" class="c-menu-mobile_nav_link"><span class="c-menu-mobile_nav_label">Hasil lomba</span></a></li>
-            </ul>
-            <a href="#paket" class="c-menu-mobile_nav_contact">
-                <span class="c-menu-mobile_nav_label c-menu-mobile_nav_contact_label">Daftar sekarang</span>
-                <span class="c-menu-mobile_nav_contact_icon"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m8 14 4-4-4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-            </a>
-        </div>
-    </nav>
-</div>
+@include('partials.nav')
 
 <main>
     {{-- Hero: pinned (sticky) behind the timeline from md up, see .c-hero-home in app.css --}}
@@ -126,7 +60,7 @@
                         </div>
                     @endif
                     {{-- With an event the CTA hangs below the tagline; without one it takes the tagline's slot --}}
-                    <div class="c-hero-home_cta {{ $event ? '-below' : '' }} anim-first-hit -delay-{{ $event ? 3 : 1 }}">@include('partials.btn', ['href' => '#paket', 'label' => 'Daftar sekarang', 'color' => 'green'])</div>
+                    <div class="c-hero-home_cta {{ $event ? '-below' : '' }} anim-first-hit -delay-{{ $event ? 3 : 1 }}">@include('partials.btn', ['href' => '/daftar', 'label' => 'Daftar sekarang', 'color' => 'green'])</div>
                 </div>
             </div>
         </div>
@@ -161,7 +95,7 @@
                                 <p class="md:heading-xs max-md:heading-sm text-balance">
                                     {{ $event?->description ?: 'Centaurian Run adalah fun run keluarga besar Alfa Centauri. Siswa, guru, alumni, dan orang tua lari bersama: daftar online, check-in dengan barcode, dan lihat hasilmu langsung setelah finish.' }}
                                 </p>
-                                <div>@include('partials.btn', ['href' => '#paket', 'label' => 'Daftar sekarang', 'color' => 'green'])</div>
+                                <div>@include('partials.btn', ['href' => '/daftar', 'label' => 'Daftar sekarang', 'color' => 'green'])</div>
                             </div>
                         </div>
                     </div>
@@ -190,7 +124,7 @@
                             @elseif ($card['id'] === 'paket' && $packages->isNotEmpty())
                                 <ul class="divide-y divide-beige-500">
                                     @foreach ($packages as $package)
-                                        <li class="flex justify-between py-2"><span>{{ $package->name }}</span><span>{{ $rupiah($package->price) }}</span></li>
+                                        <li><a href="/daftar?package={{ $package->id }}" class="flex justify-between py-2 hover:underline"><span>{{ $package->name }}</span><span>{{ $rupiah($package->price) }}</span></a></li>
                                     @endforeach
                                 </ul>
                             @elseif ($card['id'] === 'jadwal')
@@ -358,15 +292,11 @@
                         <p class="heading-xs max-w-100 text-center text-balance md:max-w-140">
                             {{ $c->get('cta')?->body ?? 'Pilih kategori, pilih paket, dan amankan nomor pesertamu. Pendaftaran cuma butuh beberapa menit.' }}
                         </p>
-                        @include('partials.btn', ['href' => '#paket', 'label' => 'Daftar sekarang', 'color' => 'green', 'attributes' => 'data-deluxe-callout-action="true" data-callout-action'])
+                        @include('partials.btn', ['href' => '/daftar', 'label' => 'Daftar sekarang', 'color' => 'green', 'attributes' => 'data-deluxe-callout-action="true" data-callout-action'])
                     </div>
 
                     {{-- Footer row: same position and style as the reference's three taglines under the CTA --}}
-                    <footer class="body-md mt-fluid-2xl grid gap-gutter text-center md:mt-60 md:grid-cols-3">
-                        <div>Centaurian Run</div>
-                        <div>Fun run keluarga besar Alfa Centauri: siswa, guru, alumni, dan orang tua lari bersama.</div>
-                        <div>© {{ now()->year }} Alcent Centaurian Run. All rights reserved.</div>
-                    </footer>
+                    @include('partials.footer', ['class' => 'mt-fluid-2xl md:mt-60'])
                 </div>
             </div>
         </div>
