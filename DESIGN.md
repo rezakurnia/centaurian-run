@@ -5,7 +5,7 @@
 **Theme:** light  
 Public UI style, modelled 1:1 on MindMarket (layout, tokens, motion, components).
 
-Tokens live in `resources/css/app.css` (`@theme`). Change them there and here together.
+Tokens live in `resources/css/app.css` (`@theme` and `:root`). Values are measured against the reference by `audit/` (see `audit/README.md`); change them there and here together.
 
 ---
 
@@ -34,17 +34,16 @@ Tokens live in `resources/css/app.css` (`@theme`). Change them there and here to
 ### Inter — Single-family system
 Inter carries everything from 9px micro-labels to 144px display headlines. The system trusts Inter's geometric clarity at extreme sizes, relying on tight letter-spacing (`-0.06em` at 81px+) and aggressive line-height compression (`0.95–1.20`) to create visual weight without switching families.
 - **Weights:** 400 (regular), 500 (medium), 700
-- **Scale:**
-  - `body-sm`: 15px, lh 1.5 (`--text-body-sm`)
-  - `body-lg`: 18px, lh 1.5 (`--text-body-lg`)
-  - `subheading`: 20px, lh 1.25 (`--text-subheading`)
-  - `heading-sm`: 30px, lh 1.2 (`--text-heading-sm`)
-  - `heading`: 53px, lh 1.15, tracking -2.12px (`--text-heading`)
-  - `heading-lg`: 81px, lh 1.2, tracking -4.86px (`--text-heading-lg`)
-  - `display`: 140px, lh 0.95, tracking -8.4px (`--text-display`)
-  - `display-lg`: 144px, lh 0.95, tracking -8.64px (`--text-display-lg`)
+- **Scale (fluid, rem = root size):**
+  - `body-sm`: `--text-sm` clamp(.75rem → .875rem), lh 1.25
+  - `body-md` / buttons / nav links: `--text-md` clamp(1rem → 1.0625rem), lh 1.25, tracking -0.04em
+  - `body-lg` / card copy: `--text-lg` clamp(1.1563rem → 1.1875rem), lh 1.25, tracking -0.04em
+  - `heading-xs`: `--text-heading-xs` clamp(1.5rem → 1.75rem), lh 1.2, tracking -0.06em
+  - `heading-sm` (card title ≥1000px <1600px): `--text-heading-sm` clamp(1.625rem → 2.375rem), lh 1.2
+  - `heading-md` (card title below 1000px and from 1600px): `--text-heading-md` clamp(2.125rem → 3.125rem), lh 1.15
+  - `heading-2xl` (hero, callout): `--text-heading-2xl` clamp(3.625rem → 10.875rem); from 1000px `9.7vw`, lh .95, tracking -0.06em
 
-Fluid root font-size on ≥768px: `clamp(15px, .48vw + 10.1px, 17px)` (15px at 1024, 17px from 1440); 16px below.
+Fluid root font-size: `--text-md` (16 → 17px) by default, 15px from 1000 to 1199px, 19px from 2000px, 21.5px from 2400px. Everything sized in `rem` or `--spacing` (.25rem) scales with it.
 
 ---
 
@@ -52,46 +51,44 @@ Fluid root font-size on ≥768px: `clamp(15px, .48vw + 10.1px, 17px)` (15px at 1
 
 **Base unit:** 4px  
 **Density:** comfortable  
-**Spacing scale:** `4px` (`--spacing-4`), `20px` (`--spacing-20`), `60px` (`--spacing-60`), `136px` (`--spacing-136`), `216px` (`--spacing-216`).
+**Spacing scale:** `--spacing` (.25rem) multiples, `--unit-md` 20px (grid gutter and margin), fluid steps `--spacing-fluid-xs` … `--spacing-fluid-4xl` (8px → 160px).
+
+### Breakpoints (reference scale, not Tailwind's defaults)
+`2xs` 400px · `xs` 500px · `sm` 700px · **`md` 1000px (desktop layout starts here)** · `lg` 1200px · `xl` 1400px · `2xl` 1600px · `3xl` 1800px · `4xl` 2000px · `5xl` 2400px.
 
 ### Border Radius
 | Element | Value | Token |
 |---------|-------|-------|
-| Navigation Bar | 50px | `--radius-nav` |
-| Content Cards | 50px (50–64px) | `--radius-cards` |
-| Buttons | 50px | `--radius-buttons` |
-| Small / Chips / Tags | 10px | `--radius-small` |
-| Illustration Containers | 63.75px | `--radius-illustration-containers` |
+| Nav bar, buttons, card panels, chips | 10px | `--radius-sm` |
+| Large panels (timeline top, callout bottom) | 35px below 1000px, 50px from 1000px | `--radius-lg` |
+| Nav link hover pill | 50px | (literal) |
+| Mobile "Daftar" chip | 5px | (literal) |
 
 ### Layout
-- **Page max-width:** 1200px (desktop bounds)
-- **Section gap:** 80–120px
-- **Card padding:** 20–21px (comfortable editorial padding)
-- **Element gap:** 17–21px
+- **Grid:** 16 columns, 20px gutter and margin (`--unit-md`); `--gs-{columns}-{gutters}` tokens hold the reference's `grid-space()` maths.
+- **Menu bar height:** 15 × `--spacing` below 1000px, 16 × `--spacing` from 1000px; fixed 4 × `--spacing` from the top.
+- **Card width:** 6 of 16 columns (max 800px), 7 columns on 1000–1399px; padding 6.25 × 5 `--spacing` below 1400px, 12.5 × `--spacing` from 1400px.
+- **Section gap:** `--spacing-fluid-*` (xs 8px → 4xl 160px).
 
 ---
 
 ## Components
 
-### 1. Floating Pill Navigation Bar
-- **Role:** Primary floating site navigation container.
-- White (`#ffffff`) pill-shaped bar with **50px border-radius**, floating over the cream canvas with generous margins.
-- Contains brand logo container (rounded square, ~40px), nav links at 15px Inter 500 in `#2c2e2a` with hover indicator, a circular green menu toggle button (`#8ed462`, 40px), and a pill CTA.
-- The entire bar reads as a single soft pill, not a rectangular header.
+### 1. Floating Navigation Bar
+- **Role:** Primary site navigation. Desktop bar (`.c-menu-desktop`, ≥1000px) and mobile bar + sliding list (`.c-menu-mobile`).
+- White (`#ffffff`) bar, **10px radius**, 16 × spacing tall, floating 4 × spacing from the top and inset to grid column 1 (2 from 1600px).
+- Logo mark 36 × 30px + wordmark 32 × spacing wide; links `--text-md` Inter 500 with a beige hover pill (50px); green 40px burger; quote button on the right.
 
-### 2. Primary CTA Button
-- **Role:** Main action trigger.
-- Light/white pill button with **50px radius**, ~11px vertical and 20px horizontal padding, 15px Inter 500 `#2c2e2a` text.
-- Features a circular icon accent (green or blue) embedded at the edge as a visual action indicator.
+### 2. Button (`.c-button`)
+- **Role:** Every call to action. White (`button-secondary`) or colour-filled (`button-primary`), **10px radius**, 15 × spacing tall, 2.5 × spacing padding, `--text-md` Inter 500.
+- 40px circular icon on the right; on hover the label slides right and the icon swaps sides (`--ease-bounce`).
+- Colours: green, yellow `#f5e211`, pink `#ebc1ff`, red `#ff705d`, blue `#2ba0ff`.
 
-### 3. Service Card Action Button
-- **Role:** Navigable service/package card entry.
-- Pill shape (**50px radius**), colored primary button (Coral `#ff705d`, Sunshine `#f5e211`, Sky `#2ba0ff`, Pink `#ebc1ff`).
+### 3. Nav Quote Button (`<c-button-quote>`)
+- White **10px** button whose 40px icon is a Rive face (`mindmarket_cursor_crop.riv`, state machine "State Machine 1") that follows the cursor and smiles on hover.
 
-### 4. Content Card
-- **Role:** Feature and timeline card container.
-- White (`#ffffff`) surface with **50px border-radius**, generous internal padding, 30px Inter 500 heading, body text at 17–18px.
-- Flat surface stack (no drop shadow).
+### 4. Content Card (`.c-homepage-timeline-cards` > `.c-tile-animated`)
+- White (`#ffffff`) panel, **10px radius**, `heading-md`/`heading-sm` title, `body-lg` copy, button at the bottom. Flat (no shadow).
 
 ### 5. Footer Accent Block
 - **Role:** Footer highlight surface.
@@ -123,8 +120,9 @@ MindMarket uses a cream-to-white surface stack and generous border-radii instead
 | `--ease-smooth` | `cubic-bezier(.38,.005,.215,1)` |
 | Durations | .2s fast, .4s default, .6s slow |
 
-- Lenis smooth scroll; anchor links offset 100px for the fixed nav.
-- Nav slides down on load (`.4s var(--ease) .2s`).
-- Hero is sticky; timeline slides over it with a 50px rounded top while the hero darkens (`--progress * .4`).
-- Rive animations and Web Components (`c-rive`, `c-deluxe-callout`, `c-homepage-timeline`) render 1:1 MindMarket character and track interactions.
-- `prefers-reduced-motion`: transitions and continuous animations off.
+- Locomotive Scroll v5 (Lenis inside) drives smooth scroll and every `[data-scroll-*]` attribute: `data-scroll-speed` parallax, `data-scroll-css-progress` (`--progress`), `data-scroll-event-progress` (the route's `pathProgress`) and the `is-inview` class that reveals cards. Anchor links offset 100px for the fixed nav.
+- Nav slides down on load (`.4s var(--ease) .2s`); hero text rises (`.anim-first-hit`, 80px, `.8s`).
+- Hero is pinned (sticky, 200svh inner) while the timeline slides over it; the hero darkens (`--progress * .4`) and its content scales to .8.
+- The green route is one paused GSAP timeline scrubbed by `pathProgress` (desktop and mobile SVGs, rebuilt at 1000px).
+- Rive runtime: `@rive-app/canvas-lite` 2.31.5, default `Fit.Contain` / `Alignment.Center`, rendering only while on screen; `.riv` characters pop in with an elastic scale. The `.wasm` is served from our build.
+- `prefers-reduced-motion`: transitions off and smooth scroll / scroll-linked motion disabled.

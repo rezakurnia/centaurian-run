@@ -11,26 +11,22 @@
 
     $cards = [
         [
-            'id' => 'kategori', 'bg' => 'var(--color-red)', 'href' => '#paket', 'button' => 'Daftar',
-            'pos' => '--top:11%; --left:56.9vw',
+            'id' => 'kategori', 'color' => 'red', 'href' => '#paket', 'button' => 'Daftar',
             'title' => 'Semua bisa lari.',
             'body' => 'Siswa, guru, alumni, orang tua, sampai tamu dari luar. Centaurian Run terbuka untuk semua kalangan, pilih kategorimu saat mendaftar.',
         ],
         [
-            'id' => 'paket', 'bg' => 'var(--color-yellow)', 'href' => '#paket', 'button' => 'Pilih paket',
-            'pos' => '--top:25.5%; --left:7.6vw',
+            'id' => 'paket', 'color' => 'yellow', 'href' => '#paket', 'button' => 'Pilih paket',
             'title' => 'Pilih paketmu.',
             'body' => 'Mulai dari gratis. Untuk paket berbayar, cukup transfer, unggah bukti pembayaran, dan tunggu verifikasi panitia.',
         ],
         [
-            'id' => 'jadwal', 'bg' => 'var(--color-blue)', 'href' => '#jadwal', 'button' => 'Cek status',
-            'pos' => '--top:45%; --left:32.6vw',
+            'id' => 'jadwal', 'color' => 'blue', 'href' => '#jadwal', 'button' => 'Cek status',
             'title' => 'Catat tanggalnya.',
             'body' => 'Datang lebih awal dan pemanasan bareng. Cek status pendaftaranmu kapan saja dengan nomor registrasi.',
         ],
         [
-            'id' => 'hasil', 'bg' => 'var(--color-pink)', 'href' => '#hasil', 'button' => 'Hasil lomba',
-            'pos' => '--top:70%; --left:56.9vw',
+            'id' => 'hasil', 'color' => 'pink', 'href' => '#hasil', 'button' => 'Hasil lomba',
             'title' => 'Lihat hasilmu.',
             'body' => 'Waktu tempuh dicatat dari scan start dan finish. Begitu kamu melewati garis finish, hasilmu langsung tercatat.',
         ],
@@ -48,131 +44,170 @@
 </head>
 <body class="font-sans">
 
-{{-- Nav --}}
-<header class="nav fixed inset-x-4 top-4 z-50 mx-auto flex max-w-[1405px] gap-4 xl:inset-x-[7.5vw]">
-    <div class="flex h-16 grow items-center justify-between rounded-[50px] bg-white pr-3 pl-3.5">
-        <a href="/" class="flex items-center gap-3 text-[1.1875rem] font-medium tracking-[-0.04em] text-charcoal">
-            <span class="grid size-10 place-items-center rounded-[12px] bg-beige">
-                <svg width="26" height="26" viewBox="0 0 36 36" aria-hidden="true">
-                    <path d="M30 11a14 14 0 1 0 1 13" fill="none" stroke="var(--color-green)" stroke-width="5" stroke-linecap="round"/>
-                    <path d="M11 22c3-6 7-8 13-8" fill="none" stroke="var(--color-charcoal)" stroke-width="3" stroke-linecap="round"/>
-                    <circle cx="27" cy="14" r="3" fill="var(--color-charcoal)"/>
-                </svg>
-            </span>
-            <span>Centaurian Run</span>
-        </a>
-        <nav class="hidden items-center gap-1 md:flex" aria-label="Utama">
-            @foreach ($cards as $card)
-                <a href="#{{ $card['id'] }}" class="nav-link text-[15px]"><span>{{ ucfirst($card['id']) }}</span></a>
-            @endforeach
-        </nav>
-        <details class="relative ml-2">
-            <summary class="grid size-10 cursor-pointer list-none place-items-center rounded-full bg-green text-charcoal transition-transform hover:scale-105" aria-label="Menu">
-                <svg width="20" height="20" viewBox="0 0 22 22" aria-hidden="true"><path d="M5 8h12M5 14h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-            </summary>
-            <div class="absolute top-14 right-0 flex w-56 flex-col rounded-[20px] bg-white p-2 border border-sandstone">
+{{-- Logo (shared by the desktop and mobile bars): 36x30 mark + wordmark --}}
+@php
+    $logo = '<span class="c-logo_mark"><svg viewBox="0 0 36 36" aria-hidden="true"><path d="M30 11a14 14 0 1 0 1 13" fill="none" stroke="var(--color-green)" stroke-width="5" stroke-linecap="round"/><path d="M11 22c3-6 7-8 13-8" fill="none" stroke="var(--color-charcoal)" stroke-width="3" stroke-linecap="round"/><circle cx="27" cy="14" r="3" fill="var(--color-charcoal)"/></svg></span><span class="c-logo_text">Centaurian Run</span>';
+    $burger = '<svg viewBox="0 0 22 22" aria-hidden="true"><path d="M5 8h12M5 14h12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
+@endphp
+
+{{-- Desktop menu (md and up) --}}
+<nav class="c-menu-desktop" aria-label="Utama">
+    <div class="c-menu-desktop_bar">
+        <a href="/" class="c-menu-desktop_logo">{!! $logo !!}</a>
+        <div class="c-menu-desktop_inner">
+            <ul class="c-menu-desktop_list">
                 @foreach ($cards as $card)
-                    <a href="#{{ $card['id'] }}" class="nav-link md:hidden"><span>{{ ucfirst($card['id']) }}</span></a>
+                    <li class="c-menu-desktop_item"><a href="#{{ $card['id'] }}" class="c-menu-desktop_link"><span class="c-menu-desktop_link_label">{{ ucfirst($card['id']) }}</span></a></li>
                 @endforeach
-                <a href="#paket" class="nav-link"><span>Daftar</span></a>
-                <a href="#jadwal" class="nav-link"><span>Cek status</span></a>
-                <a href="#hasil" class="nav-link"><span>Hasil lomba</span></a>
-            </div>
-        </details>
+                <li class="c-menu-desktop_item -buger-menu">
+                    <details class="relative">
+                        <summary class="c-menu-desktop_button" aria-label="Menu">{!! $burger !!}</summary>
+                        <div class="c-menu-desktop_dropdown">
+                            <a href="#paket" class="c-menu-desktop_dropdown_link">Daftar</a>
+                            <a href="#jadwal" class="c-menu-desktop_dropdown_link">Cek status</a>
+                            <a href="#hasil" class="c-menu-desktop_dropdown_link">Hasil lomba</a>
+                        </div>
+                    </details>
+                </li>
+            </ul>
+        </div>
     </div>
-    <a href="#paket" class="nav-cta relative hidden h-16 items-center gap-4 rounded-[50px] bg-white pr-2.5 pl-5 text-[15px] font-medium md:flex">
-        <span>Daftar sekarang</span>
-        <span class="grid size-10 place-items-center rounded-full bg-green transition-transform duration-300">
-            <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="m8 14 4-4-4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </span>
-    </a>
-</header>
+    <div>
+        <c-button-quote>
+            <a href="#paket" class="c-button-quote c-menu-desktop_contact">
+                <span class="c-button-quote_label">Daftar sekarang</span>
+                <span class="c-button-quote_icon"><canvas class="c-button-quote_icon_canvas" width="40" height="40" aria-hidden="true"></canvas></span>
+            </a>
+        </c-button-quote>
+    </div>
+</nav>
+
+{{-- Mobile menu (below md) --}}
+<div class="c-menu-mobile">
+    <div class="c-menu-mobile_bar">
+        <a href="/" class="c-menu-mobile_logo">{!! $logo !!}</a>
+        <div class="c-menu-mobile_cta">
+            <div><a href="#paket" class="c-menu-mobile_contact max-2xs:hidden">Daftar</a></div>
+            <button type="button" class="c-menu-mobile_burger" aria-label="Menu" aria-expanded="false" aria-controls="menu-mobile-nav">
+                <span class="c-menu-mobile_burger_icon -default"><span class="c-menu-mobile_burger_icon_line"></span><span class="c-menu-mobile_burger_icon_line"></span></span>
+                <span class="c-menu-mobile_burger_icon -close"><span class="c-menu-mobile_burger_icon_line"></span><span class="c-menu-mobile_burger_icon_line"></span></span>
+            </button>
+        </div>
+    </div>
+    <nav id="menu-mobile-nav" class="c-menu-mobile_nav" aria-label="Utama">
+        <div class="c-menu-mobile_nav_inner">
+            <ul class="c-menu-mobile_list">
+                @foreach ($cards as $card)
+                    <li class="c-menu-mobile_list_item" style="--index: {{ $loop->index }}"><a href="#{{ $card['id'] }}" class="c-menu-mobile_nav_link"><span class="c-menu-mobile_nav_label">{{ ucfirst($card['id']) }}</span></a></li>
+                @endforeach
+                <li class="c-menu-mobile_list_item" style="--index: 4"><a href="#paket" class="c-menu-mobile_nav_link"><span class="c-menu-mobile_nav_label">Daftar</span></a></li>
+                <li class="c-menu-mobile_list_item" style="--index: 5"><a href="#jadwal" class="c-menu-mobile_nav_link"><span class="c-menu-mobile_nav_label">Cek status</span></a></li>
+                <li class="c-menu-mobile_list_item" style="--index: 6"><a href="#hasil" class="c-menu-mobile_nav_link"><span class="c-menu-mobile_nav_label">Hasil lomba</span></a></li>
+            </ul>
+            <a href="#paket" class="c-menu-mobile_nav_contact">
+                <span class="c-menu-mobile_nav_label c-menu-mobile_nav_contact_label">Daftar sekarang</span>
+                <span class="c-menu-mobile_nav_contact_icon"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m8 14 4-4-4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            </a>
+        </div>
+    </nav>
+</div>
 
 <main>
-    <div class="relative">
-        {{-- Hero: sticks while the timeline slides over it --}}
-        <section class="hero sticky top-0 flex h-[calc(100svh+50px)] flex-col items-center justify-start overflow-hidden bg-green px-4 pt-[clamp(110px,16svh,160px)] text-center">
-            <div class="c-hero-home_content flex flex-col items-center">
-                <h1 class="heading-2xl" data-reveal>{{ $heroTop }}@if ($heroBottom)<br>{{ $heroBottom }}@endif</h1>
-                <p class="heading-xs mt-6 max-w-xl text-balance opacity-90" data-reveal>
-                    @if ($event)
-                        {{ $date }}@if ($event->location) · {{ $event->location }}@endif
-                    @else
-                        Segera hadir
-                    @endif
-                </p>
-                <div class="mt-8" data-reveal>@include('partials.btn', ['href' => '#paket', 'label' => 'Daftar sekarang'])</div>
+    {{-- Hero: pinned (sticky) behind the timeline from md up, see .c-hero-home in app.css --}}
+    <div class="c-hero-home" data-scroll data-scroll-css-progress>
+        <div class="c-hero-home_inner">
+            <div class="c-hero-home_container container">
+                <div class="c-hero-home_content">
+                    <div class="anim-first-hit -delay-2"><h1 class="c-hero-home_title">{{ $heroTop }}@if ($heroBottom)<br>{{ $heroBottom }}@endif</h1></div>
+                    <div class="anim-first-hit -delay-1">
+                        <p class="c-hero-home_tagline">
+                            @if ($event)
+                                {{ $date }}@if ($event->location) · {{ $event->location }}@endif
+                            @else
+                                Segera hadir
+                            @endif
+                        </p>
+                    </div>
+                    <div class="c-hero-home_cta anim-first-hit -delay-3">@include('partials.btn', ['href' => '#paket', 'label' => 'Daftar sekarang', 'color' => 'green'])</div>
+                </div>
             </div>
-        </section>
+        </div>
+    </div>
 
-        {{-- Timeline --}}
-        <section class="c-homepage-timeline timeline relative z-10 -mt-[50px] rounded-t-[50px] bg-beige p-0">
-            {{-- Intro Section (MindMarket 1:1) --}}
-            <div class="c-homepage-timeline_intro relative z-10" data-scroll data-scroll-css-progress data-scroll-offset="0,100%">
-                <div class="c-homepage-timeline_intro_illustration_wrap pointer-events-none absolute top-[-100svh] bottom-0 left-0 w-full z-2">
-                    <div class="c-homepage-timeline_intro_illustration_sticky sticky top-0 flex h-[100svh] items-end justify-center">
-                        <div class="c-homepage-timeline_intro_illustration relative w-full max-w-[980px] mx-auto aspect-[1430/1022] mb-[-12vw] max-md:mb-[-15vw]">
-                            <div class="c-homepage-timeline_intro_illustration_inner relative w-full h-full flex items-center justify-center">
-                                <c-rive data-src="/rive/hero_animation.riv" data-autoplay="true" data-reveal="true" data-reveal-delay="0.15" data-reveal-delay-with-preloader="true" data-reveal-translate-x="0%" data-disable-firefox-renderer="false" class="w-full h-full">
-                                    <div class="c-homepage-timeline_intro_illustration_canvas aspect-[1430/1022] w-full h-full relative z-2">
-                                        <div class="h-full w-full">
-                                            <canvas class="h-full w-full"></canvas>
-                                        </div>
-                                    </div>
-                                </c-rive>
-                                <img src="/timeline/hero-background-illustration.svg" alt="" class="c-homepage-timeline_intro_illustration_background absolute inset-0 w-full h-full object-contain" width="971" height="540" aria-hidden="true" fetchpriority="high">
+    {{-- Timeline --}}
+    <section class="c-homepage-timeline" data-timeline>
+        {{-- Intro --}}
+        <div class="c-homepage-timeline_intro" data-scroll data-scroll-css-progress data-scroll-offset="0,100%">
+            <div class="c-homepage-timeline_intro_illustration_wrap">
+                <div class="c-homepage-timeline_intro_illustration_sticky">
+                    <div class="c-homepage-timeline_intro_illustration transform-element">
+                        <div class="c-homepage-timeline_intro_illustration_inner">
+                            <c-rive data-src="/rive/hero_animation.riv" data-autoplay="true" data-reveal="true" data-reveal-delay="0.15" data-reveal-delay-with-preloader="true" data-reveal-translate-x="0%" data-disable-firefox-renderer="false">
+                                <div class="c-homepage-timeline_intro_illustration_canvas">
+                                    <canvas class="h-full w-full"></canvas>
+                                </div>
+                            </c-rive>
+                            <img src="/timeline/hero-background-illustration.svg" alt="" class="c-homepage-timeline_intro_illustration_background" width="971" height="540" aria-hidden="true" fetchpriority="high">
+                            <svg aria-hidden="true" focusable="false" class="c-homepage-timeline_intro_path max-md:hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 824.5 590.8"><path fill="none" stroke="#8ED462" stroke-linecap="round" stroke-width="500" d="M549.4,251c-48.6,7.1-94.8,16.2-138.5,27.3-52.2,13.2-100.9,29.1-146,47.4"/></svg>
+                            <svg aria-hidden="true" focusable="false" class="c-homepage-timeline_intro_path md:hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 477.7 350.6"><path fill="none" stroke="#8ED462" stroke-linecap="round" stroke-width="250" d="M344.2,131.1c-87.3,2.2-154.5,26.3-204.3,66.8"/></svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container relative z-[1]">
+                <div class="grid grid-cols-6 gap-gutter md:grid-cols-16">
+                    <div class="col-span-full md:col-start-2 md:col-span-14">
+                        <div class="grid md:grid-cols-14">
+                            <div class="flex flex-col gap-9 md:col-start-1 md:col-end-8 md:max-w-175">
+                                <p class="md:heading-xs max-md:heading-sm text-balance">
+                                    {{ $event?->description ?: 'Centaurian Run adalah fun run keluarga besar Alfa Centauri. Siswa, guru, alumni, dan orang tua lari bersama: daftar online, check-in dengan barcode, dan lihat hasilmu langsung setelah finish.' }}
+                                </p>
+                                <div>@include('partials.btn', ['href' => '#paket', 'label' => 'Daftar sekarang', 'color' => 'green'])</div>
                             </div>
                         </div>
                     </div>
                 </div>
-
-                <div class="container relative z-20 mx-auto px-5 xl:px-[7.5vw] max-w-[1405px]">
-                    <div class="md:w-[45vw] md:max-w-[620px] flex flex-col gap-8">
-                        <p class="heading-xs text-balance max-md:text-[1.625rem] leading-[1.2]">
-                            {{ $event?->description ?: 'Centaurian Run adalah fun run keluarga besar Alfa Centauri. Siswa, guru, alumni, dan orang tua lari bersama: daftar online, check-in dengan barcode, dan lihat hasilmu langsung setelah finish.' }}
-                        </p>
-                        <div>@include('partials.btn', ['href' => '#paket', 'label' => 'Daftar sekarang'])</div>
-                    </div>
-                </div>
-                <div class="c-homepage-timeline_intro_ghost aspect-[1430/600] w-[56%] mx-auto pointer-events-none"></div>
             </div>
+            <div class="c-homepage-timeline_intro_ghost"></div>
+        </div>
 
-            {{-- Relative wrapper containing Cards, Rives, and SVGs (MindMarket 1:1) --}}
-            <div class="relative overflow-hidden w-full">
-                {{-- 4 Cards --}}
-                <div class="absolute inset-0 pointer-events-none z-[5]">
-                    @foreach ($cards as $card)
-                        @php($cms = $c->get($card['id']))
-                        <article id="{{ $card['id'] }}" class="card c-homepage-timeline-cards pointer-events-auto scroll-mt-28 rounded-[50px] px-6 py-7 md:p-12" data-reveal>
-                            <h2 class="heading-sm">{{ $cms?->title ?? $card['title'] }}</h2>
-                            <p class="mt-4 text-[1.1875rem] leading-[1.25] tracking-[-0.04em]">
-                                {!! nl2br(e($cms?->body ?? $card['body'])) !!}
-                            </p>
+        {{-- Wrapper holding cards, Rive characters, ornaments and the route (positioned in % of its height) --}}
+        <div class="relative overflow-hidden">
+            @foreach ($cards as $card)
+                @php($cms = $c->get($card['id']))
+                <div id="{{ $card['id'] }}" class="c-homepage-timeline-cards" data-scroll data-scroll-speed="0.1">
+                    <div class="c-tile-animated" data-scroll data-scroll-offset="20%">
+                        <div class="c-tile-animated_bg"></div>
+                        <div class="c-tile-animated_inner">
+                            <h2 class="c-tile-animated_title">{{ $cms?->title ?? $card['title'] }}</h2>
+                            <p class="c-tile-animated_description">{!! nl2br(e($cms?->body ?? $card['body'])) !!}</p>
 
                             @if ($card['id'] === 'kategori' && $categories->isNotEmpty())
-                                <ul class="mt-5 flex flex-wrap gap-2">
+                                <ul class="flex flex-wrap gap-2">
                                     @foreach ($categories as $category)
                                         <li class="rounded-[10px] bg-beige px-3 py-1 text-[.9375rem] font-medium text-charcoal">{{ $category->name }}</li>
                                     @endforeach
                                 </ul>
                             @elseif ($card['id'] === 'paket' && $packages->isNotEmpty())
-                                <ul class="mt-5 divide-y divide-beige-500">
+                                <ul class="divide-y divide-beige-500">
                                     @foreach ($packages as $package)
                                         <li class="flex justify-between py-2"><span>{{ $package->name }}</span><span>{{ $rupiah($package->price) }}</span></li>
                                     @endforeach
                                 </ul>
                             @elseif ($card['id'] === 'jadwal')
-                                <dl class="mt-5 grid grid-cols-[auto_1fr] gap-x-4 gap-y-1">
+                                <dl class="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1">
                                     <dt class="opacity-75">Tanggal</dt><dd>{{ $date ?? 'Segera diumumkan' }}</dd>
                                     @if ($time)<dt class="opacity-75">Start</dt><dd>{{ $time }} WIB</dd>@endif
                                     @if ($event?->location)<dt class="opacity-75">Lokasi</dt><dd>{{ $event->location }}</dd>@endif
                                 </dl>
                             @endif
 
-                            <div class="mt-6">@include('partials.btn', ['href' => $card['href'], 'label' => $card['button'], 'bg' => $card['bg'], 'primary' => true])</div>
-                        </article>
-                    @endforeach
+                            <div class="c-tile-animated_cta">@include('partials.btn', ['href' => $card['href'], 'label' => $card['button'], 'color' => $card['color'], 'primary' => true])</div>
+                        </div>
+                    </div>
                 </div>
+            @endforeach
 
                 {{-- MindMarket 1:1 Rive Characters --}}
                 <c-rive data-src="/rive/climber.riv" data-autoplay="true" data-reveal="true" data-reveal-delay="0.15" data-reveal-delay-with-preloader="false" data-reveal-translate-x="0%" data-disable-firefox-renderer="true">
@@ -224,34 +259,34 @@
                 </c-rive>
 
                 {{-- MindMarket 1:1 Floating SVG Ornaments --}}
-                <img src="/timeline/clock.svg" alt="" class="absolute z-above max-md:top-[1.5%] max-md:left-[15%] max-md:hidden max-md:w-[16%] md:top-[5%] md:left-[13%] md:w-[10%]" width="203" height="210" aria-hidden="true" data-scroll-speed="0.05">
+                <img src="/timeline/clock.svg" alt="" class="absolute z-above max-md:top-[1.5%] max-md:left-[15%] max-md:hidden max-md:w-[16%] md:top-[5%] md:left-[13%] md:w-[10%] max-md:transform-none!" width="203" height="210" aria-hidden="true" data-scroll data-scroll-speed="0.05">
                 <img src="/timeline/clock-shape.svg" alt="" class="absolute top-[2%] left-[8%] z-10 w-[30%] max-md:hidden" width="533" height="537" aria-hidden="true">
                 <img src="/timeline/clock-shape-mobile.svg" alt="" class="absolute top-[1%] left-[8%] z-10 hidden w-[40%]" width="222" height="190" aria-hidden="true">
-                <img src="/timeline/folder.svg" alt="" class="absolute z-above max-md:top-[20%] max-md:left-[16%] max-md:w-[20%] md:top-[22%] md:left-[40%] md:w-[12%]" width="256" height="215" data-scroll-speed="0.02" aria-hidden="true">
+                <img src="/timeline/folder.svg" alt="" class="absolute z-above max-md:top-[20%] max-md:left-[16%] max-md:w-[20%] md:top-[22%] md:left-[40%] md:w-[12%] max-md:transform-none!" width="256" height="215" data-scroll data-scroll-speed="0.02" aria-hidden="true">
                 <img src="/timeline/folder-shape.svg" alt="" class="absolute z-above max-md:top-[17%] max-md:left-[-18%] max-md:w-[42%] md:top-[15%] md:left-[19%] md:w-[25%]" width="209" height="445" aria-hidden="true">
-                <img src="/timeline/plane-1.svg" alt="" class="transform-element absolute z-10 max-md:top-[4.5%] max-md:left-[50%] max-md:w-[12%] md:top-[11%] md:left-[31%] md:w-[6%]" width="137" height="173" aria-hidden="true" data-scroll-speed="-0.04">
-                <img src="/timeline/plane-2.svg" alt="" class="transform-element absolute z-above max-md:top-[8.5%] max-md:right-[1%] max-md:w-[16%] md:top-[19%] md:left-[46%] md:w-[8%]" width="178" height="122" aria-hidden="true" data-scroll-speed="0.06">
+                <img src="/timeline/plane-1.svg" alt="" class="transform-element absolute z-10 max-md:top-[4.5%] max-md:left-[50%] max-md:w-[12%] md:top-[11%] md:left-[31%] md:w-[6%] max-md:transform-none!" width="137" height="173" aria-hidden="true" data-scroll data-scroll-css-progress style="--tx-start:-10px;--tx-end:10px;--ty-start:-10px;--ty-end:60px;--rot-start:-10deg;--rot-end:10deg">
+                <img src="/timeline/plane-2.svg" alt="" class="transform-element absolute z-above max-md:top-[8.5%] max-md:right-[1%] max-md:w-[16%] md:top-[19%] md:left-[46%] md:w-[8%] max-md:transform-none!" width="178" height="122" aria-hidden="true" data-scroll data-scroll-css-progress style="--tx-start:-30px;--tx-end:40px;--ty-start:-40px;--ty-end:40px;--rot-start:10deg;--rot-end:-10deg">
                 <img src="/timeline/plane-trace.svg" alt="" class="absolute z-10 max-md:top-[2.9%] max-md:left-[28%] max-md:w-[50%] md:top-[9%] md:left-[22%] md:w-[23%]" width="430" height="542" aria-hidden="true">
-                <img src="/timeline/sheet.svg" alt="" class="absolute z-above max-md:top-[19%] max-md:left-[2%] max-md:w-[18%] md:top-[20%] md:left-[32%] md:w-[10%]" width="213" height="167" data-scroll-speed="0.05" aria-hidden="true">
-                <img src="/timeline/composer-shape.svg" alt="" class="absolute top-[26%] right-[9%] z-10 w-[38%] max-md:hidden" width="751" height="515" data-scroll-speed="0.15" aria-hidden="true">
-                <img src="/timeline/composer-shape-2.svg" alt="" class="absolute top-[26%] right-[9%] z-above w-[38%] max-md:hidden" width="751" height="515" aria-hidden="true">
-                <img src="/timeline/music-note-1.svg" alt="" class="pointer-events-none absolute max-md:top-[36.5%] max-md:left-[16%] max-md:w-[12%] md:top-[34%] md:left-[9%] md:w-[5%] xl:w-[6.5%]" width="113" height="97" data-scroll-speed="0.05" aria-hidden="true">
-                <img src="/timeline/music-note-2.svg" alt="" class="absolute z-above max-md:top-[40%] max-md:left-[46%] max-md:w-[14%] md:top-[38%] md:left-[48%] md:w-[6%] xl:w-[7%]" width="141" height="172" data-scroll-speed="0.08" aria-hidden="true">
-                <img src="/timeline/music-note-3.svg" alt="" class="absolute z-above max-md:top-[43%] max-md:left-[52%] max-md:w-[13.5%] md:top-[42%] md:left-[52%] md:w-[6%] xl:w-[7.3%]" width="157" height="179" data-scroll-speed="0.15" aria-hidden="true">
+                <img src="/timeline/sheet.svg" alt="" class="absolute z-above max-md:top-[19%] max-md:left-[2%] max-md:w-[18%] md:top-[20%] md:left-[32%] md:w-[10%] max-md:transform-none!" width="213" height="167" data-scroll data-scroll-speed="0.05" aria-hidden="true">
+                <img src="/timeline/composer-shape.svg" alt="" class="absolute top-[26%] right-[9%] z-10 w-[38%] max-md:hidden max-md:transform-none!" width="751" height="515" data-scroll data-scroll-speed="0.15" aria-hidden="true">
+                <img src="/timeline/composer-shape-2.svg" alt="" class="absolute top-[26%] right-[9%] z-above w-[38%] max-md:hidden max-md:transform-none!" width="751" height="515" aria-hidden="true">
+                <img src="/timeline/music-note-1.svg" alt="" class="pointer-events-none absolute max-md:top-[36.5%] max-md:left-[16%] max-md:w-[12%] md:top-[34%] md:left-[9%] md:w-[5%] xl:w-[6.5%] max-md:transform-none!" width="113" height="97" data-scroll data-scroll-speed="0.05" aria-hidden="true">
+                <img src="/timeline/music-note-2.svg" alt="" class="absolute z-above max-md:top-[40%] max-md:left-[46%] max-md:w-[14%] md:top-[38%] md:left-[48%] md:w-[6%] xl:w-[7%] max-md:transform-none!" width="141" height="172" data-scroll data-scroll-speed="0.08" aria-hidden="true">
+                <img src="/timeline/music-note-3.svg" alt="" class="absolute z-above max-md:top-[43%] max-md:left-[52%] max-md:w-[13.5%] md:top-[42%] md:left-[52%] md:w-[6%] xl:w-[7.3%] max-md:transform-none!" width="157" height="179" data-scroll data-scroll-speed="0.15" aria-hidden="true">
                 <img src="/timeline/trumper-shape.svg" alt="" class="absolute z-above max-md:top-[45%] max-md:right-[10%] max-md:w-[25%] md:top-[42%] md:left-[28%] md:w-[12%]" width="301" height="73" aria-hidden="true">
                 <img src="/timeline/gamer-shape.svg" alt="" class="absolute z-above max-md:top-[57.5%] max-md:left-[-5%] max-md:w-[24%] md:top-[47%] md:left-[4%] md:w-[10%]" width="194" height="434" aria-hidden="true">
-                <img src="/timeline/joystick.svg" alt="" class="pointer-events-none absolute z-10 max-md:top-[53%] max-md:right-[2%] max-md:w-[18%] md:top-[55.5%] md:left-[40%] md:w-[7%]" width="154" height="192" data-scroll-speed="0.15" aria-hidden="true">
+                <img src="/timeline/joystick.svg" alt="" class="pointer-events-none absolute z-10 max-md:top-[53%] max-md:right-[2%] max-md:w-[18%] md:top-[55.5%] md:left-[40%] md:w-[7%] max-md:transform-none!" width="154" height="192" data-scroll data-scroll-speed="0.15" aria-hidden="true">
                 <img src="/timeline/joystick-shape.svg" alt="" class="absolute z-above max-md:top-[56%] max-md:right-[-2%] max-md:w-[26%] md:top-[55%] md:left-[53%] md:w-[11%]" width="237" height="229" aria-hidden="true">
-                <img src="/timeline/soccer-circle.svg" alt="" class="absolute z-above max-md:top-[78%] max-md:right-[28%] max-md:w-[9%] md:top-[66%] md:right-[18%] md:w-[3%]" width="83" height="83" data-scroll-speed="0.15" aria-hidden="true">
+                <img src="/timeline/soccer-circle.svg" alt="" class="absolute z-above max-md:top-[78%] max-md:right-[28%] max-md:w-[9%] md:top-[66%] md:right-[18%] md:w-[3%] max-md:transform-none!" width="83" height="83" data-scroll data-scroll-speed="0.15" aria-hidden="true">
                 <img src="/timeline/soccer-shape-1.svg" alt="" class="absolute z-above max-md:top-[68%] max-md:right-[50%] max-md:w-[4%] md:top-[60%] md:right-[33%] md:w-[1.5%]" width="31" height="76" aria-hidden="true">
-                <img src="/timeline/soccer-shape-2.svg" alt="" class="absolute z-above max-md:hidden md:top-[64%] md:right-[44%] md:w-[8%]" width="160" height="148" data-scroll-speed="0.07" aria-hidden="true">
+                <img src="/timeline/soccer-shape-2.svg" alt="" class="absolute z-above max-md:hidden md:top-[64%] md:right-[44%] md:w-[8%] max-md:transform-none!" width="160" height="148" data-scroll data-scroll-speed="0.07" aria-hidden="true">
                 <img src="/timeline/soccer-shape-3.svg" alt="" class="absolute z-above max-md:top-[78.5%] max-md:right-[51%] max-md:w-[16%] md:top-[66.5%] md:right-[41%] md:w-[7%]" width="184" height="211" aria-hidden="true">
                 <img src="/timeline/soccer-shape-4.svg" alt="" class="absolute z-above max-md:top-[87.75%] max-md:right-[18%] max-md:w-[27%] md:top-[76%] md:right-[62%] md:w-[12%]" width="292" height="184" aria-hidden="true">
                 <img src="/timeline/soccer-trace.svg" alt="" class="absolute z-above max-md:top-[83.5%] max-md:right-[-5%] max-md:w-[44%] md:top-[69%] md:right-[49%] md:w-[18%]" width="409" height="432" aria-hidden="true">
-                <img src="/timeline/soccer-circle-2.svg" alt="" class="absolute z-above max-md:top-[84%] max-md:left-[45%] max-md:w-[3%] md:top-[70%] md:left-[19%] md:w-[1%]" width="31" height="75" data-scroll-speed="0.1" aria-hidden="true">
+                <img src="/timeline/soccer-circle-2.svg" alt="" class="absolute z-above max-md:top-[84%] max-md:left-[45%] max-md:w-[3%] md:top-[70%] md:left-[19%] md:w-[1%] max-md:transform-none!" width="31" height="75" data-scroll data-scroll-speed="0.1" aria-hidden="true">
 
                 {{-- MindMarket 1:1 SVG Track / Rail --}}
-                <c-homepage-timeline class="c-homepage-timeline_path md:aspect-[1944.2/6151.5]">
+                <c-homepage-timeline class="c-homepage-timeline_path md:aspect-[1944.2/6151.5]" data-scroll data-scroll-event-progress="pathProgress" data-scroll-offset="-27%,100%">
                     <!-- Desktop Path -->
                     <svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" xml:space="preserve" viewBox="0 0 1944.2 6151.5" class="absolute inset-0 h-full w-full max-md:hidden" id="desktop-svg" preserveAspectRatio="none">
                         <path fill="none" stroke="#8ED462" stroke-linecap="round" stroke-width="500" d="M1085 250c-868 126.5-961 907-29.5 1453S1397 3353 733 3318s-606-718-53.6-808" id="main-path"></path>
@@ -304,17 +339,16 @@
                     <img src="/timeline/timeline_end_cloud_4.svg" alt="" class="c-homepage-timeline_end_cloud_4" width="173" height="40" aria-hidden="true">
                     <img src="/timeline/timeline_end_cloud_5.svg" alt="" class="c-homepage-timeline_end_cloud_5" width="108" height="34" aria-hidden="true">
 
-                    <img src="/timeline/timeline-end-green-back.svg" alt="" class="c-homepage-timeline_end_green_back z-0 max-md:transform-none!" width="1512" height="432" data-scroll-speed="-0.15" aria-hidden="true">
-                    <img src="/timeline/timeline-end-green-middle.svg" alt="" class="c-homepage-timeline_end_green_middle z-20 max-md:transform-none!" width="1512" height="215" data-scroll-speed="-0.075" aria-hidden="true">
+                    <img src="/timeline/timeline-end-green-back.svg" alt="" class="c-homepage-timeline_end_green_back z-0 max-md:transform-none!" width="1512" height="432" data-scroll data-scroll-speed="-0.15" aria-hidden="true">
+                    <img src="/timeline/timeline-end-green-middle.svg" alt="" class="c-homepage-timeline_end_green_middle z-20 max-md:transform-none!" width="1512" height="215" data-scroll data-scroll-speed="-0.075" aria-hidden="true">
                     <img src="/timeline/timeline-end-green-front.svg" alt="" class="c-homepage-timeline_end_green_front z-30" width="1512" height="285" aria-hidden="true">
                 </div>
             </div>
         </section>
-    </div>
 
     {{-- Stats band: "A few numbers" block (MindMarket 1:1), fed by event data --}}
-    <section class="bg-beige px-5 pt-20 pb-24 md:pb-32 text-center">
-        <div class="mx-auto grid max-w-[1200px] gap-12 md:grid-cols-3">
+    <section class="bg-beige px-5 pt-20 pb-24 sm:pb-32 text-center">
+        <div class="mx-auto grid max-w-[1200px] gap-12 sm:grid-cols-3">
             <div class="flex flex-col gap-3" data-reveal>
                 <p class="text-[clamp(2.5rem,5vw,4rem)] leading-none font-medium tracking-[-0.06em]">{{ $categories->count() }}</p>
                 <p class="text-[1.125rem] tracking-[-0.04em] opacity-75 text-balance">Kategori peserta, dari siswa sampai tamu luar.</p>
@@ -330,11 +364,29 @@
         </div>
     </section>
 
-    {{-- Callout Section: Deluxe Callout with Pop-up Girl Rive Animation (MindMarket 1:1) --}}
-    <c-deluxe-callout class="callout group relative block rounded-b-[50px] bg-green px-5 pt-32 md:pt-40 pb-[clamp(60px,6vw,100px)] text-center overflow-hidden">
+    {{-- Callout: pop-up runner rises on CTA hover --}}
+    <c-deluxe-callout class="group relative block rounded-b-lg bg-green py-fluid-4xl">
+        <div class="container">
+            <div class="grid grid-cols-6 gap-gutter md:grid-cols-16">
+                <div class="col-span-full md:col-start-2 md:col-span-14">
+                    <h2 class="heading-2xl text-center">
+                        @foreach (preg_split('/\R/', $ctaTitle) as $line)
+                            {{ $line }}@if (! $loop->last)<br>@endif
+                        @endforeach
+                    </h2>
+                    <div class="mt-fluid-2xl flex flex-col items-center gap-6">
+                        <p class="heading-xs max-w-100 text-center text-balance md:max-w-140">
+                            {{ $c->get('cta')?->body ?? 'Pilih kategori, pilih paket, dan amankan nomor pesertamu. Pendaftaran cuma butuh beberapa menit.' }}
+                        </p>
+                        @include('partials.btn', ['href' => '#paket', 'label' => 'Daftar sekarang', 'color' => 'green', 'attributes' => 'data-deluxe-callout-action="true" data-callout-action'])
+                    </div>
+                </div>
+            </div>
+        </div>
+
         {{-- Pop-up Girl Rive Animation --}}
-        <div class="pointer-events-none absolute top-[-100vh] bottom-0 left-0 w-[56%] max-md:hidden z-20">
-            <div class="sticky top-0 flex h-screen w-full items-end overflow-hidden">
+        <div class="pointer-events-none absolute top-[-100vh] bottom-0 left-0 w-[56%] max-md:hidden">
+            <div class="sticky top-0 flex h-screen w-full items-end">
                 <c-rive data-src="/rive/pop_up_girl.riv" data-autoplay="true" data-reveal="false" data-reveal-delay="0.15" data-reveal-delay-with-preloader="false" data-reveal-translate-x="0%" data-disable-firefox-renderer="false">
                     <div class="aspect-[1979/1570] translate-y-[100%] transform transition-transform duration-[300ms] ease-[var(--ease-smooth)] group-[.is-active]:translate-y-[12%] md:w-[56vw]">
                         <div class="h-full w-full">
@@ -344,24 +396,11 @@
                 </c-rive>
             </div>
         </div>
-
-        <h2 class="heading-2xl" data-lines>
-            @foreach (preg_split('/\R/', $ctaTitle) as $line)
-                <span class="block overflow-hidden pb-[.08em]"><span class="block">{{ $line }}</span></span>
-            @endforeach
-        </h2>
-        <p class="heading-xs mx-auto mt-20 max-w-[35rem] text-balance" data-reveal>
-            {{ $c->get('cta')?->body ?? 'Pilih kategori, pilih paket, dan amankan nomor pesertamu. Pendaftaran cuma butuh beberapa menit.' }}
-        </p>
-        <div class="mt-8" data-reveal>
-            @include('partials.btn', ['href' => '#paket', 'label' => 'Daftar sekarang', 'attributes' => 'data-deluxe-callout-action="true" data-callout-action'])
-        </div>
-
     </c-deluxe-callout>
 </main>
 
 {{-- Footer Accent Block (MindMarket Style Reference: #f5e211 Sunshine Pop closing surface) --}}
-<footer class="w-full bg-yellow py-16 md:py-20 px-6 text-center text-charcoal">
+<footer class="relative w-full bg-yellow py-16 sm:py-20 px-6 text-center text-charcoal">
     <div class="mx-auto max-w-[1200px] flex flex-col items-center gap-4">
         <div class="flex items-center gap-3 text-[1.25rem] font-medium tracking-[-0.04em]">
             <span class="grid size-9 place-items-center rounded-[10px] bg-white">

@@ -44,3 +44,6 @@ composer.phar
 # NPM
 npm-debug.log
 yarn-error.log
+# Audit tooling
+/audit/node_modules
+/audit/shots

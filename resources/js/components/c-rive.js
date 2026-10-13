@@ -1,62 +1,32 @@
-import { Rive, Layout, Fit, Alignment } from '@rive-app/canvas';
+import { Rive } from '../rive.js';
 import { gsap } from 'gsap';
 
+/**
+ * <c-rive data-src="/rive/x.riv" data-autoplay="true" data-reveal="true" ...>
+ * Plays one .riv file in the <canvas> it wraps (runtime: @rive-app/canvas-lite, default Fit.Contain / Alignment.Center).
+ * Rendering only runs while the canvas is on screen; with data-reveal the canvas wrapper pops in with an elastic scale.
+ */
 class CRive extends HTMLElement {
     constructor() {
         super();
-        this.src = this.getAttribute('data-src') || this.getAttribute('src');
-        this.autoplay = this.getAttribute('data-autoplay') !== 'false';
+        this.src = this.getAttribute('data-src');
+        this.autoplay = this.getAttribute('data-autoplay') === 'true';
         this.reveal = this.getAttribute('data-reveal') === 'true';
         this.revealDelay = parseFloat(this.getAttribute('data-reveal-delay') || '0');
         this.revealTranslateX = this.getAttribute('data-reveal-translate-x') || '0%';
-        this.$canvas = null;
+        this.$canvas = this.querySelector('canvas');
         this.rive = null;
         this.timeline = null;
         this.intersectionObserver = null;
         this.hasRevealed = false;
         this.isReadyToReveal = false;
+        this.resizeTimer = null;
     }
 
     connectedCallback() {
-        this.src = this.getAttribute('data-src') || this.getAttribute('src');
-        if (!this.src) return;
-
-        this.$canvas = this.querySelector('canvas');
-        if (!this.$canvas) {
-            const wrap = document.createElement('div');
-            wrap.className = 'h-full w-full';
-            this.$canvas = document.createElement('canvas');
-            this.$canvas.className = 'h-full w-full';
-            wrap.appendChild(this.$canvas);
-            this.appendChild(wrap);
-        }
-
+        if (!this.src || !this.$canvas) return;
+        this.$canvas.setAttribute('aria-hidden', 'true'); // decorative illustration
         this.initRive();
-        this.bindEvents();
-    }
-
-    disconnectedCallback() {
-        this.unbindEvents();
-        this.rive?.cleanup();
-        this.timeline?.kill();
-        this.timeline = null;
-    }
-
-    bindEvents() {
-        this.setIntersectionObserver();
-        window.addEventListener('resize', this.onResize);
-    }
-
-    unbindEvents() {
-        this.intersectionObserver?.disconnect();
-        window.removeEventListener('resize', this.onResize);
-    }
-
-    onResize = () => {
-        this.rive?.resizeDrawingSurfaceToCanvas();
-    };
-
-    setIntersectionObserver() {
         this.intersectionObserver = new IntersectionObserver((entries) => {
             entries.forEach((entry) => {
                 if (entry.isIntersecting) {
@@ -69,51 +39,50 @@ class CRive extends HTMLElement {
                     this.rive?.stopRendering();
                 }
             });
-        }, { rootMargin: '120px' });
-
-        if (this.$canvas) {
-            this.intersectionObserver.observe(this.$canvas);
-        }
+        });
+        this.intersectionObserver.observe(this.$canvas);
+        window.addEventListener('resize', this.onResize);
     }
 
+    disconnectedCallback() {
+        this.intersectionObserver?.disconnect();
+        window.removeEventListener('resize', this.onResize);
+        clearTimeout(this.resizeTimer);
+        this.rive?.cleanup();
+        this.timeline?.kill();
+        this.timeline = null;
+    }
+
+    // Debounced like the reference (200ms) so the drawing surface follows the canvas size
+    onResize = () => {
+        clearTimeout(this.resizeTimer);
+        this.resizeTimer = setTimeout(() => this.rive?.resizeDrawingSurfaceToCanvas(), 200);
+    };
+
     initRive() {
-        try {
-            this.rive = new Rive({
-                src: this.src,
-                canvas: this.$canvas,
-                autoplay: this.autoplay,
-                layout: new Layout({
-                    fit: Fit.Contain,
-                    alignment: Alignment.Center,
-                }),
-                onLoad: () => {
-                    this.rive?.resizeDrawingSurfaceToCanvas();
-                    if (this.reveal) {
-                        this.setTimeline();
-                        if (this.isReadyToReveal) {
-                            this.playReveal();
-                        }
-                    }
-                },
-                onLoadError: (err) => {
-                    console.warn(`[c-rive] Could not load ${this.src}:`, err);
-                },
-            });
-        } catch (e) {
-            console.error('[c-rive] Init error:', e);
-        }
+        this.rive = new Rive({
+            src: this.src,
+            canvas: this.$canvas,
+            autoplay: this.autoplay,
+            onLoad: () => {
+                this.rive?.resizeDrawingSurfaceToCanvas();
+                if (this.reveal) {
+                    this.setTimeline();
+                    if (this.isReadyToReveal) this.playReveal();
+                }
+            },
+            onLoadError: (err) => console.warn(`[c-rive] Could not load ${this.src}:`, err),
+        });
     }
 
     setTimeline() {
         this.timeline = gsap.timeline({
             paused: true,
             delay: this.revealDelay,
-            onStart: () => {
-                this.hasRevealed = true;
-            },
+            onStart: () => { this.hasRevealed = true; },
         });
 
-        const target = this.$canvas?.parentElement || this;
+        const target = this.$canvas.parentElement;
         this.timeline
             .fromTo(target, { scale: 0.75, y: 100 }, { scale: 1, y: 0, duration: 1.75, ease: 'elastic.out(1, 0.3)' })
             .fromTo(target, { x: this.revealTranslateX }, { x: '0%', duration: 1.75, ease: 'power3.inOut' }, 0)
