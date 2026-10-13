@@ -38,3 +38,6 @@ Route::view('/panitia/rekap', 'console.rekap');
 Route::view('/admin', 'console.dashboard', ['role' => 'admin']);
 Route::view('/admin/pendaftaran', 'console.pendaftaran', ['role' => 'admin']);
 Route::view('/admin/peserta', 'console.peserta', ['role' => 'admin']);
+foreach (['event' => ['Event', 'events'], 'konten' => ['Konten', 'contents'], 'pengguna' => ['Pengguna', 'users'], 'pengaturan' => ['Pengaturan', 'settings']] as $slug => [$title, $resource]) {
+    Route::view("/admin/$slug", 'console.crud', ['role' => 'admin', 'title' => $title, 'resource' => $resource]);
+}

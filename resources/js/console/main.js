@@ -2,6 +2,7 @@ import { api, auth, errText, setErr } from './api.js';
 import { initScan } from './scan.js';
 import { initRekap } from './rekap.js';
 import { initAdmin } from './admin.js';
+import { initCrud } from './crud.js';
 
 // Menu per role; tambahkan item admin di sini saat halamannya jadi.
 const NAV = [
@@ -10,6 +11,10 @@ const NAV = [
     ['Dashboard', '/admin', 'admin'],
     ['Pendaftaran', '/admin/pendaftaran', 'admin'],
     ['Peserta', '/admin/peserta', 'admin'],
+    ['Event', '/admin/event', 'admin'],
+    ['Konten', '/admin/konten', 'admin'],
+    ['Pengguna', '/admin/pengguna', 'admin'],
+    ['Pengaturan', '/admin/pengaturan', 'admin'],
 ];
 const home = (u) => (u.role === 'admin' ? '/admin' : '/panitia/scan');
 
@@ -54,5 +59,6 @@ if (main) {
         initScan();
         initRekap();
         initAdmin();
+        initCrud();
     }
 }
