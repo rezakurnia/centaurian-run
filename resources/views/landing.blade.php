@@ -46,7 +46,7 @@
 
 {{-- Logo (shared by the desktop and mobile bars): 36x30 mark + wordmark --}}
 @php
-    $logo = '<span class="c-logo_mark"><svg viewBox="0 0 36 36" aria-hidden="true"><path d="M30 11a14 14 0 1 0 1 13" fill="none" stroke="var(--color-green)" stroke-width="5" stroke-linecap="round"/><path d="M11 22c3-6 7-8 13-8" fill="none" stroke="var(--color-charcoal)" stroke-width="3" stroke-linecap="round"/><circle cx="27" cy="14" r="3" fill="var(--color-charcoal)"/></svg></span><span class="c-logo_text">Centaurian Run</span>';
+    $logo = '<span class="c-logo_mark"><img src="/images/logo.png" alt="" width="824" height="490"></span><span class="c-logo_text">Centaurian Run</span>';
     $burger = '<svg viewBox="0 0 22 22" aria-hidden="true"><path d="M5 8h12M5 14h12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
 @endphp
 
