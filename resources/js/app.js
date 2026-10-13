@@ -37,15 +37,4 @@ if (!reduceMotion) {
         lenisOptions: { anchors: { offset: -100 } },
         scrollCallback: () => ScrollTrigger.update(),
     });
-
-    // Fade-up for blocks that exist only in this site (stats band); everything else animates through CSS or Rive
-    gsap.utils.toArray('[data-reveal]:not(c-rive)').forEach((el) => {
-        gsap.from(el, {
-            opacity: 0,
-            y: 40,
-            duration: 0.8,
-            ease: 'power3.out',
-            scrollTrigger: { trigger: el, start: 'top 90%' },
-        });
-    });
 }

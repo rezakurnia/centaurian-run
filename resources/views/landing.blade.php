@@ -3,7 +3,6 @@
     $rupiah = fn (int $p) => $p === 0 ? 'Gratis' : 'Rp' . number_format($p, 0, ',', '.');
     $date = $event?->event_date?->locale('id')->translatedFormat('l, j F Y');
     $time = $event?->start_time?->format('H:i');
-    $minPrice = $packages->min('price');
     $ctaTitle = $c->get('cta')?->title ?? "Siap lari\nbareng?";
     // Hero title breaks after the first word: "Centaurian" / "Run 2026"
     $name = $event?->name ?? 'Centaurian Run ' . now()->year;
@@ -342,24 +341,6 @@
                 </div>
             </div>
         </section>
-
-    {{-- Stats band: "A few numbers" block (MindMarket 1:1), fed by event data --}}
-    <section class="bg-beige px-5 pt-20 pb-24 sm:pb-32 text-center">
-        <div class="mx-auto grid max-w-[1200px] gap-12 sm:grid-cols-3">
-            <div class="flex flex-col gap-3" data-reveal>
-                <p class="text-[clamp(2.5rem,5vw,4rem)] leading-none font-medium tracking-[-0.06em]">{{ $categories->count() }}</p>
-                <p class="text-[1.125rem] tracking-[-0.04em] opacity-75 text-balance">Kategori peserta, dari siswa sampai tamu luar.</p>
-            </div>
-            <div class="flex flex-col gap-3" data-reveal>
-                <p class="text-[clamp(2.5rem,5vw,4rem)] leading-none font-medium tracking-[-0.06em]">{{ $minPrice === null ? '—' : ($minPrice === 0 ? 'Gratis' : $rupiah($minPrice)) }}</p>
-                <p class="text-[1.125rem] tracking-[-0.04em] opacity-75 text-balance">{{ $minPrice === null ? 'Paket segera diumumkan.' : 'Harga paket termurah.' }}</p>
-            </div>
-            <div class="flex flex-col gap-3" data-reveal>
-                <p class="text-[clamp(2.5rem,5vw,4rem)] leading-none font-medium tracking-[-0.06em]">{{ $date ?? 'Segera' }}</p>
-                <p class="text-[1.125rem] tracking-[-0.04em] opacity-75 text-balance">{{ $date ? 'Tanggal lomba.' : 'Tanggal segera diumumkan.' }}</p>
-            </div>
-        </div>
-    </section>
 
     {{-- Callout: pop-up runner rises on CTA hover --}}
     <c-deluxe-callout class="group relative block rounded-b-lg bg-green py-fluid-4xl">
