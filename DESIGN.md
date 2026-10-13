@@ -103,9 +103,11 @@ Fluid root font-size: `--text-md` (16 → 17px) by default, 15px from 1000 to 11
 - **Table** (`.c-table`, `/hasil`): inside a `.c-step`; 2px Plum Night header rule, 1px Hairline Mist row rules, `--text-lg` rows, no zebra or shadow, scrolls horizontally in its wrapper below 34rem. The category filter is a native `select.c-input`.
 - Submit is a `.c-button` rendered as `<button>`; it dims and shows a progress cursor while sending.
 
+- **Result detail** (`/hasil/{no}`): one `.c-step` card (name heading-xs, category line, duration heading-md tabular, start/finish line). Registration numbers in the `/hasil` table link to it with `.c-link`.
+
 ### 6. Footer Row
 - **Role:** Closing line inside the green callout, under the CTA (no separate footer block).
-- Three centred columns (`body-md`, `md:grid-cols-3`, 60 × `--spacing` above on desktop; stacked below 1000px), text in `#3a1f3f`.
+- A "Login panitia" `.c-link` sits in the last column. Three centred columns (`body-md`, `md:grid-cols-3`, 60 × `--spacing` above on desktop; stacked below 1000px), text in `#3a1f3f`.
 
 ### 7. Console (panitia/admin, `/login`, `/panitia/*`)
 - **Role:** Working screens for staff, not marketing. Same tokens as the public site, denser, no Locomotive/Rive (separate Vite entry `resources/js/console/main.js`).

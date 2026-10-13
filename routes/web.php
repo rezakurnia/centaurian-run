@@ -44,3 +44,5 @@ foreach (['event' => ['Event', 'events'], 'konten' => ['Konten', 'contents'], 'p
 Route::view('/admin/scan-log', 'console.logs', ['role' => 'admin', 'title' => 'Log scan', 'log' => 'scan']);
 Route::view('/admin/log-aktivitas', 'console.logs', ['role' => 'admin', 'title' => 'Log aktivitas', 'log' => 'activity']);
 Route::view('/admin/ekspor', 'console.ekspor', ['role' => 'admin']);
+
+Route::get('/hasil/{registration_number}', fn (string $registration_number) => view('hasil-detail', ['no' => $registration_number]));

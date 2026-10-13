@@ -21,6 +21,16 @@ if (root) {
         return c;
     };
 
+    const linkCell = (no) => {
+        const c = document.createElement('td');
+        const a = document.createElement('a');
+        a.className = 'c-link';
+        a.href = `/hasil/${encodeURIComponent(no)}`;
+        a.textContent = no;
+        c.append(a);
+        return c;
+    };
+
     let seq = 0;
     const load = async () => {
         const mine = ++seq; // ignore out-of-order responses when the filter changes quickly
@@ -37,7 +47,7 @@ if (root) {
 
             body.replaceChildren(...data.map((r, i) => {
                 const tr = document.createElement('tr');
-                tr.append(cell(i + 1), cell(r.full_name), cell(r.category), cell(r.registration_number), cell(r.duration == null ? '–' : time(r.duration), 'text-right tabular-nums'));
+                tr.append(cell(i + 1), cell(r.full_name), cell(r.category), linkCell(r.registration_number), cell(r.duration == null ? '–' : time(r.duration), 'text-right tabular-nums'));
                 return tr;
             }));
             wrap.hidden = !data.length;

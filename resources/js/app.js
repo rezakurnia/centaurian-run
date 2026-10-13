@@ -9,6 +9,7 @@ import './components/c-homepage-timeline.js';
 import './components/c-register.js';
 import './components/c-check-status.js';
 import './components/c-results.js';
+import './components/c-result-detail.js';
 
 const root = document.documentElement;
 const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
