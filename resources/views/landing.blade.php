@@ -37,7 +37,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ $name }}</title>
-    <meta name="description" content="{{ Str::limit($event?->description ?? 'Move with Faith, Run with Care: gerakan YTCK untuk kebenaran, keadilan, dan kemanusiaan.', 155) }}">
+    <meta name="description" content="{{ Str::limit($event?->description ?? 'Centaurian Run 2026 oleh Yayasan Taqwa Cerdas Kreatif: Move with Faith, Run with Care.', 155) }}">
     <link rel="icon" href="/favicon.ico" sizes="any">
     <link rel="icon" href="/favicon.png" type="image/png">
     @fonts
@@ -65,7 +65,7 @@
     {{-- Timeline --}}
     <section class="c-homepage-timeline" data-timeline>
         {{-- Intro --}}
-        <div class="c-homepage-timeline_intro" data-scroll data-scroll-css-progress data-scroll-offset="0,100%">
+        <div id="tentang" class="c-homepage-timeline_intro" data-scroll data-scroll-css-progress data-scroll-offset="0,100%">
             <div class="c-homepage-timeline_intro_illustration_wrap">
                 <div class="c-homepage-timeline_intro_illustration_sticky">
                     <div class="c-homepage-timeline_intro_illustration transform-element">
@@ -89,7 +89,7 @@
                         <div class="grid md:grid-cols-14">
                             <div class="flex flex-col gap-9 md:col-start-1 md:col-end-8 md:max-w-175">
                                 <p class="md:heading-xs max-md:heading-sm text-balance">
-                                    {{ $event?->description ?: 'Lebih dari sekadar lomba lari, Centaurian Run 2026 adalah gerakan YTCK untuk kebenaran, keadilan, dan kemanusiaan. Move with faith: setiap langkah berakar pada keyakinan untuk terus memperjuangkan kebaikan. Run with care: saling peduli dan menjaga, termasuk aksi nyata solidaritas untuk Palestina.' }}
+                                    {{ $event?->description ?: 'Lebih dari sekadar lomba lari, Centaurian Run 2026 adalah gerakan Yayasan Taqwa Cerdas Kreatif untuk kebenaran, keadilan, dan kemanusiaan. Move with faith: setiap langkah berakar pada keyakinan untuk terus memperjuangkan kebaikan. Run with care: saling peduli dan menjaga, termasuk aksi nyata solidaritas untuk Palestina.' }}
                                 </p>
                                 <div>@include('partials.btn', ['href' => '/daftar', 'label' => 'Daftar sekarang', 'color' => 'green'])</div>
                             </div>

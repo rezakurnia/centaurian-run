@@ -81,7 +81,7 @@ Fluid root font-size: `--text-md` (16 → 17px) by default, 15px from 1000 to 11
 ### 1. Floating Navigation Bar
 - **Role:** Primary site navigation. Desktop bar (`.c-menu-desktop`, ≥1000px) and mobile bar + sliding list (`.c-menu-mobile`).
 - White (`#ffffff`) bar, **10px radius**, 16 × spacing tall, floating 4 × spacing from the top and inset to grid column 1 (2 from 1600px).
-- Logo mark 36 × 30px + wordmark 32 × spacing wide; links `--text-md` Inter 500 with a beige hover pill (50px); green 40px burger; quote button on the right.
+- Logo mark 36 × 30px + wordmark 32 × spacing wide; links `--text-md` Inter 500 with a beige hover pill (50px): Tentang, Kategori, Paket, Jadwal, Cek Status, Hasil Lomba (no dropdown); quote button on the right.
 
 ### 2. Button (`.c-button`)
 - **Role:** Every call to action. White (`button-secondary`) or colour-filled (`button-primary`), **10px radius**, 15 × spacing tall, 2.5 × spacing padding, `--text-md` Inter 500.

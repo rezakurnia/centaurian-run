@@ -17,9 +17,6 @@ gsap.registerPlugin(ScrollTrigger);
 // Slides the nav in and starts the hero's first-hit animation
 requestAnimationFrame(() => root.classList.add('is-loaded'));
 
-// Close the desktop burger dropdown after picking a link
-document.querySelectorAll('details a').forEach((a) => a.addEventListener('click', () => a.closest('details').removeAttribute('open')));
-
 // Mobile menu: the burger toggles html.has-menu-mobile-open, picking a link closes it
 const burger = document.querySelector('.c-menu-mobile_burger');
 const setMenu = (open) => {

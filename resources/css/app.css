@@ -305,10 +305,6 @@ html.is-loaded .c-menu-desktop {
 .c-menu-desktop_inner { display: flex; align-items: center; gap: calc(var(--spacing) * 6); height: 100%; }
 .c-menu-desktop_list { display: flex; gap: calc(var(--spacing) * 1); height: 100%; }
 .c-menu-desktop_item { display: inline-flex; align-items: center; height: 100%; }
-.c-menu-desktop_item.-buger-menu { margin-left: calc(var(--spacing) * 2); }
-@media (width >= 1600px) {
-    .c-menu-desktop_item.-buger-menu { margin-left: calc(var(--spacing) * 4); }
-}
 .c-menu-desktop_link {
     position: relative;
     display: inline-flex;
@@ -342,48 +338,6 @@ html.is-loaded .c-menu-desktop {
     letter-spacing: -0.04em;
     line-height: 1.25;
 }
-.c-menu-desktop_button {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: calc(var(--spacing) * 10);
-    height: calc(var(--spacing) * 10);
-    border-radius: 100%;
-    cursor: pointer;
-    list-style: none;
-}
-.c-menu-desktop_button::before,
-.c-menu-desktop_button::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: 100%;
-    transition: transform var(--transition-duration) var(--ease-bounce);
-}
-.c-menu-desktop_button::before { background-color: var(--color-beige-400); transform: scale(0); }
-.c-menu-desktop_button::after { background-color: var(--color-green); }
-.c-menu-desktop_button:hover::before { transform: scale(1.05); }
-.c-menu-desktop_button:hover::after { transform: scale(0); }
-.c-menu-desktop_button svg { position: relative; z-index: 1; width: 22px; height: 22px; }
-.c-menu-desktop_dropdown {
-    position: absolute;
-    top: calc(var(--menu-bar-height) + var(--spacing) * 2);
-    right: 0;
-    display: flex;
-    flex-direction: column;
-    width: 14rem;
-    padding: calc(var(--spacing) * 2);
-    border-radius: var(--radius-sm);
-    background-color: var(--color-white);
-}
-.c-menu-desktop_dropdown_link {
-    display: inline-flex;
-    padding: calc(var(--spacing) * 2) calc(var(--spacing) * 3);
-    font-size: var(--text-md);
-    letter-spacing: -0.04em;
-}
-.c-menu-desktop_dropdown_link:hover { text-decoration: underline; }
 .c-menu-desktop_contact {
     --button-height: 100%;
     --button-icon-width: 40px;

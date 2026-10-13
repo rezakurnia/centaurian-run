@@ -2,9 +2,10 @@
 @php
     $base = $base ?? '';
     $sections = ['kategori', 'paket', 'jadwal', 'hasil'];
+    // Desktop bar: label => href (section anchors live on the landing page)
+    $links = ['Tentang' => $base . '#tentang', 'Kategori' => $base . '#kategori', 'Paket' => $base . '#paket', 'Jadwal' => $base . '#jadwal', 'Cek Status' => '/cek-status', 'Hasil Lomba' => '/hasil'];
     // Logo (shared by the desktop and mobile bars): 36x30 mark + wordmark
     $logo = '<span class="c-logo_mark"><img src="/images/logo.png" alt="" width="824" height="490"></span><span class="c-logo_text">Centaurian Run</span>';
-    $burger = '<svg viewBox="0 0 22 22" aria-hidden="true"><path d="M5 8h12M5 14h12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
 @endphp
 
 {{-- Desktop menu (md and up) --}}
@@ -13,19 +14,9 @@
         <a href="/" class="c-menu-desktop_logo">{!! $logo !!}</a>
         <div class="c-menu-desktop_inner">
             <ul class="c-menu-desktop_list">
-                @foreach ($sections as $id)
-                    <li class="c-menu-desktop_item"><a href="{{ $base }}#{{ $id }}" class="c-menu-desktop_link"><span class="c-menu-desktop_link_label">{{ ucfirst($id) }}</span></a></li>
+                @foreach ($links as $label => $href)
+                    <li class="c-menu-desktop_item"><a href="{{ $href }}" class="c-menu-desktop_link"><span class="c-menu-desktop_link_label">{{ $label }}</span></a></li>
                 @endforeach
-                <li class="c-menu-desktop_item -buger-menu">
-                    <details class="relative">
-                        <summary class="c-menu-desktop_button" aria-label="Menu">{!! $burger !!}</summary>
-                        <div class="c-menu-desktop_dropdown">
-                            <a href="/daftar" class="c-menu-desktop_dropdown_link">Daftar</a>
-                            <a href="/cek-status" class="c-menu-desktop_dropdown_link">Cek status</a>
-                            <a href="/hasil" class="c-menu-desktop_dropdown_link">Hasil lomba</a>
-                        </div>
-                    </details>
-                </li>
             </ul>
         </div>
     </div>
