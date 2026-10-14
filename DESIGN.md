@@ -148,4 +148,5 @@ MindMarket uses a cream-to-white surface stack and generous border-radii instead
 - Hero is pinned (sticky, 200svh inner) while the timeline slides over it; the hero darkens (`--progress * .4`) and its content scales to .8.
 - The green route is one paused GSAP timeline scrubbed by `pathProgress` (desktop and mobile SVGs, rebuilt at 1000px).
 - Rive runtime: `@rive-app/canvas-lite` 2.31.5, default `Fit.Contain` / `Alignment.Center`, rendering only while on screen; `.riv` characters pop in with an elastic scale. The `.wasm` is served from our build.
+- Inner-page heroes (daftar, cek status, hasil, detail hasil) are centered text on `--gradient-hero`, no illustration.
 - `prefers-reduced-motion`: transitions off and smooth scroll / scroll-linked motion disabled.

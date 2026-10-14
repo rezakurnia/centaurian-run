@@ -15,13 +15,13 @@
 @include('partials.nav', ['base' => '/'])
 
 <main class="bg-beige">
-    <header class="rounded-b-lg bg-(image:--gradient-hero) pt-36 pb-fluid-2xl max-md:pt-32">
+    <header class="rounded-b-lg bg-(image:--gradient-hero) pt-32 pb-fluid-lg max-md:pt-28">
         <div class="container">
             <div class="grid grid-cols-6 gap-gutter md:grid-cols-16">
-                <div class="col-span-full md:col-start-2 md:col-span-14">
+                <div class="col-span-full md:col-start-2 md:col-span-14 text-center">
                     <p class="body-md uppercase">Hasil lomba</p>
-                    <h1 class="heading-lg mt-4 max-w-[14ch] text-balance">Siapa yang tercepat?</h1>
-                    <p class="body-lg mt-6 max-w-140 text-balance">Waktu tempuh dicatat dari scan start sampai scan finish, diurutkan dari yang tercepat.</p>
+                    <h1 class="heading-lg mx-auto mt-4 max-w-[22ch] text-balance">Siapa yang tercepat?</h1>
+                    <p class="body-lg mx-auto mt-4 max-w-140 text-balance">Waktu tempuh dicatat dari scan start sampai scan finish, diurutkan dari yang tercepat.</p>
                 </div>
             </div>
         </div>
