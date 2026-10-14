@@ -18,7 +18,7 @@ if (form) {
         if (r.payment_status === 'unpaid') return r.payment_proof_url
             ? 'Bukti pembayaran sudah kami terima dan sedang menunggu verifikasi panitia. Kamu bisa mengunggah ulang jika berkasnya salah.'
             : 'Selesaikan pembayaran, lalu unggah buktinya di bawah ini agar panitia bisa memverifikasi.';
-        return 'Pendaftaranmu sudah terkonfirmasi. Tunjukkan barcode dari emailmu saat check-in.';
+        return 'Pendaftaranmu sudah terkonfirmasi. Tunjukkan barcode dari emailmu (atau kode di atas) saat check-in.';
     };
 
     const render = (r) => {
@@ -26,6 +26,7 @@ if (form) {
         const f = (n) => card.querySelector(`[data-f="${n}"]`);
         f('event').textContent = r.event;
         f('number').textContent = r.registration_number;
+        f('name').textContent = r.participant?.full_name ?? '-';
         f('category').textContent = r.category;
         f('package').textContent = r.package;
         f('created').textContent = new Date(r.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
@@ -34,6 +35,10 @@ if (form) {
             f(k).classList.add(BADGE[val] ?? '-wait');
         }
         f('note').textContent = note(r);
+        if (r.registration_status === 'confirmed' && r.barcode) {
+            f('barcode').textContent = r.barcode;
+            f('barcode').hidden = f('barcode-label').hidden = false;
+        }
 
         const payable = r.payment_status === 'unpaid' && r.registration_status !== 'cancelled';
         const upload = f('upload');
@@ -92,7 +97,7 @@ if (form) {
             setErr(err, 'Masukkan nomor peserta atau email.');
             return input.focus();
         }
-        // Registration numbers look like "SW-0001"; anything with "@" is an email
+        // Registration numbers look like "S-0001"; anything with "@" is an email
         const body = value.includes('@') ? { email: value } : { registration_number: value.toUpperCase() };
         submit.disabled = true;
         try {
@@ -120,7 +125,7 @@ if (form) {
     form.addEventListener('submit', (e) => { e.preventDefault(); lookup(input.value.trim()); });
     input.addEventListener('input', () => { input.removeAttribute('aria-invalid'); setErr(err, ''); });
 
-    // Arriving from the success screen: /cek-status?no=SW-0001
+    // Arriving from the success screen: /cek-status?no=S-0001
     const preset = new URLSearchParams(location.search).get('no');
     if (preset) { input.value = preset; lookup(preset); }
 }

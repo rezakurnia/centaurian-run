@@ -3,6 +3,7 @@
     $rupiah = fn (int $p) => $p === 0 ? 'Gratis' : 'Rp' . number_format($p, 0, ',', '.');
     $date = $event?->event_date?->locale('id')->translatedFormat('l, j F Y');
     $time = $event?->start_time?->format('H:i');
+    $finish = $event?->finish_time?->format('H:i');
     $ctaTitle = $c->get('cta')?->title ?? "Siap lari\nbareng?";
     // Hero title breaks after the first word: "Centaurian" / "Run 2026"
     $name = $event?->name ?? 'Centaurian Run ' . now()->year;
@@ -120,13 +121,14 @@
                             @elseif ($card['id'] === 'paket' && $packages->isNotEmpty())
                                 <ul class="divide-y divide-beige-500">
                                     @foreach ($packages as $package)
-                                        <li><a href="/daftar?package={{ $package->id }}" class="flex justify-between py-2 hover:underline"><span>{{ $package->name }}</span><span>{{ $rupiah($package->price) }}</span></a></li>
+                                        <li><a href="/daftar" class="flex justify-between py-2 hover:underline"><span>{{ $package->name }}</span><span>{{ $rupiah($package->price) }}</span></a></li>
                                     @endforeach
                                 </ul>
                             @elseif ($card['id'] === 'jadwal')
                                 <dl class="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1">
                                     <dt class="opacity-75">Tanggal</dt><dd>{{ $date ?? 'Segera diumumkan' }}</dd>
                                     @if ($time)<dt class="opacity-75">Start</dt><dd>{{ $time }} WIB</dd>@endif
+                                    @if ($finish)<dt class="opacity-75">Selesai</dt><dd>{{ $finish }} WIB</dd>@endif
                                     @if ($event?->location)<dt class="opacity-75">Lokasi</dt><dd>{{ $event->location }}</dd>@endif
                                 </dl>
                             @endif

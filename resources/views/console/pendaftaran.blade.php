@@ -13,8 +13,8 @@
     </form>
     <div class="k-scroll mt-4">
         <table class="c-table">
-            <thead><tr><th>No.</th><th>Kategori</th><th>Paket</th><th>Pendaftaran</th><th>Bayar</th><th>Bukti</th><th></th></tr></thead>
-            <tbody id="reg-body"><tr><td colspan="7">Memuat…</td></tr></tbody>
+            <thead><tr><th>No.</th><th>Nama</th><th>Kategori</th><th>Paket</th><th>Pendaftaran</th><th>Bayar</th><th>Bukti</th><th></th></tr></thead>
+            <tbody id="reg-body"><tr><td colspan="8">Memuat…</td></tr></tbody>
         </table>
     </div>
 </section>

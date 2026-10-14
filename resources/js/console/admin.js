@@ -1,4 +1,4 @@
-import { api, errText, esc, setErr } from './api.js';
+import { api, download, errText, esc, setErr } from './api.js';
 
 const REG = { pending: 'Menunggu', confirmed: 'Terkonfirmasi', cancelled: 'Dibatalkan' };
 const PAY = { unpaid: 'Belum bayar', paid: 'Lunas', free: 'Gratis' };
@@ -26,7 +26,14 @@ async function dashboard() {
     stats.innerHTML = card('Peserta', d.total_participants) + card('Pendaftaran', d.total_registrations)
         + card('Lunas / gratis', sum(d.by_payment_status, 'payment_status', 'paid') + sum(d.by_payment_status, 'payment_status', 'free'))
         + card('Menunggu verifikasi', sum(d.by_registration_status, 'registration_status', 'pending'));
-    document.getElementById('dash-category').innerHTML = d.by_category.map((c) => `<tr><td>${esc(c.name)}</td><td>${esc(c.code)}</td><td>${c.total}</td></tr>`).join('');
+    // Kuota dari API publik; kuota 0 = tanpa batas (sama seperti saat pendaftaran)
+    const q = await fetch('/api/categories/quota', { headers: { Accept: 'application/json' } }).then((x) => x.json()).catch(() => ({}));
+    const quota = Object.fromEntries((q.data ?? []).map((c) => [c.name, c]));
+    document.getElementById('dash-category').innerHTML = d.by_category.map((c) => {
+        const k = quota[c.name];
+        const [cap, left] = !k ? ['-', '-'] : k.quota ? [k.quota, k.remaining] : ['Tanpa batas', '-'];
+        return `<tr><td>${esc(c.name)}</td><td>${esc(c.code)}</td><td>${c.total}</td><td>${cap}</td><td>${left}</td></tr>`;
+    }).join('');
 }
 
 function pendaftaran() {
@@ -39,11 +46,11 @@ function pendaftaran() {
     let current = null;
 
     const load = async () => {
-        body.innerHTML = row(7, 'Memuat…');
+        body.innerHTML = row(8, 'Memuat…');
         const r = await api(`/admin/registrations?${qs(form)}`);
-        if (!r.ok) { body.innerHTML = row(7, esc(errText(r))); return; }
+        if (!r.ok) { body.innerHTML = row(8, esc(errText(r))); return; }
         list = r.data.data;
-        body.innerHTML = list.length ? list.map((x, i) => `<tr><td>${esc(x.registration_number)}</td><td>${esc(x.category)}</td><td>${esc(x.package)}</td><td>${badge(REG, x.registration_status)}</td><td>${badge(PAY, x.payment_status)}</td><td>${x.payment_proof_url ? `<a class="c-link" href="${esc(x.payment_proof_url)}" target="_blank" rel="noopener">Lihat</a>` : '-'}</td><td><button type="button" class="k-btn -ghost" data-i="${i}">Verifikasi</button></td></tr>`).join('')
+        body.innerHTML = list.length ? list.map((x, i) => `<tr><td>${esc(x.registration_number)}</td><td>${esc(x.participant?.full_name)}</td><td>${esc(x.category)}</td><td>${esc(x.package)}</td><td>${badge(REG, x.registration_status)}</td><td>${badge(PAY, x.payment_status)}</td><td>${x.payment_proof_url ? `<a class="c-link" href="${esc(x.payment_proof_url)}" target="_blank" rel="noopener">Lihat</a>` : '-'}</td><td><button type="button" class="k-btn -ghost" data-i="${i}">Verifikasi</button></td></tr>`).join('')
             : row(7, 'Tidak ada pendaftaran.');
     };
 
@@ -52,7 +59,7 @@ function pendaftaran() {
         if (!b) return;
         current = list[b.dataset.i];
         document.getElementById('reg-dialog-title').textContent = `Verifikasi ${current.registration_number}`;
-        document.getElementById('reg-dialog-info').textContent = `${current.category}, ${current.package}`;
+        document.getElementById('reg-dialog-info').textContent = `${current.participant?.full_name ?? '-'} (${current.participant?.email ?? '-'}, ${current.participant?.phone ?? '-'}): ${current.category}, ${current.package}`;
         document.getElementById('reg-dialog-proof').innerHTML = current.payment_proof_url
             ? `<a class="c-link" href="${esc(current.payment_proof_url)}" target="_blank" rel="noopener">Buka bukti pembayaran</a>` : 'Belum ada bukti pembayaran.';
         document.getElementById('v-reg').value = current.registration_status;
@@ -91,6 +98,42 @@ function peserta() {
     form.category_id.addEventListener('change', load);
     fillCategories(form);
     load();
+    importer(load);
+}
+
+// Impor Excel: POST /admin/participants/import (multipart), template lewat download() karena butuh token
+function importer(reload) {
+    const $ = (id) => document.getElementById(id);
+    const [dlg, form, err, out, save] = ['imp-dialog', 'imp-form', 'imp-error', 'imp-result', 'imp-save'].map($);
+    const opts = (list) => list.map((x) => `<option value="${x.id}">${esc(x.name)}${x.is_active === false ? ' (nonaktif)' : ''}</option>`).join('');
+    $('imp-open').addEventListener('click', async () => {
+        setErr(err, '');
+        out.textContent = '';
+        out.className = 'k-result mt-3';
+        dlg.showModal();
+        const [ev, pk] = await Promise.all([api('/admin/events'), api('/admin/packages')]);
+        if (ev.ok) $('imp-event').innerHTML = opts(ev.data.data);
+        if (pk.ok) $('imp-package').innerHTML = opts(pk.data.data);
+    });
+    $('imp-cancel').addEventListener('click', () => dlg.close());
+    form.addEventListener('click', (e) => {
+        const t = e.target.closest('[data-tpl]')?.dataset.tpl;
+        if (t) download(`/admin/participants/import/template/${t}`, `template-${t}.xlsx`).catch((x) => setErr(err, x.message));
+    });
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        setErr(err, '');
+        if (!$('imp-file').files[0]) return setErr(err, 'Pilih berkas Excel dulu.');
+        save.disabled = true;
+        const r = await api('/admin/participants/import', { method: 'POST', body: new FormData(form) });
+        save.disabled = false;
+        if (!r.ok) return setErr(err, errText(r));
+        const d = r.data.data;
+        out.className = `k-result mt-3 ${d.error_count ? '-wait' : '-ok'}`;
+        out.innerHTML = `${d.success_count} berhasil, ${d.skipped_count} dilewati, ${d.error_count} gagal dari ${d.total} baris.`
+            + [...d.skipped, ...d.errors].map((m) => `<br>${esc(m)}`).join('');
+        reload();
+    });
 }
 
 export function initAdmin() {

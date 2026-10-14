@@ -1,4 +1,4 @@
-import { api, auth, errText, esc } from './api.js';
+import { api, download, errText, esc } from './api.js';
 
 const when = (v) => (v ? new Date(v).toLocaleString('id-ID') : '-');
 const SCAN = { valid: ['-ok', 'Valid'], duplicate: ['-wait', 'Duplikat'], invalid: ['-bad', 'Invalid'] };
@@ -19,7 +19,8 @@ const LOGS = {
     },
     activity: {
         path: '/admin/activity-logs',
-        f: `${input('action', 'Aksi')}${input('target_table', 'Tabel')}${dates}`,
+        // target_table dicocokkan persis di backend, jadi pakai pilihan tabel yang memang dicatat
+        f: `${input('action', 'Aksi')}<select class="c-input" name="target_table" aria-label="Tabel"><option value="">Semua tabel</option>${['events', 'contents', 'users', 'registrations', 'participants', 'settings'].map((t) => `<option>${t}</option>`).join('')}</select>${dates}`,
         cols: [
             ['Waktu', (x) => when(x.created_at)], ['Pengguna', (x) => esc(x.user?.username ?? '-')],
             ['Aksi', (x) => esc(x.action)], ['Target', (x) => esc(`${x.target_table ?? ''}${x.target_id ? ` #${x.target_id}` : ''}` || '-')],
@@ -74,6 +75,7 @@ export function initExport() {
     fetch('/api/categories', { headers: { Accept: 'application/json' } }).then((x) => x.json()).then((r) => {
         form.category_id.insertAdjacentHTML('beforeend', (r.data ?? []).map((c) => `<option value="${c.id}">${esc(c.name)}</option>`).join(''));
     }).catch(() => {});
+    api('/admin/events').then((r) => r.ok && form.event_id.insertAdjacentHTML('beforeend', r.data.data.map((ev) => `<option value="${ev.id}">${esc(ev.name)}</option>`).join('')));
 
     root.addEventListener('click', async (e) => {
         const b = e.target.closest('[data-ex]');
@@ -84,14 +86,7 @@ export function initExport() {
         msg.className = 'k-result mt-3';
         msg.textContent = '';
         try {
-            const res = await fetch(`/api/admin/export/${kind}?${q}`, { headers: { Authorization: `Bearer ${auth.get().token}` } });
-            if (!res.ok) throw new Error(res.status === 401 ? 'Sesi habis, login ulang.' : 'Gagal mengunduh.');
-            const a = Object.assign(document.createElement('a'), {
-                href: URL.createObjectURL(await res.blob()),
-                download: /filename="?([^";]+)/.exec(res.headers.get('Content-Disposition') ?? '')?.[1] ?? `${kind}.csv`,
-            });
-            a.click();
-            URL.revokeObjectURL(a.href);
+            await download(`/admin/export/${kind}?${q}`, `${kind}.csv`);
             msg.className = 'k-result mt-3 -ok';
             msg.textContent = 'Unduhan dimulai.';
         } catch (err) {

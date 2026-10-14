@@ -3,6 +3,7 @@ import { initScan } from './scan.js';
 import { initRekap } from './rekap.js';
 import { initAdmin } from './admin.js';
 import { initCrud } from './crud.js';
+import { initSettings } from './settings.js';
 import { initLogs, initExport } from './logs.js';
 
 // Menu per role; tambahkan item admin di sini saat halamannya jadi.
@@ -64,6 +65,7 @@ if (main) {
         initRekap();
         initAdmin();
         initCrud();
+        initSettings();
         initLogs();
         initExport();
     }

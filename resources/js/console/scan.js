@@ -12,11 +12,17 @@ export function initScan() {
     let event = null;
     let rows = [];
 
+    const finishBtn = document.getElementById('finish-btn');
+    const time = (v) => new Date(v).toLocaleTimeString('id-ID');
+
     const showStart = () => {
-        startInfo.textContent = event.start_time
-            ? `${event.name}: sudah dimulai ${new Date(event.start_time).toLocaleTimeString('id-ID')}.`
-            : `${event.name}: belum dimulai. Tekan tombol saat aba-aba start; waktu semua peserta tercatat serentak.`;
+        startInfo.textContent = event.finish_time
+            ? `${event.name}: selesai ${time(event.finish_time)} (mulai ${time(event.start_time)}).`
+            : event.start_time
+                ? `${event.name}: sudah dimulai ${time(event.start_time)}.`
+                : `${event.name}: belum dimulai. Tekan tombol saat aba-aba start; waktu semua peserta tercatat serentak.`;
         startBtn.disabled = !!event.start_time;
+        finishBtn.disabled = !event.start_time || !!event.finish_time;
     };
 
     (async () => {
@@ -35,6 +41,16 @@ export function initScan() {
         event.start_time = r.data.data.start_time;
         showStart();
         input.focus();
+    });
+
+    finishBtn.addEventListener('click', async () => {
+        if (!confirm(`Akhiri "${event.name}" sekarang? Scan setelah ini ditolak.`)) return;
+        setErr(startErr, '');
+        finishBtn.disabled = true;
+        const r = await api('/panitia/finish', { method: 'POST', body: { event_id: event.id } });
+        if (!r.ok) { finishBtn.disabled = false; return setErr(startErr, errText(r)); }
+        event.finish_time = r.data.data.finish_time;
+        showStart();
     });
 
     const draw = () => {

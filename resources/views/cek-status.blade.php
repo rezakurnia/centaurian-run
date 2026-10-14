@@ -36,7 +36,7 @@
                             <form id="status-form" class="c-step" novalidate>
                                 <div class="c-field">
                                     <label class="c-label" for="identifier">Nomor peserta atau email</label>
-                                    <input class="c-input" id="identifier" name="identifier" type="text" autocomplete="email" autocapitalize="off" spellcheck="false" placeholder="mis. SW-0001 atau nama@email.com" aria-describedby="err-identifier">
+                                    <input class="c-input" id="identifier" name="identifier" type="text" autocomplete="email" autocapitalize="off" spellcheck="false" placeholder="mis. S-0001 atau nama@email.com" aria-describedby="err-identifier">
                                     <p class="c-error" id="err-identifier" hidden></p>
                                 </div>
                                 <div class="mt-6">
@@ -68,9 +68,11 @@
                 <span class="c-badge" data-f="pay-badge"></span>
             </div>
             <dl class="mt-6 grid grid-cols-[auto_1fr] gap-x-6 gap-y-2">
+                <dt class="opacity-75">Nama</dt><dd data-f="name"></dd>
                 <dt class="opacity-75">Kategori</dt><dd data-f="category"></dd>
                 <dt class="opacity-75">Paket</dt><dd data-f="package"></dd>
                 <dt class="opacity-75">Didaftarkan</dt><dd data-f="created"></dd>
+                <dt class="opacity-75" data-f="barcode-label" hidden>Barcode</dt><dd class="font-mono" data-f="barcode" hidden></dd>
             </dl>
             <p class="body-md mt-5 rounded-sm bg-beige p-4" data-f="note"></p>
 

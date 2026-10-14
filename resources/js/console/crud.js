@@ -2,7 +2,7 @@ import { api, errText, esc, setErr } from './api.js';
 
 // Satu komponen tabel + form untuk semua resource CRUD admin.
 // fields: n=nama, l=label, t=tipe (text|textarea|select|date|number|email|password), o=opsi select,
-//   once=hanya saat buat (tidak dikirim/dapat diubah saat edit), omit=kosong = tidak dikirim.
+//   once=hanya saat buat (tidak dikirim/dapat diubah saat edit), omit=kosong = tidak dikirim, d=nilai kalau kosong.
 // cols: [label, key, format?]
 const day = (v) => (v ? String(v).slice(0, 10) : '');
 const when = (v) => (v ? new Date(v).toLocaleString('id-ID') : '-');
@@ -10,7 +10,7 @@ const when = (v) => (v ? new Date(v).toLocaleString('id-ID') : '-');
 const RES = {
     events: {
         path: '/admin/events', one: 'event', name: 'name',
-        cols: [['Nama', 'name'], ['Tanggal', 'event_date', (v) => day(v)], ['Lokasi', 'location'], ['Status', 'is_active', (v) => (v ? 'Aktif' : 'Nonaktif')], ['Mulai', 'start_time', when]],
+        cols: [['Nama', 'name'], ['Tanggal', 'event_date', (v) => day(v)], ['Lokasi', 'location'], ['Status', 'is_active', (v) => (v ? 'Aktif' : 'Nonaktif')], ['Mulai', 'start_time', when], ['Selesai', 'finish_time', when]],
         fields: [
             { n: 'name', l: 'Nama' }, { n: 'event_date', l: 'Tanggal', t: 'date' },
             { n: 'location', l: 'Lokasi' }, { n: 'description', l: 'Deskripsi', t: 'textarea' },
@@ -22,12 +22,12 @@ const RES = {
     },
     contents: {
         path: '/admin/contents', one: 'konten', name: 'title',
-        cols: [['Bagian', 'section'], ['Judul', 'title'], ['Urutan', 'sort_order'], ['Diubah', 'updated_at', when]],
+        cols: [['Situs', 'target_site'], ['Status', 'status', (v) => (v === 'published' ? 'Terbit' : 'Draf')], ['Bagian', 'section'], ['Judul', 'title'], ['Urutan', 'sort_order'], ['Diubah', 'updated_at', when]],
         fields: [
             { n: 'target_site', l: 'Situs', t: 'select', o: [['utama', 'Utama'], ['panitia', 'Panitia']], omit: true },
             { n: 'status', l: 'Status', t: 'select', o: [['draft', 'Draf'], ['published', 'Terbit']], omit: true },
             { n: 'section', l: 'Bagian (kunci)' }, { n: 'title', l: 'Judul' },
-            { n: 'body', l: 'Isi', t: 'textarea' }, { n: 'sort_order', l: 'Urutan', t: 'number' },
+            { n: 'body', l: 'Isi', t: 'textarea' }, { n: 'sort_order', l: 'Urutan', t: 'number', d: 0 },
         ],
     },
     users: {
@@ -39,25 +39,19 @@ const RES = {
             { n: 'password', l: 'Password (min. 6)', t: 'password', omit: true },
         ],
     },
-    settings: {
-        path: '/admin/settings', id: 'key', one: 'pengaturan', name: 'key',
-        cols: [['Kunci', 'key'], ['Nilai', 'value'], ['Diubah', 'updated_at', when]],
-        fields: [{ n: 'key', l: 'Kunci', once: true }, { n: 'value', l: 'Nilai', t: 'textarea' }],
-    },
 };
 
 export function initCrud() {
     const root = document.querySelector('[data-crud]');
     if (!root) return;
     const cfg = RES[root.dataset.crud];
-    const idKey = cfg.id ?? 'id';
     const $ = (id) => document.getElementById(id);
     const [head, body, msg, dlg, form, box, err, save] = ['crud-head', 'crud-body', 'crud-msg', 'crud-dialog', 'crud-form', 'crud-fields', 'crud-error', 'crud-save'].map($);
     let rows = [];
     let editing = null;
 
     const flash = (text, ok = true) => { msg.className = `k-result mt-3 ${ok ? '-ok' : '-bad'}`; msg.textContent = text; };
-    const url = (r) => `${cfg.path}/${encodeURIComponent(r[idKey])}`;
+    const url = (r) => `${cfg.path}/${encodeURIComponent(r.id)}`;
     const cell = (r, [, k, f]) => esc(f ? f(r[k], r) : (r[k] ?? '-'));
     const span = cfg.cols.length + 1;
 
@@ -126,7 +120,7 @@ export function initCrud() {
         for (const f of cfg.fields) {
             if (editing && f.once) continue;
             let v = form.elements[f.n].value.trim();
-            if (v === '') { if (f.omit) continue; v = null; } else if (f.t === 'number') v = Number(v);
+            if (v === '') { if (f.omit) continue; v = f.d ?? null; } else if (f.t === 'number') v = Number(v);
             payload[f.n] = v;
         }
         save.disabled = true;

@@ -5,14 +5,17 @@
     <h2 class="k-h2">Mulai acara</h2>
     <p id="start-info" class="body-md">Memuat acara aktif…</p>
     <p class="c-error mt-3" id="start-error" role="alert" hidden></p>
-    <button type="button" id="start-btn" class="k-btn mt-4" disabled>Mulai serentak</button>
+    <div class="k-row mt-4">
+        <button type="button" id="start-btn" class="k-btn" disabled>Mulai serentak</button>
+        <button type="button" id="finish-btn" class="k-btn -ghost" disabled>Akhiri acara</button>
+    </div>
 </section>
 
 <section class="k-card" id="scan-card">
     <h2 class="k-h2">Scan barcode peserta</h2>
     <form id="scan-form" class="k-row" novalidate>
         <label class="sr-only" for="barcode">Barcode</label>
-        <input class="c-input" id="barcode" name="barcode" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="mis. A1B2C3D4-SW-0001">
+        <input class="c-input" id="barcode" name="barcode" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="mis. A1B2C3D4-S-0001">
         <button type="submit" class="k-btn" id="scan-btn">Scan</button>
         <button type="button" class="k-btn -ghost" id="cam-btn" hidden>Kamera</button>
     </form>
