@@ -14,6 +14,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
+        // ngrok/reverse proxy terminasi HTTPS; tanpa ini asset() jadi http:// (mixed content)
+        $middleware->trustProxies(at: '*');
+
         $middleware->alias([
             'role' => RoleMiddleware::class,
         ]);
