@@ -1,108 +1,48 @@
 <?php
 
+use App\Models\Category;
+use App\Models\Content;
+use App\Models\Event;
+use App\Models\Package;
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| Autentikasi
-|--------------------------------------------------------------------------
-*/
-
-Route::get('/login', function () {
-    return view('auth.login');
-})->name('login');
-
-/*
-|--------------------------------------------------------------------------
-| Website Utama (Publik)
-|--------------------------------------------------------------------------
-*/
-
 Route::get('/', function () {
-    return view('utama.index');
-})->name('home');
-
-Route::get('/registrasi', function () {
-    return view('registrasi.index');
-})->name('registrasi');
-
-Route::get('/registrasi/form', function () {
-    return view('registrasi.form');
-})->name('registrasi.form');
-
-Route::get('/registrasi/sukses', function () {
-    return view('registrasi.sukses');
-})->name('registrasi.sukses');
-
-Route::get('/hasil', function () {
-    return view('hasil.index');
-})->name('hasil');
-
-/*
-|--------------------------------------------------------------------------
-| Website Panitia
-|--------------------------------------------------------------------------
-*/
-
-Route::prefix('panitia')->name('panitia.')->group(function () {
-    Route::get('/', function () {
-        return view('panitia.dashboard');
-    })->name('dashboard');
-
-    Route::get('/scan', function () {
-        return view('panitia.scan');
-    })->name('scan');
+    return view('landing', [
+        'event' => Event::where('is_active', true)->first(),
+        'categories' => Category::orderBy('id')->get(),
+        'packages' => Package::orderBy('price')->get(),
+        'contents' => Content::where('target_site', 'utama')
+            ->where('status', 'published')
+            ->orderBy('sort_order')
+            ->get()
+            ->keyBy('section'),
+    ]);
 });
 
-/*
-|--------------------------------------------------------------------------
-| Website Admin
-|--------------------------------------------------------------------------
-*/
-
-Route::prefix('admin')->name('admin.')->group(function () {
-    // Dashboard
-    Route::get('/', function () {
-        return view('admin.dashboard');
-    })->name('dashboard');
-
-    // Data Peserta
-    Route::get('/peserta', function () {
-        return view('admin.peserta');
-    })->name('peserta');
-
-    // Event
-    Route::get('/event', function () {
-        return view('admin.event');
-    })->name('event');
-
-    // Konten
-    Route::get('/konten', function () {
-        return view('admin.konten');
-    })->name('konten');
-
-    // User
-    Route::get('/user', function () {
-        return view('admin.user');
-    })->name('user');
-
-    // Scan Logs
-    Route::get('/scan-logs', function () {
-        return view('admin.scan-logs');
-    })->name('scan-logs');
-
-    // Activity Logs
-    Route::get('/activity', function () {
-    return view('admin.activity');
-    })->name('activity');
-
-    // Settings
-    Route::get('/settings', function () {
-        return view('admin.settings');
-    })->name('settings');
-
-    // Export
-    Route::get('/export', function () {
-        return view('admin.export');
-    })->name('export');
+Route::get('/daftar', function () {
+    return view('daftar', [
+        'event' => Event::where('is_active', true)->first(),
+        'categories' => Category::orderBy('id')->get(),
+        'packages' => Package::orderBy('price')->get(),
+    ]);
 });
+
+Route::view('/cek-status', 'cek-status');
+
+Route::get('/hasil', fn () => view('hasil', ['categories' => Category::orderBy('id')->get()]));
+
+// Console panitia/admin: halaman kosong, auth dan data lewat JS (token Sanctum di localStorage)
+Route::view('/login', 'login');
+Route::view('/panitia/scan', 'console.scan');
+Route::view('/panitia/rekap', 'console.rekap');
+Route::view('/admin', 'console.dashboard', ['role' => 'admin']);
+Route::view('/admin/pendaftaran', 'console.pendaftaran', ['role' => 'admin']);
+Route::view('/admin/peserta', 'console.peserta', ['role' => 'admin']);
+foreach (['event' => ['Event', 'events'], 'konten' => ['Konten', 'contents'], 'pengguna' => ['Pengguna', 'users'], 'pengaturan' => ['Pengaturan', 'settings']] as $slug => [$title, $resource]) {
+    Route::view("/admin/$slug", 'console.crud', ['role' => 'admin', 'title' => $title, 'resource' => $resource]);
+}
+Route::view('/admin/scan-log', 'console.logs', ['role' => 'admin', 'title' => 'Log scan', 'log' => 'scan']);
+Route::view('/admin/log-aktivitas', 'console.logs', ['role' => 'admin', 'title' => 'Log aktivitas', 'log' => 'activity']);
+Route::view('/admin/ekspor', 'console.ekspor', ['role' => 'admin']);
+
+Route::get('/hasil/{registration_number}', fn (string $registration_number) => view('hasil-detail', ['no' => $registration_number]));
