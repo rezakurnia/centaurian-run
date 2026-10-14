@@ -53,3 +53,7 @@ database/*.sqlite
 
 # Auth
 auth.json
+
+# Local artifacts
+/laravel
+/.playwright-mcp/
