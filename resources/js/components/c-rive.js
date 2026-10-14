@@ -1,9 +1,9 @@
-import { Rive } from '../rive.js';
 import { gsap } from 'gsap';
 
 /**
  * <c-rive data-src="/rive/x.riv" data-autoplay="true" data-reveal="true" ...>
  * Plays one .riv file in the <canvas> it wraps (runtime: @rive-app/canvas-lite, default Fit.Contain / Alignment.Center).
+ * The runtime and the .riv file load only once the canvas is within 300px of the viewport.
  * Rendering only runs while the canvas is on screen; with data-reveal the canvas wrapper pops in with an elastic scale.
  */
 class CRive extends HTMLElement {
@@ -26,7 +26,12 @@ class CRive extends HTMLElement {
     connectedCallback() {
         if (!this.src || !this.$canvas) return;
         this.$canvas.setAttribute('aria-hidden', 'true'); // decorative illustration
-        this.initRive();
+        this.loadObserver = new IntersectionObserver((entries) => {
+            if (!entries.some((entry) => entry.isIntersecting)) return;
+            this.loadObserver.disconnect();
+            this.initRive();
+        }, { rootMargin: '300px' });
+        this.loadObserver.observe(this.$canvas);
         this.intersectionObserver = new IntersectionObserver((entries) => {
             entries.forEach((entry) => {
                 if (entry.isIntersecting) {
@@ -45,6 +50,7 @@ class CRive extends HTMLElement {
     }
 
     disconnectedCallback() {
+        this.loadObserver?.disconnect();
         this.intersectionObserver?.disconnect();
         window.removeEventListener('resize', this.onResize);
         clearTimeout(this.resizeTimer);
@@ -59,7 +65,9 @@ class CRive extends HTMLElement {
         this.resizeTimer = setTimeout(() => this.rive?.resizeDrawingSurfaceToCanvas(), 200);
     };
 
-    initRive() {
+    async initRive() {
+        const { Rive } = await import('../rive.js');
+        if (!this.isConnected) return;
         this.rive = new Rive({
             src: this.src,
             canvas: this.$canvas,

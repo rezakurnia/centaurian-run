@@ -1,5 +1,3 @@
-import { Rive } from '../rive.js';
-
 // Resting position of the cursor-following face inside the button icon (view-model units)
 const REST = { x: -34, y: -15 };
 const EASE = 0.1;
@@ -23,7 +21,9 @@ class CButtonQuote extends HTMLElement {
         this.rive?.cleanup();
     }
 
-    initRive() {
+    async initRive() {
+        const { Rive } = await import('../rive.js');
+        if (!this.isConnected) return;
         this.rive = new Rive({
             src: '/rive/mindmarket_cursor_crop.riv',
             canvas: this.$canvas,
