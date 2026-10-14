@@ -1,27 +1,9 @@
-# ============================================
-# BACKEND ONLY — FRONTEND DI-EXCLUDE
-# Frontend di-handle oleh teman (views, js, css, build tools)
-# ============================================
-
-# Frontend resources (di-exclude, kecuali emails)
-/resources/views/*
-!/resources/views/emails/
-!/resources/views/emails/**
-/resources/js/
-/resources/css/
-/resources/lang/
+# Frontend build output
+node_modules/
 /public/build/
 /public/hot
 /public/storage
 /public/fonts-manifest.dev.json
-
-# Build tools frontend
-node_modules/
-package.json
-package-lock.json
-vite.config.js
-postcss.config.js
-tailwind.config.js
 
 # ============================================
 # LARAVEL STANDARD
