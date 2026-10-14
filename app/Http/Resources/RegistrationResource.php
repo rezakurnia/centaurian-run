@@ -17,10 +17,23 @@ class RegistrationResource extends JsonResource
             'payment_status'      => $this->payment_status,
             'payment_proof'       => $this->payment_proof,
             'payment_proof_url'   => $this->payment_proof_url,
-            'category'            => $this->category->name ?? null,
-            'package'             => $this->package->name ?? null,
-            'event'               => $this->event->name ?? null,
-            'created_at'          => $this->created_at,
+
+            // Data participant (nama, email, phone, dll)
+            'participant' => $this->participant ? [
+                'id'          => $this->participant->id,
+                'full_name'   => $this->participant->full_name,
+                'gender'      => $this->participant->gender,
+                'birth_place' => $this->participant->birth_place,
+                'birth_date'  => $this->participant->birth_date,
+                'email'       => $this->participant->email,
+                'phone'       => $this->participant->phone,
+                'motivation'  => $this->participant->motivation,
+            ] : null,
+
+            'category'   => $this->category->name ?? null,
+            'package'    => $this->package->name ?? null,
+            'event'      => $this->event->name ?? null,
+            'created_at' => $this->created_at,
         ];
     }
 }

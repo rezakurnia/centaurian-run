@@ -11,6 +11,7 @@ use App\Http\Resources\RegistrationResource;
 use App\Mail\RegistrationConfirmationMail;
 use App\Models\Participant;
 use App\Models\Registration;
+use App\Services\SettingService;
 use App\Services\BarcodeService;
 use App\Services\ParticipantNumberService;
 use Illuminate\Support\Facades\DB;
@@ -20,58 +21,111 @@ use Illuminate\Validation\ValidationException;
 class RegistrationController extends Controller
 {
     public function store(
-        StoreRegistrationRequest $request,
-        ParticipantNumberService $numberService,
-        BarcodeService $barcodeService
-    ) {
-        $validated = $request->validated();
-
-        $this->ensureNotRegisteredToEvent($validated['email'], $validated['event_id']);
-
-        [$participant, $registration] = DB::transaction(function () use ($validated, $numberService, $barcodeService) {
-            $generated = $numberService->generate($validated['category_id']);
-
-            $participant = Participant::firstOrCreate(
-                ['email' => $validated['email']],
-                [
-                    'full_name'   => $validated['full_name'],
-                    'gender'      => $validated['gender'],
-                    'birth_place' => $validated['birth_place'],
-                    'birth_date'  => $validated['birth_date'],
-                    'motivation'  => $validated['motivation'] ?? null,
-                    'phone'       => $validated['phone'],
-                ]
-            );
-
-            $package = \App\Models\Package::find($validated['package_id']);
-            $isFree  = $package && $package->price == 0;
-
-            $registration = Registration::create([
-                'registration_number' => $generated['registration_number'],
-                'sequence_number'     => $generated['sequence_number'],
-                'barcode'             => $barcodeService->generate($generated['registration_number']),
-                'participant_id'      => $participant->id,
-                'event_id'            => $validated['event_id'],
-                'category_id'         => $validated['category_id'],
-                'package_id'          => $validated['package_id'],
-                'registration_status' => $isFree ? 'confirmed' : 'pending',
-                'payment_status'      => $isFree ? 'free' : 'unpaid',
-            ]);
-
-            return [$participant, $registration];
-        });
-
-        Mail::to($participant->email)->send(new RegistrationConfirmationMail($registration));
-        $participant->update(['email_sent_at' => now()]);
-
-        return response()->json([
-            'message' => 'Pendaftaran berhasil. Nomor peserta & barcode telah dikirim ke email Anda.',
-            'data'    => [
-                'participant'  => new ParticipantResource($participant),
-                'registration' => new RegistrationResource($registration),
-            ],
-        ], 201);
+    StoreRegistrationRequest $request,
+    ParticipantNumberService $numberService,
+    BarcodeService $barcodeService,
+    SettingService $settingService
+) {
+    // 1. Cek setting: pendaftaran dibuka?
+    $registrationOpen = $settingService->get('registration_open', '1');
+    if ($registrationOpen !== '1' && $registrationOpen !== true) {
+        throw ValidationException::withMessages([
+            'registration' => ['Pendaftaran sedang ditutup.'],
+        ]);
     }
+
+    // 2. Cek setting: batas akhir
+    $deadline = $settingService->get('registration_deadline', '');
+    if (!empty($deadline) && now()->toDateString() > $deadline) {
+        throw ValidationException::withMessages([
+            'registration' => ['Pendaftaran sudah melewati batas waktu.'],
+        ]);
+    }
+
+    $validated = $request->validated();
+
+    // 3. Ambil kategori & validasi
+    $category = \App\Models\Category::find($validated['category_id']);
+    if (!$category) {
+        throw ValidationException::withMessages([
+            'category_id' => ['Kategori tidak ditemukan.'],
+        ]);
+    }
+
+    // 4. CEK KUOTA ← INI YANG HILANG SEBELUMNYA
+    $terdaftar = Registration::where('category_id', $validated['category_id'])
+        ->whereIn('registration_status', ['pending', 'confirmed'])
+        ->count();
+
+    if ($category->quota && $terdaftar >= $category->quota) {
+        throw ValidationException::withMessages([
+            'registration' => ['Kuota pendaftaran untuk kategori ini sudah penuh.'],
+        ]);
+    }
+
+    // 5. Cek duplikat email per event
+    $this->ensureNotRegisteredToEvent($validated['email'], $validated['event_id']);
+
+    // 6. Transaksi
+    [$participant, $registration] = DB::transaction(function () use ($validated, $numberService, $barcodeService, $category) {
+        $generated = $numberService->generate($validated['category_id']);
+
+        $participant = Participant::firstOrCreate(
+            ['email' => $validated['email']],
+            [
+                'full_name'       => $validated['full_name'],
+                'gender'          => $validated['gender'],
+                'birth_place'     => $validated['birth_place'],
+                'birth_date'      => $validated['birth_date'],
+                'motivation'      => $validated['motivation'] ?? null,
+                'phone'           => $validated['phone'],
+                'nip'             => $validated['nip'] ?? null,
+                'nis'             => $validated['nis'] ?? null,
+                'unit'            => $validated['unit'] ?? null,
+                'class'           => $validated['class'] ?? null,
+                'position'        => $validated['position'] ?? null,
+                'child_name'      => $validated['child_name'] ?? null,
+                'child_class'     => $validated['child_class'] ?? null,
+                'graduation_year' => $validated['graduation_year'] ?? null,
+            ]
+        );
+
+        $packageId = match ($category->code) {
+            'E' => 1,        // Gratis
+            'S' => 2,        // Paket 100K
+            'P', 'A' => 3,   // Paket 150K
+            default => 1,
+        };
+
+        $package = \App\Models\Package::find($packageId);
+        $isFree = $package && $package->price == 0;
+
+        $registration = Registration::create([
+            'registration_number' => $generated['registration_number'],
+            'sequence_number'     => $generated['sequence_number'],
+            'barcode'             => $barcodeService->generate($generated['registration_number']),
+            'participant_id'      => $participant->id,
+            'event_id'            => $validated['event_id'],
+            'category_id'         => $validated['category_id'],
+            'package_id'          => $packageId,
+            'registration_status' => $isFree ? 'confirmed' : 'pending',
+            'payment_status'      => $isFree ? 'free' : 'unpaid',
+        ]);
+
+        return [$participant, $registration];
+    });
+
+    Mail::to($participant->email)->send(new RegistrationConfirmationMail($registration));
+    $participant->update(['email_sent_at' => now()]);
+
+    return response()->json([
+        'message' => 'Pendaftaran berhasil. Nomor peserta & barcode telah dikirim ke email Anda.',
+        'data'    => [
+            'participant'  => new ParticipantResource($participant),
+            'registration' => new RegistrationResource($registration),
+        ],
+    ], 201);
+}
 
     public function uploadPaymentProof(
         UploadPaymentProofRequest $request,

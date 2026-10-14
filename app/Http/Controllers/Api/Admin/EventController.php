@@ -132,9 +132,7 @@ class EventController extends Controller
     }
 
     $result = DB::transaction(function () use ($event) {
-        // 1. Hapus scan_logs terkait event ini (via participant yang registrasi di event)
-        $registrationIds = $event->registrations()->pluck('id')->toArray();
-
+        // 1. Hapus scan_logs terkait event ini
         $scanLogsDeleted = ScanLog::whereHas('participant', function ($q) use ($event) {
             $q->whereHas('registrations', function ($sub) use ($event) {
                 $sub->where('event_id', $event->id);
@@ -144,8 +142,11 @@ class EventController extends Controller
         // 2. Hapus results terkait event
         $resultsDeleted = Result::where('event_id', $event->id)->delete();
 
-        // 3. Reset start_time event
-        $event->update(['start_time' => null]);
+        // 3. Reset start_time & finish_time event
+        $event->update([
+            'start_time'  => null,
+            'finish_time' => null,
+        ]);
 
         return [
             'scan_logs_deleted' => $scanLogsDeleted,
@@ -165,6 +166,6 @@ class EventController extends Controller
         'message' => 'Acara berhasil direset. Data scan & hasil telah dihapus.',
         'data'    => $result,
     ]);
-    }
+}
     
 }

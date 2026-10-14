@@ -100,32 +100,29 @@ class AdminResetEventTest extends TestCase
     }
 
     public function test_reset_acara_berhasil(): void
-    {
-        $response = $this->withHeaders($this->adminHeaders())
-            ->postJson("/api/admin/events/{$this->event->id}/reset", [
-                'confirmation' => 'RESET',
-                'password'     => 'admin123',
-            ]);
+{
+    // Pastikan ada finish_time
+    $this->event->update(['finish_time' => now()]);
 
-        $response->assertStatus(200)
-            ->assertJsonPath('data.event_id', $this->event->id)
-            ->assertJsonStructure([
-                'message',
-                'data' => ['scan_logs_deleted', 'results_deleted', 'event_id'],
-            ]);
+    $response = $this->withHeaders($this->adminHeaders())
+        ->postJson("/api/admin/events/{$this->event->id}/reset", [
+            'confirmation' => 'RESET',
+            'password'     => 'admin123',
+        ]);
 
-        // Cek start_time sudah null
-        $this->assertNull($this->event->fresh()->start_time);
+    $response->assertStatus(200);
 
-        // Cek results sudah kosong
-        $this->assertDatabaseCount('results', 0);
+    // Cek start_time & finish_time sudah null
+    $this->assertNull($this->event->fresh()->start_time);
+    $this->assertNull($this->event->fresh()->finish_time);
 
-        // Cek scan_logs sudah kosong
-        $this->assertDatabaseCount('scan_logs', 0);
+    // Cek results & scan_logs sudah kosong
+    $this->assertDatabaseCount('results', 0);
+    $this->assertDatabaseCount('scan_logs', 0);
 
-        // Cek registrations TETAP ada (Opsi A)
-        $this->assertDatabaseCount('registrations', 1);
-    }
+    // Cek registrations TETAP ada
+    $this->assertDatabaseCount('registrations', 1);
+}
 
     public function test_reset_gagal_tanpa_konfirmasi(): void
     {

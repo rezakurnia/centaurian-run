@@ -1,45 +1,73 @@
+# ============================================
+# BACKEND ONLY — FRONTEND DI-EXCLUDE
+# Frontend di-handle oleh teman (views, js, css, build tools)
+# ============================================
+
+# Frontend resources (di-exclude, kecuali emails)
+/resources/views/*
+!/resources/views/emails/
+!/resources/views/emails/**
+/resources/js/
+/resources/css/
+/resources/lang/
+/public/build/
+/public/hot
+/public/storage
+/public/fonts-manifest.dev.json
+
+# Build tools frontend
+node_modules/
+package.json
+package-lock.json
+vite.config.js
+postcss.config.js
+tailwind.config.js
+
+# ============================================
+# LARAVEL STANDARD
+# ============================================
+
+# Dependency PHP
+/vendor/
+
 # Environment
 .env
 .env.backup
-.env.testing
 .env.production
-.env.local
-.phpunit.result.cache
+.env.testing
 
-# Dependencies
-/vendor
-/node_modules
-
-# Storage
+# Storage & cache
 /storage/*.key
+/storage/framework/cache/*
+/storage/framework/sessions/*
+/storage/framework/views/*
 /storage/logs/*
-/storage/app/public/payment_proofs/*
-/public/storage
-/public/hot
+/bootstrap/cache/*
+.phpunit.result.cache
+.phpunit.cache
 
 # IDE
-.idea
-.vscode/*
-!.vscode/extensions.json
-*.swp
-*.swo
-
-# OS
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
 .DS_Store
 Thumbs.db
 
-# Build
-/public/build
-/public/css
-/public/js
+# Log
+*.log
+npm-debug.log*
+yarn-error.log*
+
+# Compiled
+*.cache
+*.swp
+*.swo
 
 # Database
 *.sqlite
 *.sqlite3
+database/*.sqlite
 
-# Composer
-composer.phar
-
-# NPM
-npm-debug.log
-yarn-error.log
+# Auth
+auth.json

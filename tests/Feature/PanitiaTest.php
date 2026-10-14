@@ -200,4 +200,65 @@ class PanitiaTest extends TestCase
     {
         $this->getJson('/api/panitia/recap/category')->assertStatus(401);
     }
+
+    public function test_finish_acara_berhasil(): void
+{
+    // Start dulu
+    $this->withHeaders($this->headers())
+        ->postJson('/api/panitia/start', ['event_id' => $this->event->id])
+        ->assertStatus(200);
+
+    // Finish
+    $response = $this->withHeaders($this->headers())
+        ->postJson('/api/panitia/finish', ['event_id' => $this->event->id]);
+
+    $response->assertStatus(200)
+        ->assertJsonStructure(['message', 'data' => ['event_id', 'finish_time']]);
+
+    $this->assertNotNull(Event::find($this->event->id)->finish_time);
+}
+
+public function test_finish_gagal_jika_belum_start(): void
+{
+    $response = $this->withHeaders($this->headers())
+        ->postJson('/api/panitia/finish', ['event_id' => $this->event->id]);
+
+    $response->assertStatus(422);
+}
+
+public function test_finish_gagal_jika_sudah_finish(): void
+{
+    // Start
+    $this->withHeaders($this->headers())
+        ->postJson('/api/panitia/start', ['event_id' => $this->event->id]);
+
+    // Finish
+    $this->withHeaders($this->headers())
+        ->postJson('/api/panitia/finish', ['event_id' => $this->event->id])
+        ->assertStatus(200);
+
+    // Finish lagi
+    $response = $this->withHeaders($this->headers())
+        ->postJson('/api/panitia/finish', ['event_id' => $this->event->id]);
+
+    $response->assertStatus(422);
+}
+
+public function test_scan_ditolak_jika_acara_sudah_finish(): void
+{
+    // Start
+    $this->withHeaders($this->headers())
+        ->postJson('/api/panitia/start', ['event_id' => $this->event->id]);
+
+    // Finish
+    $this->withHeaders($this->headers())
+        ->postJson('/api/panitia/finish', ['event_id' => $this->event->id]);
+
+    // Coba scan
+    $response = $this->withHeaders($this->headers())
+        ->postJson('/api/panitia/scan', ['barcode' => 'BUDI-SW-0001']);
+
+    $response->assertStatus(404)
+        ->assertJsonPath('message', 'Acara sudah selesai. Scan tidak dapat dilakukan.');
+}
 }

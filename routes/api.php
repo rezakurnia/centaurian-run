@@ -32,7 +32,9 @@ Route::get('/contents', [ContentController::class, 'index']);
 Route::get('/results', [ResultController::class, 'index']);
 Route::get('/results/{registration_number}', [ResultController::class, 'show']);
 Route::get('/categories', [CategoryController::class, 'index']);
+Route::get('/categories/quota', [CategoryController::class, 'quota']);
 Route::get('/packages', [PackageController::class, 'index']);
+Route::get('/settings', [\App\Http\Controllers\Api\Admin\SettingController::class, 'publicIndex']);
 
 // Protected (butuh token Sanctum)
 Route::middleware('auth:sanctum')->group(function () {
@@ -45,6 +47,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/recap/participants', [RecapController::class, 'byRegistrationNumber']);
         Route::post('/start', [ScanController::class, 'start']);
         Route::post('/scan', [ScanController::class, 'scan']);
+        Route::post('/finish', [ScanController::class, 'finish']);
     });
 
 // Admin
@@ -55,6 +58,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::apiResource('/contents', AdminContentController::class);
         Route::apiResource('/users', UserController::class);
         Route::get('/participants', [DataController::class, 'participants']);
+        Route::post('/participants/import', [\App\Http\Controllers\Api\Admin\ParticipantImportController::class, 'import']);
+        Route::get('/participants/import/template/siswa', [\App\Http\Controllers\Api\Admin\ParticipantTemplateController::class, 'siswa']);
+        Route::get('/participants/import/template/guru', [\App\Http\Controllers\Api\Admin\ParticipantTemplateController::class, 'guru']);
+        Route::get('/packages', [\App\Http\Controllers\Api\PackageController::class, 'adminIndex']);
         Route::get('/registrations', [DataController::class, 'registrations']);
         Route::get('/registrations/{id}', [DataController::class, 'showRegistration']);
         Route::put('/registrations/{id}/verify', [DataController::class, 'verifyRegistration']);
@@ -62,10 +69,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/scan-logs', [ScanLogController::class, 'index']);
         Route::get('/scan-logs/{id}', [ScanLogController::class, 'show']);
         Route::get('/settings', [SettingController::class, 'index']);
-        Route::post('/settings', [SettingController::class, 'store']);
-        Route::get('/settings/{key}', [SettingController::class, 'show']);
-        Route::put('/settings/{key}', [SettingController::class, 'update']);
-        Route::delete('/settings/{key}', [SettingController::class, 'destroy']);
+        Route::put('/settings/bulk-update', [SettingController::class, 'bulkUpdate']);
         Route::get('/export/participants', [ExportController::class, 'participants']);
         Route::get('/export/registrations', [ExportController::class, 'registrations']);
         Route::get('/activity-logs', [ActivityLogController::class, 'index']);

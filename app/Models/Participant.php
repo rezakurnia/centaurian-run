@@ -14,6 +14,7 @@ class Participant extends Model
     protected $fillable = [
         'full_name', 'gender', 'birth_place', 'birth_date',
         'motivation', 'email', 'phone', 'email_sent_at',
+        'nip', 'nis', 'sub_category', 'unit', 'class',
     ];
 
     protected $casts = [
