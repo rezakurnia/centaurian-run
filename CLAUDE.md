@@ -50,3 +50,9 @@ Boost replaces these bootstrap instructions with guidelines tailored to the appl
 
 Before any task: run `git fetch origin`, `git pull` (current branch), then `git pull origin main` to bring in main. Reza works on `frontend`, Ilham on `backend`; never commit directly to `main`. Report any conflicts instead of auto-resolving.
 
+### Superpowers
+
+These rules override the Superpowers plugin's git skills (`using-git-worktrees`, `finishing-a-development-branch`):
+- Stay on the current branch (`frontend` or `backend`). Do not create new branches or git worktrees.
+- When finishing work, the only integration option is opening a PR into `main`. Never merge into `main`, locally or via the PR.
+
