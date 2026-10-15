@@ -12,12 +12,31 @@ export function initScan() {
     let event = null;
     let rows = [];
 
+    const finishBtn = document.getElementById('finish-btn');
+    const time = (v) => new Date(v).toLocaleTimeString('id-ID');
+
     const showStart = () => {
-        startInfo.textContent = event.start_time
-            ? `${event.name}: sudah dimulai ${new Date(event.start_time).toLocaleTimeString('id-ID')}.`
-            : `${event.name}: belum dimulai. Tekan tombol saat aba-aba start; waktu semua peserta tercatat serentak.`;
+        startInfo.textContent = event.finish_time
+            ? `${event.name}: selesai ${time(event.finish_time)}. Scan ditutup.`
+            : event.start_time
+                ? `${event.name}: sudah dimulai ${time(event.start_time)}.`
+                : `${event.name}: belum dimulai. Tekan tombol saat aba-aba start; waktu semua peserta tercatat serentak.`;
         startBtn.disabled = !!event.start_time;
+        finishBtn.hidden = !event.start_time || !!event.finish_time;
+        // After finish the API rejects every scan, so close the form too
+        form.querySelectorAll('input, button').forEach((el) => { el.disabled = !!event.finish_time; });
     };
+
+    finishBtn.addEventListener('click', async () => {
+        if (!confirm(`Akhiri "${event.name}" sekarang? Setelah ini scan tidak bisa dilakukan lagi.`)) return;
+        setErr(startErr, '');
+        finishBtn.disabled = true;
+        const r = await api('/panitia/finish', { method: 'POST', body: { event_id: event.id } });
+        finishBtn.disabled = false;
+        if (!r.ok) return setErr(startErr, errText(r));
+        event.finish_time = r.data.data.finish_time;
+        showStart();
+    });
 
     (async () => {
         const r = await api('/event/active');

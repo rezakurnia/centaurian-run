@@ -1,4 +1,4 @@
-import { api, auth, errText, esc } from './api.js';
+import { api, download, errText, esc } from './api.js';
 
 const when = (v) => (v ? new Date(v).toLocaleString('id-ID') : '-');
 const SCAN = { valid: ['-ok', 'Valid'], duplicate: ['-wait', 'Duplikat'], invalid: ['-bad', 'Invalid'] };
@@ -84,14 +84,7 @@ export function initExport() {
         msg.className = 'k-result mt-3';
         msg.textContent = '';
         try {
-            const res = await fetch(`/api/admin/export/${kind}?${q}`, { headers: { Authorization: `Bearer ${auth.get().token}` } });
-            if (!res.ok) throw new Error(res.status === 401 ? 'Sesi habis, login ulang.' : 'Gagal mengunduh.');
-            const a = Object.assign(document.createElement('a'), {
-                href: URL.createObjectURL(await res.blob()),
-                download: /filename="?([^";]+)/.exec(res.headers.get('Content-Disposition') ?? '')?.[1] ?? `${kind}.csv`,
-            });
-            a.click();
-            URL.revokeObjectURL(a.href);
+            await download(`/admin/export/${kind}?${q}`, `${kind}.csv`);
             msg.className = 'k-result mt-3 -ok';
             msg.textContent = 'Unduhan dimulai.';
         } catch (err) {

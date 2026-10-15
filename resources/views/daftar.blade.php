@@ -3,7 +3,13 @@
     $date = $event?->event_date?->locale('id')->translatedFormat('l, j F Y');
     $name = $event?->name ?? 'Centaurian Run ' . now()->year;
     $pickCategory = (int) request('category');
-    $pickPackage = (int) request('package');
+    // Extra fields the API requires per category code (StoreRegistrationRequest)
+    $extra = [
+        'S' => [['nis', 'NIS', 'text', 30], ['class', 'Kelas', 'text', 30]],
+        'E' => [['nip', 'NIP', 'text', 30], ['position', 'Jabatan', 'text', 50], ['unit', 'Unit', 'text', 50]],
+        'P' => [['child_name', 'Nama anak', 'text', 100], ['child_class', 'Kelas anak', 'text', 30]],
+        'A' => [['graduation_year', 'Tahun lulus', 'number', 4]],
+    ];
     $faqs = [
         ['Apakah paket gratis langsung terkonfirmasi?', 'Ya. Paket gratis langsung berstatus terkonfirmasi, dan nomor peserta beserta barcode dikirim ke emailmu.'],
         ['Bagaimana membayar paket berbayar?', 'Setelah mendaftar, selesaikan pembayaran lalu unggah bukti pembayaran lewat halaman Cek status. Panitia memverifikasi, dan statusmu berubah menjadi terkonfirmasi.'],
@@ -17,7 +23,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Daftar · {{ $name }}</title>
-    <meta name="description" content="Pilih kategori, pilih paket, dan amankan nomor pesertamu untuk {{ $name }}.">
+    <meta name="description" content="Pilih kategori, isi datamu, dan amankan nomor pesertamu untuk {{ $name }}.">
     <link rel="icon" href="/favicon.ico" sizes="any">
     <link rel="icon" href="/favicon.png" type="image/png">
     @fonts
@@ -36,7 +42,7 @@
                     <p class="body-md uppercase">Pendaftaran</p>
                     <h1 class="heading-lg mx-auto mt-4 max-w-[22ch] text-balance">Amankan nomor pesertamu.</h1>
                     <p class="body-lg mx-auto mt-4 max-w-140 text-balance">
-                        Pilih kategori, pilih paket, isi datamu. Tiga langkah, beberapa menit.
+                        Pilih kategori, isi datamu. Dua langkah, beberapa menit.
                         @if ($event) <br>{{ $name }} · {{ $date }}@if ($event->location) · {{ $event->location }}@endif @endif
                     </p>
                 </div>
@@ -58,6 +64,12 @@
                     <div class="grid items-start gap-gutter md:grid-cols-14">
                         <div class="md:col-span-9">
 
+                            {{-- Shown by c-register.js when the registration_open / registration_deadline settings close it --}}
+                            <div id="register-closed" class="c-step mb-gutter" role="status" hidden>
+                                <h2 class="heading-sm">Pendaftaran sedang ditutup.</h2>
+                                <p class="body-lg mt-3" id="register-closed-text">Pantau terus halaman utama untuk pengumuman berikutnya.</p>
+                            </div>
+
                             <form id="register-form" class="flex flex-col gap-gutter" novalidate data-event="{{ $event->id }}">
                                 <input type="hidden" name="event_id" value="{{ $event->id }}">
 
@@ -66,36 +78,24 @@
                                     <legend class="c-step_legend"><span class="c-step_num" aria-hidden="true">1</span>Pilih kategori</legend>
                                     <div class="c-options">
                                         @foreach ($categories as $category)
+                                            @php $package = $category->package; @endphp
                                             <label class="c-option">
-                                                <input type="radio" name="category_id" value="{{ $category->id }}" class="peer sr-only" data-name="{{ $category->name }}" @checked($pickCategory === $category->id)>
-                                                <span class="c-option_card"><span class="c-option_check" aria-hidden="true"></span><span class="c-option_title">{{ $category->name }}</span></span>
+                                                <input type="radio" name="category_id" value="{{ $category->id }}" class="peer sr-only" data-name="{{ $category->name }}" data-code="{{ $category->code }}" data-package="{{ $package?->name }}" data-price="{{ $package?->price }}" @checked($pickCategory === $category->id)>
+                                                <span class="c-option_card"><span class="c-option_check" aria-hidden="true"></span>
+                                                    <span class="c-option_title">{{ $category->name }}</span>
+                                                    @if ($package)<span class="c-option_price">{{ $rupiah($package->price) }}</span>@endif
+                                                    @if ($package?->description)<span class="c-option_desc">{{ $package->description }}</span>@endif
+                                                    <span class="c-option_desc" data-quota hidden></span>
+                                                </span>
                                             </label>
                                         @endforeach
                                     </div>
                                     <p class="c-error" id="err-category_id" data-error="category_id" hidden></p>
                                 </fieldset>
 
-                                {{-- 2. Paket --}}
-                                <fieldset class="c-step" aria-describedby="err-package_id">
-                                    <legend class="c-step_legend"><span class="c-step_num" aria-hidden="true">2</span>Pilih paket</legend>
-                                    <div class="c-options">
-                                        @foreach ($packages as $package)
-                                            <label class="c-option">
-                                                <input type="radio" name="package_id" value="{{ $package->id }}" class="peer sr-only" data-name="{{ $package->name }}" data-price="{{ $package->price }}" @checked($pickPackage === $package->id)>
-                                                <span class="c-option_card"><span class="c-option_check" aria-hidden="true"></span>
-                                                    <span class="c-option_title">{{ $package->name }}</span>
-                                                    @if (strcasecmp($package->name, $rupiah($package->price)) !== 0)<span class="c-option_price">{{ $rupiah($package->price) }}</span>@endif
-                                                    @if ($package->description)<span class="c-option_desc">{{ $package->description }}</span>@endif
-                                                </span>
-                                            </label>
-                                        @endforeach
-                                    </div>
-                                    <p class="c-error" id="err-package_id" data-error="package_id" hidden></p>
-                                </fieldset>
-
-                                {{-- 3. Data diri --}}
+                                {{-- 2. Data diri --}}
                                 <fieldset class="c-step">
-                                    <legend class="c-step_legend"><span class="c-step_num" aria-hidden="true">3</span>Data dirimu</legend>
+                                    <legend class="c-step_legend"><span class="c-step_num" aria-hidden="true">2</span>Data dirimu</legend>
                                     <div class="grid gap-5 sm:grid-cols-2">
                                         <div class="c-field sm:col-span-2">
                                             <label class="c-label" for="full_name">Nama lengkap</label>
@@ -134,6 +134,22 @@
                                             </div>
                                             <p class="c-error" id="err-gender" data-error="gender" hidden></p>
                                         </fieldset>
+                                        {{-- Shown by c-register.js for the checked category; disabled fields are not submitted --}}
+                                        @foreach ($extra as $code => $fields)
+                                            <fieldset class="grid gap-5 sm:col-span-2 sm:grid-cols-2" data-for="{{ $code }}" hidden disabled>
+                                                @foreach ($fields as [$field, $label, $type, $max])
+                                                    <div class="c-field">
+                                                        <label class="c-label" for="{{ $field }}">{{ $label }}</label>
+                                                        @if ($type === 'number')
+                                                            <input class="c-input" id="{{ $field }}" name="{{ $field }}" type="number" inputmode="numeric" min="1900" max="{{ now()->year }}" aria-describedby="err-{{ $field }}">
+                                                        @else
+                                                            <input class="c-input" id="{{ $field }}" name="{{ $field }}" type="text" maxlength="{{ $max }}" aria-describedby="err-{{ $field }}">
+                                                        @endif
+                                                        <p class="c-error" id="err-{{ $field }}" data-error="{{ $field }}" hidden></p>
+                                                    </div>
+                                                @endforeach
+                                            </fieldset>
+                                        @endforeach
                                         <div class="c-field sm:col-span-2">
                                             <label class="c-label" for="motivation">Motivasi <span class="opacity-75">(opsional)</span></label>
                                             <textarea class="c-input" id="motivation" name="motivation" rows="3" aria-describedby="err-motivation"></textarea>
@@ -176,7 +192,7 @@
                             <h2 class="heading-xs" id="summary-title">Ringkasan</h2>
                             <dl class="mt-5 divide-y divide-beige-500" aria-live="polite">
                                 <div class="flex justify-between gap-4 py-3"><dt class="opacity-75">Kategori</dt><dd id="sum-category" class="text-right">Belum dipilih</dd></div>
-                                <div class="flex justify-between gap-4 py-3"><dt class="opacity-75">Paket</dt><dd id="sum-package" class="text-right">Belum dipilih</dd></div>
+                                <div class="flex justify-between gap-4 py-3"><dt class="opacity-75">Paket</dt><dd id="sum-package" class="text-right">Ikut kategori</dd></div>
                                 <div class="flex justify-between gap-4 py-3"><dt class="opacity-75">Biaya</dt><dd id="sum-price" class="heading-xs text-right">–</dd></div>
                             </dl>
                             <p class="body-md mt-5 rounded-sm bg-beige p-4" id="sum-note">Paket gratis langsung terkonfirmasi. Paket berbayar: transfer, unggah bukti, lalu tunggu verifikasi panitia.</p>

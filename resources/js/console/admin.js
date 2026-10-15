@@ -76,15 +76,23 @@ function pendaftaran() {
     load();
 }
 
+// Whichever identity fields the participant's category filled (siswa, guru, orangtua, alumni)
+const identity = (x) => [
+    x.nis && `NIS ${x.nis}`, x.class && `Kelas ${x.class}`,
+    x.nip && `NIP ${x.nip}`, x.position, x.unit,
+    x.child_name && `Anak: ${x.child_name}${x.child_class ? ` (${x.child_class})` : ''}`,
+    x.graduation_year && `Lulus ${x.graduation_year}`,
+].filter(Boolean).join(' · ') || '-';
+
 function peserta() {
     const form = document.getElementById('p-filter');
     const body = document.getElementById('p-body');
     const load = async () => {
         const r = await api(`/admin/participants?${qs(form)}`);
-        if (!r.ok) { body.innerHTML = row(5, esc(errText(r))); return; }
+        if (!r.ok) { body.innerHTML = row(6, esc(errText(r))); return; }
         const list = r.data.data;
-        body.innerHTML = list.length ? list.map((x) => `<tr><td>${esc(x.full_name)}</td><td>${esc(x.gender)}</td><td>${esc(x.email)}</td><td>${esc(x.phone)}</td><td>${new Date(x.created_at).toLocaleDateString('id-ID')}</td></tr>`).join('')
-            : row(5, 'Tidak ada peserta.');
+        body.innerHTML = list.length ? list.map((x) => `<tr><td>${esc(x.full_name)}</td><td>${esc(identity(x))}</td><td>${esc(x.gender)}</td><td>${esc(x.email)}</td><td>${esc(x.phone)}</td><td>${new Date(x.created_at).toLocaleDateString('id-ID')}</td></tr>`).join('')
+            : row(6, 'Tidak ada peserta.');
     };
     form.addEventListener('submit', (e) => e.preventDefault());
     form.search.addEventListener('input', debounce(load));

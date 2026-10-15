@@ -96,7 +96,11 @@ Fluid root font-size: `--text-md` (16 → 17px) by default, 15px from 1000 to 11
 
 ### 5. Form (`/daftar`)
 - **Role:** Registration, modelled on the reference's cost estimator: numbered steps (`.c-step`: white panel, **10px radius**, 40px plum number badge) and a sticky white summary panel beside them.
-- **Option card** (`.c-option_card`): a native radio drives it. Sand Cream fill, 2px Hairline Mist border, 10px radius, 20px ring indicator top-right. Checked = Blush (`--color-pink`) fill, Plum Night border, filled ring. Focus = 2px Rose Pop outline.
+- Two steps: category, then personal data. The package is not picked; it follows the category (the API assigns it), so each category card shows that package's price and description, and the summary reads them from the checked card.
+- Fields per category (NIS/kelas, NIP/jabatan/unit, anak, tahun lulus) sit in `fieldset[data-for=<code>]` blocks, shown and enabled only for the checked category so hidden ones are not submitted.
+- Quota from `/api/categories/quota` adds a "Sisa N dari M tempat" line to each card; a full category gets a "Penuh" `.c-badge -bad` and a disabled, dimmed card (60% opacity, not-allowed cursor).
+- When the `registration_open` / `registration_deadline` settings close registration, a `.c-step` notice sits above the form and submit is disabled. Errors not tied to a field (closed, deadline, quota) show in the form error line.
+- **Option card** (`.c-option_card`): a native radio drives it. Sand Cream fill, 2px Hairline Mist border, 10px radius, 20px ring indicator top-right. Checked = Blush (`--color-pink`) fill, Plum Night border, filled ring. Focus = 2px Rose Pop outline. Disabled = 60% opacity.
 - **Input** (`.c-input`): 13 × spacing tall, white, 1px Hairline Mist border, 10px radius, label above in `--text-md`. Focus = 2px Rose Pop outline, Plum Night border. Placeholders are not used as labels.
 - **Error** (`.c-error`): Grape (`#8b4a80`, 6.4:1 on white) text under the field with a "!" badge, input gets a 2px Grape border. Never colour alone.
 - **Status badge** (`.c-badge`): 10px radius, always text, never colour alone. `-ok` Marigold (confirmed, paid, free), `-wait` Blush (pending, unpaid), `-bad` Grape with white text (cancelled). Used on `/cek-status`, which also hosts the payment-proof file input (`.c-input.c-file`).
@@ -114,8 +118,11 @@ Fluid root font-size: `--text-md` (16 → 17px) by default, 15px from 1000 to 11
 - Shell (`.k-shell`): white sidebar 15rem from 1000px (top bar with horizontally scrolling nav below), Sand Cream canvas, white `.k-card` panels, 10px radius, flat.
 - Nav link current page = Blush fill. Button `.k-btn` = Plum Night fill, `-ghost` = outlined. Scan result `.k-result` reuses badge colours: `-ok` Marigold, `-wait` Blush (duplicate), `-bad` Grape with white text; always text, never colour alone.
 - Admin: stat tiles (`.k-stats` > `.k-card` + `.k-stat`, heading-sm bold), native `<dialog class="k-dialog">` for verification (white, 10px radius, plum 50% backdrop).
-- CRUD pages (`/admin/event|konten|pengguna|pengaturan`) share one table + `<dialog>` form (`c-crud` config in `resources/js/console/crud.js`); row actions are `.k-btn.-ghost` in `.k-actions`; outcome line is `.k-result` (`-ok`/`-bad`).
-- Log pages (`/admin/scan-log|log-aktivitas`): filter row of `.c-input` + `.c-table` + prev/next `.k-btn.-ghost` (50 rows per page); scan status uses `.c-badge`. `/admin/ekspor` downloads CSV through fetch + blob (Bearer header needed).
+- CRUD pages (`/admin/event|konten|pengguna`) share one table + `<dialog>` form (`c-crud` config in `resources/js/console/crud.js`); row actions are `.k-btn.-ghost` in `.k-actions`; outcome line is `.k-result` (`-ok`/`-bad`).
+- Pengaturan (`/admin/pengaturan`): one `.k-card` per settings group (`.k-h2` title, two-column grid of `.c-input`, textareas full width), one "Simpan pengaturan" `.k-btn` that saves everything in one bulk update. Toggles are `.k-check`: a native checkbox (20px, Plum Night accent, Rose Pop focus ring) inside a 44px-tall label.
+- Scan (`/panitia/scan`): "Mulai serentak" `.k-btn` and "Akhiri acara" `.k-btn.-ghost` side by side; after finish the status line says "Scan ditutup" and the scan form is disabled.
+- Peserta (`/admin/peserta`): "Impor peserta" `.k-card` under the table: template downloads as `.k-btn.-ghost`, type and package selects, `.c-input.c-file`. The outcome is a `.k-result` (`-ok`, `-wait` when some rows failed, `-bad`), with per-row lines in a `<details>`.
+- Log pages (`/admin/scan-log|log-aktivitas`): filter row of `.c-input` + `.c-table` + prev/next `.k-btn.-ghost` (50 rows per page); scan status uses `.c-badge`. `/admin/ekspor` and the import templates download through `download()` in `api.js` (fetch + blob, Bearer header needed).
 - Mobile rules: `.k-shell` column is `minmax(0, 1fr)` so the long nav scrolls inside `.k-nav` instead of widening the page; every tappable control in the console is at least 44px tall (`.k-nav a`, `.k-btn.-ghost`, links in `.k-dialog` / login card get block padding). Tables scroll inside `.k-scroll`.
 - Forms and tables reuse `.c-input`, `.c-error`, `.c-table`, `.c-badge`.
 

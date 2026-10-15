@@ -2,10 +2,13 @@
 @section('title', 'Scan finish')
 @section('content')
 <section class="k-card" id="start-card">
-    <h2 class="k-h2">Mulai acara</h2>
+    <h2 class="k-h2">Mulai dan akhiri acara</h2>
     <p id="start-info" class="body-md">Memuat acara aktif…</p>
     <p class="c-error mt-3" id="start-error" role="alert" hidden></p>
-    <button type="button" id="start-btn" class="k-btn mt-4" disabled>Mulai serentak</button>
+    <div class="k-row mt-4">
+        <button type="button" id="start-btn" class="k-btn" disabled>Mulai serentak</button>
+        <button type="button" id="finish-btn" class="k-btn -ghost" hidden>Akhiri acara</button>
+    </div>
 </section>
 
 <section class="k-card" id="scan-card">

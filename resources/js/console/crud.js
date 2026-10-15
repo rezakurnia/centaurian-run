@@ -10,7 +10,7 @@ const when = (v) => (v ? new Date(v).toLocaleString('id-ID') : '-');
 const RES = {
     events: {
         path: '/admin/events', one: 'event', name: 'name',
-        cols: [['Nama', 'name'], ['Tanggal', 'event_date', (v) => day(v)], ['Lokasi', 'location'], ['Status', 'is_active', (v) => (v ? 'Aktif' : 'Nonaktif')], ['Mulai', 'start_time', when]],
+        cols: [['Nama', 'name'], ['Tanggal', 'event_date', (v) => day(v)], ['Lokasi', 'location'], ['Status', 'is_active', (v) => (v ? 'Aktif' : 'Nonaktif')], ['Mulai', 'start_time', when], ['Selesai', 'finish_time', when]],
         fields: [
             { n: 'name', l: 'Nama' }, { n: 'event_date', l: 'Tanggal', t: 'date' },
             { n: 'location', l: 'Lokasi' }, { n: 'description', l: 'Deskripsi', t: 'textarea' },
@@ -38,11 +38,6 @@ const RES = {
             { n: 'role', l: 'Role', t: 'select', o: [['panitia', 'Panitia'], ['admin', 'Admin']] },
             { n: 'password', l: 'Password (min. 6)', t: 'password', omit: true },
         ],
-    },
-    settings: {
-        path: '/admin/settings', id: 'key', one: 'pengaturan', name: 'key',
-        cols: [['Kunci', 'key'], ['Nilai', 'value'], ['Diubah', 'updated_at', when]],
-        fields: [{ n: 'key', l: 'Kunci', once: true }, { n: 'value', l: 'Nilai', t: 'textarea' }],
     },
 };
 

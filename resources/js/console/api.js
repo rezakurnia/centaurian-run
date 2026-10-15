@@ -21,7 +21,19 @@ export async function api(path, { method = 'GET', body } = {}) {
     }
 }
 
-export const errText = (r) => (r.data.errors && Object.values(r.data.errors)[0]?.[0]) || r.data.message || 'Terjadi kendala di server.';
+// File download (CSV/xlsx) needs the Bearer header, so fetch the blob and save it under the server's filename.
+export async function download(path, fallback) {
+    const res = await fetch(`/api${path}`, { headers: { Authorization: `Bearer ${auth.get()?.token}` } });
+    if (!res.ok) throw new Error(res.status === 401 ? 'Sesi habis, login ulang.' : 'Gagal mengunduh.');
+    const a = Object.assign(document.createElement('a'), {
+        href: URL.createObjectURL(await res.blob()),
+        download: /filename="?([^";]+)/.exec(res.headers.get('Content-Disposition') ?? '')?.[1] ?? fallback,
+    });
+    a.click();
+    URL.revokeObjectURL(a.href);
+}
+
+export const errText =(r) => (r.data.errors && Object.values(r.data.errors)[0]?.[0]) || r.data.message || 'Terjadi kendala di server.';
 export const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 export const setErr = (el, msg) => { el.textContent = msg; el.hidden = !msg; };
 export const fmtDur = (s) => [Math.floor(s / 3600), Math.floor(s / 60) % 60, s % 60].map((n) => String(n).padStart(2, '0')).join(':');

@@ -4,6 +4,8 @@ import { initRekap } from './rekap.js';
 import { initAdmin } from './admin.js';
 import { initCrud } from './crud.js';
 import { initLogs, initExport } from './logs.js';
+import { initSettings } from './settings.js';
+import { initImport } from './import.js';
 
 // Menu per role; tambahkan item admin di sini saat halamannya jadi.
 const NAV = [
@@ -66,5 +68,7 @@ if (main) {
         initCrud();
         initLogs();
         initExport();
+        initSettings();
+        initImport();
     }
 }
