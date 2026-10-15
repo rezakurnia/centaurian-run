@@ -20,8 +20,9 @@ class AppServiceProvider extends ServiceProvider
     {
         Schema::defaultStringLength(191);
 
-        // Paksa HTTPS di production (atau saat pakai Ngrok)
-        if (config('app.env') === 'production' || str_contains(config('app.url'), 'ngrok')) {
+        // Paksa HTTPS di production. Ngrok tidak perlu: trustProxies (bootstrap/app.php) membaca X-Forwarded-Proto,
+        // sedangkan force di sini membuat asset di http://localhost ikut https dan gagal dimuat.
+        if (config('app.env') === 'production') {
             URL::forceScheme('https');
         }
 

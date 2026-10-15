@@ -15,9 +15,9 @@
             'body' => 'Siswa, guru, alumni, orang tua, sampai tamu dari luar. Centaurian Run terbuka untuk semua kalangan, pilih kategorimu saat mendaftar.',
         ],
         [
-            'id' => 'paket', 'color' => 'yellow', 'href' => '/daftar', 'button' => 'Pilih paket',
-            'title' => 'Pilih paketmu.',
-            'body' => 'Mulai dari gratis. Untuk paket berbayar, cukup transfer, unggah bukti pembayaran, dan tunggu verifikasi panitia.',
+            'id' => 'paket', 'color' => 'yellow', 'href' => '/daftar', 'button' => 'Daftar',
+            'title' => 'Paket ikut kategorimu.',
+            'body' => 'Paketmu otomatis menyesuaikan kategori, mulai dari gratis. Untuk paket berbayar, cukup transfer, unggah bukti pembayaran, dan tunggu verifikasi panitia.',
         ],
         [
             'id' => 'jadwal', 'color' => 'blue', 'href' => '/cek-status', 'button' => 'Cek status',
@@ -120,7 +120,7 @@
                             @elseif ($card['id'] === 'paket' && $packages->isNotEmpty())
                                 <ul class="divide-y divide-beige-500">
                                     @foreach ($packages as $package)
-                                        <li><a href="/daftar?package={{ $package->id }}" class="flex justify-between py-2 hover:underline"><span>{{ $package->name }}</span><span>{{ $rupiah($package->price) }}</span></a></li>
+                                        <li class="flex justify-between py-2"><span>{{ $package->name }}</span>@if (strcasecmp($package->name, $rupiah($package->price)) !== 0)<span>{{ $rupiah($package->price) }}</span>@endif</li>
                                     @endforeach
                                 </ul>
                             @elseif ($card['id'] === 'jadwal')
@@ -286,7 +286,7 @@
                     </h2>
                     <div class="mt-fluid-2xl flex flex-col items-center gap-6">
                         <p class="heading-xs max-w-100 text-center text-balance md:max-w-140">
-                            {{ $c->get('cta')?->body ?? 'Pilih kategori, pilih paket, dan amankan nomor pesertamu. Pendaftaran cuma butuh beberapa menit.' }}
+                            {{ $c->get('cta')?->body ?? 'Pilih kategori, isi datamu, dan amankan nomor pesertamu. Pendaftaran cuma butuh beberapa menit.' }}
                         </p>
                         @include('partials.btn', ['href' => '/daftar', 'label' => 'Daftar sekarang', 'color' => 'green', 'attributes' => 'data-deluxe-callout-action="true" data-callout-action'])
                     </div>
