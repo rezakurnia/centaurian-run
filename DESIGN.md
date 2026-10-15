@@ -111,13 +111,17 @@ Fluid root font-size: `--text-md` (16 → 17px) by default, 15px from 1000 to 11
 
 ### 6. Footer Row
 - **Role:** Closing line inside the green callout, under the CTA (no separate footer block).
-- A "Login panitia" `.c-link` sits in the last column. Three centred columns (`body-md`, `md:grid-cols-3`, 60 × `--spacing` above on desktop; stacked below 1000px), text in `#3a1f3f`.
+- A "Login panitia" `.c-link` sits in the last column.
+- Column 1 is the app name from Admin → Pengaturan, with contact email/phone links under it. Column 2 adds WhatsApp/Instagram/Facebook links under the foundation name. Only filled http(s) links are shown. Footer links are `inline-block` with 12px block padding, so each is 44px tall. Three centred columns (`body-md`, `md:grid-cols-3`, 60 × `--spacing` above on desktop; stacked below 1000px), text in `#3a1f3f`.
 
 ### 7. Console (panitia/admin, `/login`, `/panitia/*`)
 - **Role:** Working screens for staff, not marketing. Same tokens as the public site, denser, no Locomotive/Rive (separate Vite entry `resources/js/console/main.js`).
 - Shell (`.k-shell`): white sidebar 15rem from 1000px (top bar with horizontally scrolling nav below), Sand Cream canvas, white `.k-card` panels, 10px radius, flat.
 - Nav link current page = Blush fill. Button `.k-btn` = Plum Night fill, `-ghost` = outlined. Scan result `.k-result` reuses badge colours: `-ok` Marigold, `-wait` Blush (duplicate), `-bad` Grape with white text; always text, never colour alone.
 - Admin: stat tiles (`.k-stats` > `.k-card` + `.k-stat`, heading-sm bold), native `<dialog class="k-dialog">` for verification (white, 10px radius, plum 50% backdrop).
+- Detail lists (`.k-dl`): a two-column `dt`/`dd` grid, `dt` at 75% opacity, long values wrap. They're used for the registrant in the Pendaftaran verify dialog and in the log detail dialog (a "Detail" `.k-btn.-ghost` on each log row).
+- Announcements (`.k-note`): published Konten with target "panitia" render as `.k-card` panels under the page title on every console page.
+- Scan page follows "Konfigurasi Scan" settings: the same barcode is ignored within the cooldown, the result line clears after the auto-clear time, a Web Audio beep plays (high = valid, low = duplicate/failed) when sound is on, the scheduled start hour shows before the start, and "Akhiri acara" only appears N minutes after the start.
 - CRUD pages (`/admin/event|konten|pengguna`) share one table + `<dialog>` form (`c-crud` config in `resources/js/console/crud.js`); row actions are `.k-btn.-ghost` in `.k-actions`; outcome line is `.k-result` (`-ok`/`-bad`).
 - Pengaturan (`/admin/pengaturan`): one `.k-card` per settings group (`.k-h2` title, two-column grid of `.c-input`, textareas full width), one "Simpan pengaturan" `.k-btn` that saves everything in one bulk update. Toggles are `.k-check`: a native checkbox (20px, Plum Night accent, Rose Pop focus ring) inside a 44px-tall label.
 - Scan (`/panitia/scan`): "Mulai serentak" `.k-btn` and "Akhiri acara" `.k-btn.-ghost` side by side; after finish the status line says "Scan ditutup" and the scan form is disabled.

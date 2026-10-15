@@ -62,6 +62,13 @@ if (main) {
             location.href = '/login';
         });
         main.hidden = false;
+        // The saved user can be stale (role changed or account edited since login): refresh it from /me.
+        // A 401 here is handled by api() (logout + /login).
+        api('/me').then((r) => {
+            if (!r.ok || !r.data?.role) return;
+            auth.set({ ...a, user: r.data });
+            if (r.data.role !== a.user.role) location.replace(need === 'admin' && r.data.role !== 'admin' ? home(r.data) : location.href);
+        });
         initScan();
         initRekap();
         initAdmin();

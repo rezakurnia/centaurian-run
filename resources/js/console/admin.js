@@ -39,15 +39,26 @@ function pendaftaran() {
     let current = null;
 
     const load = async () => {
-        body.innerHTML = row(7, 'Memuat…');
+        body.innerHTML = row(8, 'Memuat…');
         const r = await api(`/admin/registrations?${qs(form)}`);
-        if (!r.ok) { body.innerHTML = row(7, esc(errText(r))); return; }
+        if (!r.ok) { body.innerHTML = row(8, esc(errText(r))); return; }
         list = r.data.data;
-        body.innerHTML = list.length ? list.map((x, i) => `<tr><td>${esc(x.registration_number)}</td><td>${esc(x.category)}</td><td>${esc(x.package)}</td><td>${badge(REG, x.registration_status)}</td><td>${badge(PAY, x.payment_status)}</td><td>${x.payment_proof_url ? `<a class="c-link" href="${esc(x.payment_proof_url)}" target="_blank" rel="noopener">Lihat</a>` : '-'}</td><td><button type="button" class="k-btn -ghost" data-i="${i}">Verifikasi</button></td></tr>`).join('')
-            : row(7, 'Tidak ada pendaftaran.');
+        body.innerHTML = list.length ? list.map((x, i) => `<tr><td>${esc(x.registration_number)}</td><td>${esc(x.participant?.full_name ?? '-')}</td><td>${esc(x.category)}</td><td>${esc(x.package)}</td><td>${badge(REG, x.registration_status)}</td><td>${badge(PAY, x.payment_status)}</td><td>${x.payment_proof_url ? `<a class="c-link" href="${esc(x.payment_proof_url)}" target="_blank" rel="noopener">Lihat</a>` : '-'}</td><td><button type="button" class="k-btn -ghost" data-i="${i}">Verifikasi</button></td></tr>`).join('')
+            : row(8, 'Tidak ada pendaftaran.');
     };
 
-    body.addEventListener('click', (e) => {
+    // Detail peserta untuk dialog verifikasi; list sudah cukup untuk dibuka, detail menyusul
+    const person = document.getElementById('reg-dialog-person');
+    const showPerson = (p) => {
+        const items = p ? [
+            ['Nama', p.full_name], ['Email', p.email], ['Telepon', p.phone],
+            ['L/P', p.gender], ['Lahir', [p.birth_place, p.birth_date && String(p.birth_date).slice(0, 10)].filter(Boolean).join(', ')],
+            ['Identitas', identity(p)], ['Motivasi', p.motivation],
+        ].filter(([, v]) => v && v !== '-') : [];
+        person.innerHTML = items.map(([k, v]) => `<dt>${k}</dt><dd>${esc(v)}</dd>`).join('');
+    };
+
+    body.addEventListener('click', async (e) => {
         const b = e.target.closest('[data-i]');
         if (!b) return;
         current = list[b.dataset.i];
@@ -58,7 +69,11 @@ function pendaftaran() {
         document.getElementById('v-reg').value = current.registration_status;
         document.getElementById('v-pay').value = current.payment_status;
         setErr(err, '');
+        showPerson(current.participant);
         dlg.showModal();
+        const id = current.id;
+        const r = await api(`/admin/registrations/${id}`);
+        if (r.ok && current?.id === id) showPerson(r.data.data.participant);
     });
     document.getElementById('reg-cancel').addEventListener('click', () => dlg.close());
     document.getElementById('reg-verify').addEventListener('submit', async (e) => {

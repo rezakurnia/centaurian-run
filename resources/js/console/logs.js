@@ -35,12 +35,27 @@ export function initLogs() {
     const $ = (id) => document.getElementById(id);
     const form = $('log-filter');
     const body = $('log-body');
-    const span = cfg.cols.length;
+    const span = cfg.cols.length + 1;
     let page = 1;
     let last = 1;
+    let rows = [];
 
     form.innerHTML = cfg.f;
-    $('log-head').innerHTML = `<tr>${cfg.cols.map(([l]) => `<th>${l}</th>`).join('')}</tr>`;
+    $('log-head').innerHTML = `<tr>${cfg.cols.map(([l]) => `<th>${l}</th>`).join('')}<th></th></tr>`;
+
+    // Detail: every field of GET {path}/{id}, nested objects (user, participant) flattened to one line
+    const dlg = $('log-dialog');
+    const flat = (v) => (v && typeof v === 'object' ? Object.values(v).filter((x) => x != null).join(' · ') : v);
+    $('log-close').addEventListener('click', () => dlg.close());
+    body.addEventListener('click', async (e) => {
+        const b = e.target.closest('[data-i]');
+        if (!b) return;
+        const r = await api(`${cfg.path}/${rows[b.dataset.i].id}`);
+        const d = r.ok ? r.data.data : { error: errText(r) };
+        $('log-dialog-body').innerHTML = Object.entries(d).filter(([, v]) => v != null && v !== '')
+            .map(([k, v]) => `<dt>${esc(k.replaceAll('_', ' '))}</dt><dd>${esc(/_at$/.test(k) ? when(v) : flat(v))}</dd>`).join('');
+        dlg.showModal();
+    });
 
     const load = async () => {
         const q = new URLSearchParams([...new FormData(form)].filter(([, v]) => v));
@@ -49,7 +64,8 @@ export function initLogs() {
         if (!r.ok) { body.innerHTML = `<tr><td colspan="${span}">${esc(errText(r))}</td></tr>`; return; }
         const { data, meta } = r.data;
         last = meta.last_page;
-        body.innerHTML = data.length ? data.map((x) => `<tr>${cfg.cols.map(([, f]) => `<td>${f(x)}</td>`).join('')}</tr>`).join('')
+        rows = data;
+        body.innerHTML = data.length ? data.map((x, i) => `<tr>${cfg.cols.map(([, f]) => `<td>${f(x)}</td>`).join('')}<td><button type="button" class="k-btn -ghost" data-i="${i}">Detail</button></td></tr>`).join('')
             : `<tr><td colspan="${span}">Tidak ada data.</td></tr>`;
         $('log-page').textContent = `Halaman ${meta.current_page} dari ${last} (${meta.total} data)`;
         $('log-prev').disabled = page <= 1;

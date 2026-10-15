@@ -15,16 +15,54 @@ export function initScan() {
     const finishBtn = document.getElementById('finish-btn');
     const time = (v) => new Date(v).toLocaleTimeString('id-ID');
 
+    // Admin → Pengaturan, "Konfigurasi Scan" (GET /api/settings); defaults match config/app_settings.php
+    const cfg = { cooldown: 3, sound: true, autoClear: 5, startHour: '06:00', finishAfter: 60 };
+    const settings = fetch('/api/settings', { headers: { Accept: 'application/json' } })
+        .then((r) => r.json())
+        .then(({ data: s }) => {
+            const num = (v, d) => (Number.isFinite(Number(v)) && v !== '' ? Number(v) : d);
+            Object.assign(cfg, {
+                cooldown: num(s.scan_cooldown_seconds, cfg.cooldown),
+                sound: s.scan_sound_enabled !== '0',
+                autoClear: num(s.scan_auto_clear_seconds, cfg.autoClear),
+                startHour: s.event_start_hour || cfg.startHour,
+                finishAfter: num(s.finish_button_visible_minutes, cfg.finishAfter),
+            });
+        })
+        .catch(() => {});
+
+    let finishTimer;
     const showStart = () => {
         startInfo.textContent = event.finish_time
             ? `${event.name}: selesai ${time(event.finish_time)}. Scan ditutup.`
             : event.start_time
                 ? `${event.name}: sudah dimulai ${time(event.start_time)}.`
-                : `${event.name}: belum dimulai. Tekan tombol saat aba-aba start; waktu semua peserta tercatat serentak.`;
+                : `${event.name}: belum dimulai, jadwal start ${cfg.startHour}. Tekan tombol saat aba-aba start; waktu semua peserta tercatat serentak.`;
         startBtn.disabled = !!event.start_time;
-        finishBtn.hidden = !event.start_time || !!event.finish_time;
+        // The finish button appears finishAfter minutes after the start, so it can't be pressed by accident early on
+        clearTimeout(finishTimer);
+        const wait = event.start_time ? new Date(event.start_time).getTime() + cfg.finishAfter * 60000 - Date.now() : 0;
+        finishBtn.hidden = !event.start_time || !!event.finish_time || wait > 0;
+        if (event.start_time && !event.finish_time && wait > 0) finishTimer = setTimeout(showStart, Math.min(wait, 2 ** 31 - 1));
         // After finish the API rejects every scan, so close the form too
         form.querySelectorAll('input, button').forEach((el) => { el.disabled = !!event.finish_time; });
+    };
+
+    // Short beep: high for valid, low for duplicate/failed (Web Audio, no sound file)
+    let audio;
+    const beep = (ok) => {
+        if (!cfg.sound) return;
+        try {
+            audio ??= new AudioContext();
+            const osc = audio.createOscillator();
+            const gain = audio.createGain();
+            osc.frequency.value = ok ? 880 : 220;
+            gain.gain.setValueAtTime(0.2, audio.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audio.currentTime + 0.25);
+            osc.connect(gain).connect(audio.destination);
+            osc.start();
+            osc.stop(audio.currentTime + 0.25);
+        } catch { /* no audio: scanning still works */ }
     };
 
     finishBtn.addEventListener('click', async () => {
@@ -39,7 +77,7 @@ export function initScan() {
     });
 
     (async () => {
-        const r = await api('/event/active');
+        const [r] = await Promise.all([api('/event/active'), settings]);
         if (!r.ok) { startInfo.textContent = 'Belum ada acara aktif.'; return; }
         event = r.data.data;
         showStart();
@@ -62,10 +100,18 @@ export function initScan() {
             : '<tr><td colspan="5">Belum ada scan.</td></tr>';
     };
 
+    // Same barcode again within the cooldown (double read by the camera or scanner) is ignored
+    let last = { code: '', at: 0 };
+    let clearTimer;
     const scan = async (barcode) => {
+        if (barcode === last.code && Date.now() - last.at < cfg.cooldown * 1000) return;
+        last = { code: barcode, at: Date.now() };
         const r = await api('/panitia/scan', { method: 'POST', body: { barcode } });
         const d = r.data.data;
         const [cls, label] = r.ok ? ['-ok', 'Valid'] : r.status === 409 ? ['-wait', 'Duplikat'] : ['-bad', 'Gagal'];
+        beep(r.ok);
+        clearTimeout(clearTimer);
+        if (cfg.autoClear > 0) clearTimer = setTimeout(() => { result.className = 'k-result'; result.textContent = ''; }, cfg.autoClear * 1000);
         result.className = `k-result ${cls}`;
         result.textContent = r.ok
             ? `${d.registration_number} ${d.full_name}: ${fmtDur(d.duration)}`
@@ -106,7 +152,7 @@ export function initScan() {
                 if (!busy) {
                     busy = true;
                     const found = await det.detect(video).catch(() => []);
-                    if (found[0]) { await scan(found[0].rawValue); await new Promise((r) => setTimeout(r, 1500)); }
+                    if (found[0]) { await scan(found[0].rawValue); await new Promise((r) => setTimeout(r, cfg.cooldown * 1000)); }
                     busy = false;
                 }
                 setTimeout(tick, 300);

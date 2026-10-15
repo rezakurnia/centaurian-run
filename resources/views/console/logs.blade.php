@@ -15,4 +15,11 @@
         <button type="button" class="k-btn -ghost" id="log-next">Berikutnya</button>
     </div>
 </section>
+
+{{-- Filled from GET {path}/{id} by logs.js --}}
+<dialog id="log-dialog" class="k-dialog" aria-labelledby="log-dialog-title">
+    <h2 class="k-h2" id="log-dialog-title">Detail log</h2>
+    <dl id="log-dialog-body" class="k-dl"></dl>
+    <div class="k-row mt-5"><button type="button" class="k-btn -ghost" id="log-close">Tutup</button></div>
+</dialog>
 @endsection

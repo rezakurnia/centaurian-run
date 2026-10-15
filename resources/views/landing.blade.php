@@ -1,11 +1,14 @@
 @php
     $c = $contents;
+    // Admin → Pengaturan (same values as GET /api/settings); the active event's own fields win over these
+    $s = app(\App\Services\SettingService::class)->getAllFlat();
+    $description = $event?->description ?: ($s['event_description'] ?? '') ?: 'Lebih dari sekadar lomba lari, Centaurian Run 2026 adalah gerakan Yayasan Taqwa Cerdas Kreatif untuk kebenaran, keadilan, dan kemanusiaan. Move with faith: setiap langkah berakar pada keyakinan untuk terus memperjuangkan kebaikan. Run with care: saling peduli dan menjaga, termasuk aksi nyata solidaritas untuk Palestina.';
     $rupiah = fn (int $p) => $p === 0 ? 'Gratis' : 'Rp' . number_format($p, 0, ',', '.');
     $date = $event?->event_date?->locale('id')->translatedFormat('l, j F Y');
     $time = $event?->start_time?->format('H:i');
     $ctaTitle = $c->get('cta')?->title ?? "Siap lari\nbareng?";
     // Hero title breaks after the first word: "Centaurian" / "Run 2026"
-    $name = $event?->name ?? 'Centaurian Run ' . now()->year;
+    $name = $event?->name ?? ($s['event_name'] ?? '') ?: 'Centaurian Run ' . now()->year;
     [$heroTop, $heroBottom] = explode(' ', $name, 2) + [1 => null];
 
     $cards = [
@@ -37,7 +40,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ $name }}</title>
-    <meta name="description" content="{{ Str::limit($event?->description ?? 'Centaurian Run 2026 oleh Yayasan Taqwa Cerdas Kreatif: Move with Faith, Run with Care.', 155) }}">
+    <meta name="description" content="{{ Str::limit($description, 155) }}">
     <link rel="icon" href="/favicon.ico" sizes="any">
     <link rel="icon" href="/favicon.png" type="image/png">
     @fonts
@@ -55,7 +58,7 @@
                 <div class="c-hero-home_content">
                     <div class="anim-first-hit -delay-2"><h1 class="c-hero-home_title">{{ $heroTop }}@if ($heroBottom)<br>{{ $heroBottom }}@endif</h1></div>
                     <div class="anim-first-hit -delay-1">
-                        <p class="c-hero-home_tagline">Move with Faith, Run with Care</p>
+                        <p class="c-hero-home_tagline">{{ ($s['event_tagline'] ?? '') ?: 'Move with Faith, Run with Care' }}</p>
                     </div>
                 </div>
             </div>
@@ -89,7 +92,7 @@
                         <div class="grid md:grid-cols-14">
                             <div class="flex flex-col gap-9 md:col-start-1 md:col-end-8 md:max-w-175">
                                 <p class="md:heading-xs max-md:heading-sm text-balance">
-                                    {{ $event?->description ?: 'Lebih dari sekadar lomba lari, Centaurian Run 2026 adalah gerakan Yayasan Taqwa Cerdas Kreatif untuk kebenaran, keadilan, dan kemanusiaan. Move with faith: setiap langkah berakar pada keyakinan untuk terus memperjuangkan kebaikan. Run with care: saling peduli dan menjaga, termasuk aksi nyata solidaritas untuk Palestina.' }}
+                                    {{ $description }}
                                 </p>
                                 <div>@include('partials.btn', ['href' => '/daftar', 'label' => 'Daftar sekarang', 'color' => 'green'])</div>
                             </div>

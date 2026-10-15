@@ -138,7 +138,14 @@ export function initCrud() {
         if (!b) return;
         const row = rows[b.dataset.i];
         const a = b.dataset.a;
-        if (a === 'edit') return openForm(row);
+        if (a === 'edit') {
+            // Edit the latest version (GET {path}/{id}), not the row as it was when the list loaded
+            b.disabled = true;
+            const r = await api(url(row));
+            b.disabled = false;
+            if (!r.ok) return flash(errText(r), false);
+            return openForm(r.data.data);
+        }
         if (a === 'del') {
             if (!confirm(`Hapus ${cfg.one} "${row[cfg.name]}"?`)) return;
             return call(url(row), 'DELETE');

@@ -13,8 +13,8 @@
     </form>
     <div class="k-scroll mt-4">
         <table class="c-table">
-            <thead><tr><th>No.</th><th>Kategori</th><th>Paket</th><th>Pendaftaran</th><th>Bayar</th><th>Bukti</th><th></th></tr></thead>
-            <tbody id="reg-body"><tr><td colspan="7">Memuat…</td></tr></tbody>
+            <thead><tr><th>No.</th><th>Peserta</th><th>Kategori</th><th>Paket</th><th>Pendaftaran</th><th>Bayar</th><th>Bukti</th><th></th></tr></thead>
+            <tbody id="reg-body"><tr><td colspan="8">Memuat…</td></tr></tbody>
         </table>
     </div>
 </section>
@@ -23,6 +23,8 @@
     <form id="reg-verify" method="dialog">
         <h2 class="k-h2" id="reg-dialog-title"></h2>
         <p class="body-md" id="reg-dialog-info"></p>
+        {{-- Filled from GET /admin/registrations/{id} --}}
+        <dl id="reg-dialog-person" class="k-dl mt-3"></dl>
         <p id="reg-dialog-proof" class="body-md mt-2"></p>
         <div class="c-field mt-4">
             <label class="c-label" for="v-reg">Status pendaftaran</label>
