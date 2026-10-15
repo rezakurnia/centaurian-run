@@ -29,6 +29,11 @@ class EventController extends Controller
     public function store(StoreEventRequest $request)
     {
         $event = Event::create($request->validated());
+
+        if ($event->is_active) {
+            $this->deactivateOtherEvents($event->id);
+        }
+
         $this->logActivity('create_event', 'events', $event->id, "Membuat event: {$event->name}");
         return response()->json([
             'message' => 'Event berhasil dibuat.',
@@ -65,6 +70,11 @@ class EventController extends Controller
         }
 
         $event->update($request->validated());
+
+        if ($event->is_active) {
+            $this->deactivateOtherEvents($event->id);
+        }
+
         $this->logActivity('update_event', 'events', $event->id, "Memperbarui event: {$event->name}");
         return response()->json([
             'message' => 'Event berhasil diperbarui.',
@@ -77,7 +87,6 @@ class EventController extends Controller
         $event = Event::find($id);
 
         if (!$event) {
-            $this->logActivity('delete_event', 'events', $event->id, "Menghapus event: {$event->name}");
             return response()->json([
                 'message' => 'Event tidak ditemukan.',
                 'data'    => null,
@@ -105,14 +114,21 @@ class EventController extends Controller
         $event = Event::find($id);
 
         if (!$event) {
-            $this->logActivity('toggle_event', 'events', $event->id, "Toggle event: {$event->name}");
             return response()->json([
                 'message' => 'Event tidak ditemukan.',
                 'data'    => null,
             ], 404);
         }
 
-        $event->update(['is_active' => !$event->is_active]);
+        $newState = !$event->is_active;
+
+        // Hanya boleh ada SATU event aktif:
+        // saat event ini diaktifkan, event lain otomatis dinonaktifkan.
+        if ($newState) {
+            $this->deactivateOtherEvents($event->id);
+        }
+
+        $event->update(['is_active' => $newState]);
 
         return response()->json([
             'message' => 'Status event berhasil diubah.',
@@ -167,5 +183,15 @@ class EventController extends Controller
         'data'    => $result,
     ]);
 }
-    
+
+    /**
+     * Pastikan hanya ada SATU event aktif.
+     * Semua event lain yang sedang aktif akan dinonaktifkan.
+     */
+    private function deactivateOtherEvents(int $keepEventId): void
+    {
+        Event::where('id', '!=', $keepEventId)
+            ->where('is_active', true)
+            ->update(['is_active' => false]);
+    }
 }

@@ -19,7 +19,7 @@ class UpdateContentRequest extends FormRequest
             'title'       => 'nullable|string|max:150',
             'body'        => 'nullable|string',
             'status'      => 'sometimes|in:draft,published',
-            'sort_order'  => 'nullable|integer',
+            'sort_order'  => 'sometimes|integer',
         ];
     }
 }

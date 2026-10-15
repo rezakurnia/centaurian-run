@@ -42,7 +42,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
 
 // Panitia
-    Route::prefix('panitia')->group(function () {
+    Route::middleware('role:panitia,admin')->prefix('panitia')->group(function () {
         Route::get('/recap/category', [RecapController::class, 'byCategory']);
         Route::get('/recap/participants', [RecapController::class, 'byRegistrationNumber']);
         Route::post('/start', [ScanController::class, 'start']);

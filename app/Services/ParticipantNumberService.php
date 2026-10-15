@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Category;
 use App\Models\Registration;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class ParticipantNumberService
 {
@@ -22,11 +23,16 @@ class ParticipantNumberService
         return DB::transaction(function () use ($categoryId) {
             $category = Category::findOrFail($categoryId);
 
-            // Cek kuota kategori
-            $registeredCount = Registration::where('category_id', $categoryId)->count();
+            // Cek kuota kategori — status 'cancelled' TIDAK dihitung
+            // (rumus disamakan dengan RegistrationController@store)
+            $registeredCount = Registration::where('category_id', $categoryId)
+                ->whereIn('registration_status', ['pending', 'confirmed'])
+                ->count();
 
             if ($category->quota > 0 && $registeredCount >= $category->quota) {
-                throw new \Exception("Kuota kategori {$category->name} sudah penuh (max: {$category->quota}).");
+                throw ValidationException::withMessages([
+                    'registration' => ['Kuota pendaftaran untuk kategori ini sudah penuh.'],
+                ]);
             }
 
             // Ambil nomor terakhir dengan kode SAMA (global per kode)
