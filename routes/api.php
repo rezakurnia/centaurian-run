@@ -22,11 +22,15 @@ use Illuminate\Support\Facades\Route;
 
 // Public
 Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:login');
-Route::post('/registrations', [RegistrationController::class, 'store']);
-Route::post('/registrations/check-status', 
-    [RegistrationController::class, 'checkStatus']);
-Route::post('/registrations/{registration_number}/payment-proof', 
-    [RegistrationController::class, 'uploadPaymentProof']);
+// Rate limit anti-spam untuk endpoint pendaftaran publik
+// (diselaraskan dengan branch frontend agar tidak hilang saat merge)
+Route::middleware('throttle:60,1')->group(function () {
+    Route::post('/registrations', [RegistrationController::class, 'store']);
+    Route::post('/registrations/check-status',
+        [RegistrationController::class, 'checkStatus']);
+    Route::post('/registrations/{registration_number}/payment-proof',
+        [RegistrationController::class, 'uploadPaymentProof']);
+});
 Route::get('/event/active', [EventController::class, 'active']);
 Route::get('/contents', [ContentController::class, 'index']);
 Route::get('/results', [ResultController::class, 'index']);
