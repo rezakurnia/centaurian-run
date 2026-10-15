@@ -5,17 +5,42 @@ namespace App\Services;
 use App\Models\Category;
 use App\Models\Registration;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class ParticipantNumberService
 {
+    /**
+     * Generate nomor peserta untuk registrasi via WEB.
+     *
+     * Aturan:
+     * - Kode kategori dari `categories.code` (S, E, P, A)
+     * - Range GLOBAL per kode — bukan per kategori
+     * - Siswa SMP & SMA share kode 'S' → nomor dinamis
+     * - Cek kuota kategori sebelum generate
+     */
     public function generate(int $categoryId): array
     {
         return DB::transaction(function () use ($categoryId) {
             $category = Category::findOrFail($categoryId);
 
-            $lastSequence = Registration::where('category_id', $categoryId)
+            // Cek kuota kategori — status 'cancelled' TIDAK dihitung
+            // (rumus disamakan dengan RegistrationController@store)
+            $registeredCount = Registration::where('category_id', $categoryId)
+                ->whereIn('registration_status', ['pending', 'confirmed'])
+                ->count();
+
+            if ($category->quota > 0 && $registeredCount >= $category->quota) {
+                throw ValidationException::withMessages([
+                    'registration' => ['Kuota pendaftaran untuk kategori ini sudah penuh.'],
+                ]);
+            }
+
+            // Ambil nomor terakhir dengan kode SAMA (global per kode)
+            $lastSequence = DB::table('registrations')
+                ->join('categories', 'categories.id', '=', 'registrations.category_id')
+                ->where('categories.code', $category->code)
                 ->lockForUpdate()
-                ->max('sequence_number') ?? 0;
+                ->max('registrations.sequence_number') ?? 0;
 
             $nextSequence = $lastSequence + 1;
             $number = $category->code.'-'.str_pad($nextSequence, 4, '0', STR_PAD_LEFT);
@@ -25,5 +50,15 @@ class ParticipantNumberService
                 'sequence_number' => $nextSequence,
             ];
         });
+    }
+
+    /**
+     * Generate nomor peserta untuk IMPORT.
+     *
+     * Aturan: sama dengan WEB, tapi bisa dipakai untuk import gratis.
+     */
+    public function generateForImport(int $categoryId): array
+    {
+        return $this->generate($categoryId);
     }
 }

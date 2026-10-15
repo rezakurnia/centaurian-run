@@ -12,7 +12,9 @@ class Participant extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'full_name', 'gender', 'birth_place', 'birth_date',
+        'full_name', 'nip', 'nis', 'unit', 'class',
+        'position', 'child_name', 'child_class', 'graduation_year',
+        'gender', 'birth_place', 'birth_date',
         'motivation', 'email', 'phone', 'email_sent_at',
     ];
 

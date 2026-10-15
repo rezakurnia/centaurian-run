@@ -12,7 +12,11 @@ class ResultController extends Controller
     public function index(Request $request)
     {
         $query = Result::with(['participant', 'registration.category'])
-            ->where('scan_status', 'valid');
+            ->where('scan_status', 'valid')
+            // Hanya hasil milik event yang sedang aktif (hasil event lama tidak ikut tampil)
+            ->whereHas('event', function ($q) {
+                $q->where('is_active', true);
+            });
 
         if ($request->filled('category_id')) {
             $query->whereHas('registration', function ($q) use ($request) {

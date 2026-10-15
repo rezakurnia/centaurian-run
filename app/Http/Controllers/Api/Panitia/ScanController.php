@@ -38,6 +38,38 @@ class ScanController extends Controller
         ]);
     }
 
+    public function finish(Request $request, ScanService $scanService)
+{
+    $request->validate([
+        'event_id' => 'required|exists:events,id',
+    ]);
+
+    try {
+        $result = $scanService->finishEvent(
+            $request->event_id,
+            $request->user()->id
+        );
+
+        $this->logActivity(
+            'finish_event',
+            'events',
+            $request->event_id,
+            "Mengakhiri acara event ID: {$request->event_id}"
+        );
+
+        return response()->json([
+            'message' => 'Acara berhasil diakhiri.',
+            'data'    => $result,
+        ]);
+
+    } catch (\Exception $e) {
+        return response()->json([
+            'message' => $e->getMessage(),
+            'data'    => null,
+        ], 422);
+    }
+}
+
     public function scan(ScanBarcodeRequest $request, ScanService $scanService)
     {
         $result = $scanService->scan(

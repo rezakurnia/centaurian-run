@@ -30,6 +30,11 @@ class EventController extends Controller
     public function store(StoreEventRequest $request)
     {
         $event = Event::create($request->validated());
+
+        if ($event->is_active) {
+            $this->deactivateOtherEvents($event->id);
+        }
+
         $this->logActivity('create_event', 'events', $event->id, "Membuat event: {$event->name}");
 
         return response()->json([
@@ -67,6 +72,11 @@ class EventController extends Controller
         }
 
         $event->update($request->validated());
+
+        if ($event->is_active) {
+            $this->deactivateOtherEvents($event->id);
+        }
+
         $this->logActivity('update_event', 'events', $event->id, "Memperbarui event: {$event->name}");
 
         return response()->json([
@@ -114,7 +124,15 @@ class EventController extends Controller
             ], 404);
         }
 
-        $event->update(['is_active' => ! $event->is_active]);
+        $newState = ! $event->is_active;
+
+        // Hanya boleh ada SATU event aktif:
+        // saat event ini diaktifkan, event lain otomatis dinonaktifkan.
+        if ($newState) {
+            $this->deactivateOtherEvents($event->id);
+        }
+
+        $event->update(['is_active' => $newState]);
         $this->logActivity('toggle_event', 'events', $event->id, "Toggle event: {$event->name}");
 
         return response()->json([
@@ -136,8 +154,6 @@ class EventController extends Controller
 
         $result = DB::transaction(function () use ($event) {
             // 1. Hapus scan_logs terkait event ini (via participant yang registrasi di event)
-            $registrationIds = $event->registrations()->pluck('id')->toArray();
-
             $scanLogsDeleted = ScanLog::whereHas('participant', function ($q) use ($event) {
                 $q->whereHas('registrations', function ($sub) use ($event) {
                     $sub->where('event_id', $event->id);
@@ -147,8 +163,11 @@ class EventController extends Controller
             // 2. Hapus results terkait event
             $resultsDeleted = Result::where('event_id', $event->id)->delete();
 
-            // 3. Reset start_time event
-            $event->update(['start_time' => null]);
+            // 3. Reset start_time & finish_time event
+            $event->update([
+                'start_time' => null,
+                'finish_time' => null,
+            ]);
 
             return [
                 'scan_logs_deleted' => $scanLogsDeleted,
@@ -168,5 +187,16 @@ class EventController extends Controller
             'message' => 'Acara berhasil direset. Data scan & hasil telah dihapus.',
             'data' => $result,
         ]);
+    }
+
+    /**
+     * Pastikan hanya ada SATU event aktif.
+     * Semua event lain yang sedang aktif akan dinonaktifkan.
+     */
+    private function deactivateOtherEvents(int $keepEventId): void
+    {
+        Event::where('id', '!=', $keepEventId)
+            ->where('is_active', true)
+            ->update(['is_active' => false]);
     }
 }

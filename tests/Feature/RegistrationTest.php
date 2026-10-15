@@ -7,115 +7,115 @@ use App\Models\Event;
 use App\Models\Package;
 use App\Models\Participant;
 use App\Models\Registration;
+use App\Models\Setting;
 use Tests\TestCase;
 
 class RegistrationTest extends TestCase
 {
     protected Event $event;
-
-    protected Category $categorySiswa;
-
+    protected Category $categorySiswaSMP;
+    protected Category $categorySiswaSMA;
     protected Category $categoryGuru;
-
+    protected Category $categoryOrangtua;
+    protected Category $categoryAlumni;
     protected Package $packageGratis;
-
     protected Package $package100k;
+    protected Package $package150k;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        // Seed data yang dibutuhkan
         $this->event = Event::create([
-            'name' => 'Centaurian FunRun 2026',
+            'name'       => 'Centaurian FunRun 2026',
             'event_date' => '2026-05-15',
-            'is_active' => true,
+            'is_active'  => true,
         ]);
 
-        $this->categorySiswa = Category::create(['name' => 'Siswa', 'code' => 'SW']);
-        $this->categoryGuru = Category::create(['name' => 'Guru Karyawan', 'code' => 'GK']);
+        $this->categorySiswaSMP  = Category::create(['name' => 'Siswa SMP', 'code' => 'S', 'quota' => 50]);
+        $this->categorySiswaSMA  = Category::create(['name' => 'Siswa SMA', 'code' => 'S', 'quota' => 150]);
+        $this->categoryGuru      = Category::create(['name' => 'Guru Karyawan', 'code' => 'E', 'quota' => 300]);
+        $this->categoryOrangtua  = Category::create(['name' => 'Orangtua', 'code' => 'P', 'quota' => 100]);
+        $this->categoryAlumni    = Category::create(['name' => 'Alumni', 'code' => 'A', 'quota' => 50]);
 
-        $this->packageGratis = Package::create(['name' => 'Gratis', 'price' => 0]);
-        $this->package100k = Package::create(['name' => 'Paket 100K', 'price' => 100000]);
+        $this->packageGratis = Package::create(['name' => 'Gratis', 'price' => 0, 'is_active' => true]);
+        $this->package100k   = Package::create(['name' => 'Paket 100K', 'price' => 100000, 'is_active' => true]);
+        $this->package150k   = Package::create(['name' => 'Paket 150K', 'price' => 150000, 'is_active' => true]);
     }
+
+    // ========================================================================
+    // REGISTRASI BERHASIL
+    // ========================================================================
 
     public function test_registrasi_berhasil_dan_penomoran_otomatis(): void
     {
         $response = $this->postJson('/api/registrations', [
-            'full_name' => 'Budi Santoso',
-            'gender' => 'L',
+            'full_name'   => 'Budi Santoso',
+            'gender'      => 'L',
             'birth_place' => 'Bandung',
-            'birth_date' => '2000-05-15',
-            'motivation' => 'Tetap semangat!',
-            'email' => 'budi@example.com',
-            'phone' => '08123456789',
-            'event_id' => $this->event->id,
-            'category_id' => $this->categorySiswa->id,
-            'package_id' => $this->package100k->id,
+            'birth_date'  => '2000-05-15',
+            'motivation'  => 'Tetap semangat!',
+            'email'       => 'budi@example.com',
+            'phone'       => '08123456789',
+            'nis'         => '12345',
+            'class'       => '9A',
+            'event_id'    => $this->event->id,
+            'category_id' => $this->categorySiswaSMP->id,
         ]);
 
         $response->assertStatus(201)
-            ->assertJsonPath('data.registration.registration_number', 'SW-0001')
+            ->assertJsonPath('data.registration.registration_number', 'S-0001')
             ->assertJsonStructure([
                 'message',
                 'data' => [
-                    'participant' => ['id', 'full_name', 'email'],
+                    'participant'  => ['id', 'full_name', 'email'],
                     'registration' => ['id', 'registration_number', 'barcode', 'category', 'package', 'event'],
                 ],
             ]);
 
         $this->assertDatabaseHas('registrations', [
-            'registration_number' => 'SW-0001',
+            'registration_number' => 'S-0001',
         ]);
     }
 
     public function test_penomoran_per_kategori_terpisah(): void
     {
-        // Siswa #1
+        // Siswa SMP #1
         $this->postJson('/api/registrations', [
-            'full_name' => 'Budi',
-            'gender' => 'L',
-            'birth_place' => 'Bandung',
-            'birth_date' => '2000-05-15',
-            'email' => 'budi@example.com',
-            'phone' => '08123',
+            'full_name' => 'Budi', 'gender' => 'L',
+            'birth_place' => 'Bandung', 'birth_date' => '2000-05-15',
+            'email' => 'budi@example.com', 'phone' => '08123',
+            'nis' => '111', 'class' => '9A',
             'event_id' => $this->event->id,
-            'category_id' => $this->categorySiswa->id,
-            'package_id' => $this->package100k->id,
-        ]);
+            'category_id' => $this->categorySiswaSMP->id,
+        ])->assertStatus(201);
 
-        // Siswa #2
+        // Siswa SMA #1 → kode S juga → nomor lanjut S-0002
         $this->postJson('/api/registrations', [
-            'full_name' => 'Andi',
-            'gender' => 'L',
-            'birth_place' => 'Bandung',
-            'birth_date' => '2000-05-15',
-            'email' => 'andi@example.com',
-            'phone' => '08124',
+            'full_name' => 'Andi', 'gender' => 'L',
+            'birth_place' => 'Bandung', 'birth_date' => '2000-05-15',
+            'email' => 'andi@example.com', 'phone' => '08124',
+            'nis' => '222', 'class' => '10A',
             'event_id' => $this->event->id,
-            'category_id' => $this->categorySiswa->id,
-            'package_id' => $this->package100k->id,
-        ]);
+            'category_id' => $this->categorySiswaSMA->id,
+        ])->assertStatus(201);
 
-        // Guru #1 → harus GK-0001, bukan SW-0003
+        // Alumni #1 → kode A → nomor mulai A-0001
         $response = $this->postJson('/api/registrations', [
-            'full_name' => 'Ibu Sari',
-            'gender' => 'P',
-            'birth_place' => 'Jakarta',
-            'birth_date' => '1985-03-10',
-            'email' => 'sari@example.com',
-            'phone' => '08125',
+            'full_name' => 'Ibu Sari', 'gender' => 'P',
+            'birth_place' => 'Jakarta', 'birth_date' => '1985-03-10',
+            'email' => 'sari@example.com', 'phone' => '08125',
+            'graduation_year' => 2005,
             'event_id' => $this->event->id,
-            'category_id' => $this->categoryGuru->id,
-            'package_id' => $this->packageGratis->id,
+            'category_id' => $this->categoryAlumni->id,
         ]);
 
         $response->assertStatus(201)
-            ->assertJsonPath('data.registration.registration_number', 'GK-0001');
+            ->assertJsonPath('data.registration.registration_number', 'A-0001');
 
-        $this->assertDatabaseHas('registrations', ['registration_number' => 'SW-0001']);
-        $this->assertDatabaseHas('registrations', ['registration_number' => 'SW-0002']);
-        $this->assertDatabaseHas('registrations', ['registration_number' => 'GK-0001']);
+        $this->assertDatabaseHas('registrations', ['registration_number' => 'S-0001']);
+        $this->assertDatabaseHas('registrations', ['registration_number' => 'S-0002']);
+        $this->assertDatabaseHas('registrations', ['registration_number' => 'A-0001']);
     }
 
     public function test_barcode_unik(): void
@@ -124,18 +124,18 @@ class RegistrationTest extends TestCase
             'full_name' => 'Budi', 'gender' => 'L',
             'birth_place' => 'Bandung', 'birth_date' => '2000-05-15',
             'email' => 'budi@example.com', 'phone' => '08123',
+            'nis' => '111', 'class' => '9A',
             'event_id' => $this->event->id,
-            'category_id' => $this->categorySiswa->id,
-            'package_id' => $this->package100k->id,
+            'category_id' => $this->categorySiswaSMP->id,
         ]);
 
         $this->postJson('/api/registrations', [
             'full_name' => 'Andi', 'gender' => 'L',
             'birth_place' => 'Bandung', 'birth_date' => '2000-05-15',
             'email' => 'andi@example.com', 'phone' => '08124',
+            'nis' => '222', 'class' => '9A',
             'event_id' => $this->event->id,
-            'category_id' => $this->categorySiswa->id,
-            'package_id' => $this->package100k->id,
+            'category_id' => $this->categorySiswaSMP->id,
         ]);
 
         $barcodes = Registration::pluck('barcode')->toArray();
@@ -149,9 +149,73 @@ class RegistrationTest extends TestCase
         $response->assertStatus(422)
             ->assertJsonValidationErrors([
                 'full_name', 'gender', 'birth_place', 'birth_date',
-                'email', 'phone', 'event_id', 'category_id', 'package_id',
+                'email', 'phone', 'event_id', 'category_id',
             ]);
     }
+
+    // ========================================================================
+    // VALIDASI FIELD PER KATEGORI
+    // ========================================================================
+
+    public function test_siswa_wajib_isi_nis_dan_kelas(): void
+    {
+        $response = $this->postJson('/api/registrations', [
+            'full_name' => 'Budi', 'gender' => 'L',
+            'birth_place' => 'Bandung', 'birth_date' => '2000-05-15',
+            'email' => 'budi@example.com', 'phone' => '08123',
+            'event_id' => $this->event->id,
+            'category_id' => $this->categorySiswaSMP->id,
+        ]);
+
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors(['nis', 'class']);
+    }
+
+    public function test_guru_wajib_isi_nip_jabatan_unit(): void
+    {
+        $response = $this->postJson('/api/registrations', [
+            'full_name' => 'Bu Sari', 'gender' => 'P',
+            'birth_place' => 'Jakarta', 'birth_date' => '1985-03-10',
+            'email' => 'sari@example.com', 'phone' => '08123',
+            'event_id' => $this->event->id,
+            'category_id' => $this->categoryGuru->id,
+        ]);
+
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors(['nip', 'position', 'unit']);
+    }
+
+    public function test_orangtua_wajib_isi_nama_dan_kelas_anak(): void
+    {
+        $response = $this->postJson('/api/registrations', [
+            'full_name' => 'Bapak Budi', 'gender' => 'L',
+            'birth_place' => 'Bandung', 'birth_date' => '1980-05-15',
+            'email' => 'bapak@example.com', 'phone' => '08123',
+            'event_id' => $this->event->id,
+            'category_id' => $this->categoryOrangtua->id,
+        ]);
+
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors(['child_name', 'child_class']);
+    }
+
+    public function test_alumni_wajib_isi_tahun_lulus(): void
+    {
+        $response = $this->postJson('/api/registrations', [
+            'full_name' => 'Alumni Test', 'gender' => 'L',
+            'birth_place' => 'Bandung', 'birth_date' => '2000-05-15',
+            'email' => 'alumni@example.com', 'phone' => '08123',
+            'event_id' => $this->event->id,
+            'category_id' => $this->categoryAlumni->id,
+        ]);
+
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors(['graduation_year']);
+    }
+
+    // ========================================================================
+    // DUPLIKAT
+    // ========================================================================
 
     public function test_duplikat_email_di_event_sama_ditolak(): void
     {
@@ -159,9 +223,9 @@ class RegistrationTest extends TestCase
             'full_name' => 'Budi', 'gender' => 'L',
             'birth_place' => 'Bandung', 'birth_date' => '2000-05-15',
             'email' => 'budi@example.com', 'phone' => '08123',
+            'nis' => '111', 'class' => '9A',
             'event_id' => $this->event->id,
-            'category_id' => $this->categorySiswa->id,
-            'package_id' => $this->package100k->id,
+            'category_id' => $this->categorySiswaSMP->id,
         ];
 
         $this->postJson('/api/registrations', $payload)->assertStatus(201);
@@ -181,8 +245,8 @@ class RegistrationTest extends TestCase
             'full_name' => 'Budi', 'gender' => 'L',
             'birth_place' => 'Bandung', 'birth_date' => '2000-05-15',
             'email' => 'budi@example.com', 'phone' => '08123',
-            'category_id' => $this->categorySiswa->id,
-            'package_id' => $this->package100k->id,
+            'nis' => '111', 'class' => '9A',
+            'category_id' => $this->categorySiswaSMP->id,
         ];
 
         $this->postJson('/api/registrations', array_merge($payload, [
@@ -193,52 +257,127 @@ class RegistrationTest extends TestCase
             'event_id' => $event2->id,
         ]))->assertStatus(201);
 
-        // Peserta hanya 1 (email sama)
         $this->assertEquals(1, Participant::count());
-        // Tapi registrasi ada 2
         $this->assertEquals(2, Registration::count());
     }
 
-    public function test_paket_gratis_otomatis_payment_status_free(): void
+    // ========================================================================
+    // AUTO-SET PAKET
+    // ========================================================================
+
+    public function test_paket_guru_otomatis_gratis(): void
     {
         $response = $this->postJson('/api/registrations', [
-            'full_name' => 'Guru Test',
-            'gender' => 'L',
-            'birth_place' => 'Bandung',
-            'birth_date' => '1985-05-15',
-            'email' => 'guru@example.com',
-            'phone' => '08123',
+            'full_name' => 'Bu Sari', 'gender' => 'P',
+            'birth_place' => 'Jakarta', 'birth_date' => '1985-03-10',
+            'email' => 'sari@example.com', 'phone' => '08123',
+            'nip' => 'NIP001', 'position' => 'Guru', 'unit' => 'SD',
             'event_id' => $this->event->id,
             'category_id' => $this->categoryGuru->id,
-            'package_id' => $this->packageGratis->id,
         ]);
 
         $response->assertStatus(201)
             ->assertJsonPath('data.registration.payment_status', 'free')
             ->assertJsonPath('data.registration.registration_status', 'confirmed');
-
-        $this->assertDatabaseHas('registrations', [
-            'payment_status' => 'free',
-            'registration_status' => 'confirmed',
-        ]);
     }
 
-    public function test_paket_berbayar_tetap_unpaid(): void
+    public function test_paket_siswa_otomatis_100k(): void
     {
         $response = $this->postJson('/api/registrations', [
-            'full_name' => 'Siswa Test',
-            'gender' => 'L',
-            'birth_place' => 'Bandung',
-            'birth_date' => '2000-05-15',
-            'email' => 'siswa@example.com',
-            'phone' => '08123',
+            'full_name' => 'Budi', 'gender' => 'L',
+            'birth_place' => 'Bandung', 'birth_date' => '2000-05-15',
+            'email' => 'budi@example.com', 'phone' => '08123',
+            'nis' => '111', 'class' => '9A',
             'event_id' => $this->event->id,
-            'category_id' => $this->categorySiswa->id,
-            'package_id' => $this->package100k->id,
+            'category_id' => $this->categorySiswaSMP->id,
         ]);
 
         $response->assertStatus(201)
             ->assertJsonPath('data.registration.payment_status', 'unpaid')
             ->assertJsonPath('data.registration.registration_status', 'pending');
+    }
+
+    public function test_paket_orangtua_otomatis_150k(): void
+    {
+        $response = $this->postJson('/api/registrations', [
+            'full_name' => 'Bapak Budi', 'gender' => 'L',
+            'birth_place' => 'Bandung', 'birth_date' => '1980-05-15',
+            'email' => 'bapak@example.com', 'phone' => '08123',
+            'child_name' => 'Anak Budi', 'child_class' => '5A',
+            'event_id' => $this->event->id,
+            'category_id' => $this->categoryOrangtua->id,
+        ]);
+
+        $response->assertStatus(201)
+            ->assertJsonPath('data.registration.payment_status', 'unpaid');
+    }
+
+    // ========================================================================
+    // KUOTA
+    // ========================================================================
+
+    public function test_registrasi_ditolak_jika_kuota_penuh(): void
+    {
+        // Set kuota SMP = 1
+        $this->categorySiswaSMP->update(['quota' => 1]);
+
+        // Daftar #1 → berhasil
+        $this->postJson('/api/registrations', [
+            'full_name' => 'Budi', 'gender' => 'L',
+            'birth_place' => 'Bandung', 'birth_date' => '2000-05-15',
+            'email' => 'budi@example.com', 'phone' => '08123',
+            'nis' => '111', 'class' => '9A',
+            'event_id' => $this->event->id,
+            'category_id' => $this->categorySiswaSMP->id,
+        ])->assertStatus(201);
+
+        // Daftar #2 → ditolak karena kuota penuh
+        $this->postJson('/api/registrations', [
+            'full_name' => 'Andi', 'gender' => 'L',
+            'birth_place' => 'Bandung', 'birth_date' => '2000-05-15',
+            'email' => 'andi@example.com', 'phone' => '08124',
+            'nis' => '222', 'class' => '9A',
+            'event_id' => $this->event->id,
+            'category_id' => $this->categorySiswaSMP->id,
+        ])->assertStatus(422);
+    }
+
+    // ========================================================================
+    // SETTING
+    // ========================================================================
+
+    public function test_registrasi_ditolak_jika_pendaftaran_ditutup(): void
+    {
+        Setting::create(['key' => 'registration_open', 'value' => '0']);
+
+        $response = $this->postJson('/api/registrations', [
+            'full_name' => 'Budi', 'gender' => 'L',
+            'birth_place' => 'Bandung', 'birth_date' => '2000-05-15',
+            'email' => 'budi@example.com', 'phone' => '08123',
+            'nis' => '111', 'class' => '9A',
+            'event_id' => $this->event->id,
+            'category_id' => $this->categorySiswaSMP->id,
+        ]);
+
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors(['registration']);
+    }
+
+    public function test_registrasi_ditolak_jika_melewati_deadline(): void
+    {
+        Setting::create(['key' => 'registration_open', 'value' => '1']);
+        Setting::create(['key' => 'registration_deadline', 'value' => '2020-01-01']);
+
+        $response = $this->postJson('/api/registrations', [
+            'full_name' => 'Budi', 'gender' => 'L',
+            'birth_place' => 'Bandung', 'birth_date' => '2000-05-15',
+            'email' => 'budi@example.com', 'phone' => '08123',
+            'nis' => '111', 'class' => '9A',
+            'event_id' => $this->event->id,
+            'category_id' => $this->categorySiswaSMP->id,
+        ]);
+
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors(['registration']);
     }
 }

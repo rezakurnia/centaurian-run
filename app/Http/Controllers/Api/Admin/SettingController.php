@@ -3,114 +3,71 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreSettingRequest;
-use App\Http\Requests\UpdateSettingRequest;
 use App\Http\Resources\SettingResource;
 use App\Models\Setting;
+use App\Services\SettingService;
 use App\Traits\LogsActivity;
+use Illuminate\Http\Request;
 
 class SettingController extends Controller
 {
     use LogsActivity;
 
+    protected SettingService $settingService;
+
+    public function __construct(SettingService $settingService)
+    {
+        $this->settingService = $settingService;
+    }
+
+    /**
+     * Daftar setting grouped by group.
+     */
     public function index()
     {
-        $settings = Setting::orderBy('key')->get();
+        $grouped = $this->settingService->getAllGrouped();
 
         return response()->json([
             'message' => 'Daftar settings.',
-            'data' => SettingResource::collection($settings),
+            'data'    => $grouped,
         ]);
     }
 
-    public function store(StoreSettingRequest $request)
+    /**
+     * Ambil setting flat (key => value) — publik.
+     */
+    public function publicIndex()
     {
-        $setting = Setting::create([
-            'key' => $request->key,
-            'value' => $request->value,
+        $flat = $this->settingService->getAllFlat();
+
+        return response()->json([
+            'message' => 'Daftar settings publik.',
+            'data'    => $flat,
+        ]);
+    }
+
+    /**
+     * Simpan banyak setting sekaligus (bulk update).
+     */
+    public function bulkUpdate(Request $request)
+    {
+        $request->validate([
+            'settings'   => 'required|array',
+            'settings.*' => 'nullable|string',
         ]);
 
+        $this->settingService->updateMany($request->settings);
+
         $this->logActivity(
-            'create_setting',
+            'update_settings',
             'settings',
-            $setting->id,
-            "Membuat setting: {$setting->key}"
+            null,
+            'Memperbarui ' . count($request->settings) . ' setting'
         );
 
         return response()->json([
-            'message' => 'Setting berhasil dibuat.',
-            'data' => new SettingResource($setting),
-        ], 201);
-    }
-
-    public function show(string $key)
-    {
-        $setting = Setting::where('key', $key)->first();
-
-        if (! $setting) {
-            return response()->json([
-                'message' => 'Setting tidak ditemukan.',
-                'data' => null,
-            ], 404);
-        }
-
-        return response()->json([
-            'message' => 'Detail setting.',
-            'data' => new SettingResource($setting),
-        ]);
-    }
-
-    public function update(UpdateSettingRequest $request, string $key)
-    {
-        $setting = Setting::where('key', $key)->first();
-
-        if (! $setting) {
-            return response()->json([
-                'message' => 'Setting tidak ditemukan.',
-                'data' => null,
-            ], 404);
-        }
-
-        $setting->update([
-            'value' => $request->value,
-        ]);
-
-        $this->logActivity(
-            'update_setting',
-            'settings',
-            $setting->id,
-            "Memperbarui setting: {$setting->key}"
-        );
-
-        return response()->json([
-            'message' => 'Setting berhasil diperbarui.',
-            'data' => new SettingResource($setting->fresh()),
-        ]);
-    }
-
-    public function destroy(string $key)
-    {
-        $setting = Setting::where('key', $key)->first();
-
-        if (! $setting) {
-            return response()->json([
-                'message' => 'Setting tidak ditemukan.',
-                'data' => null,
-            ], 404);
-        }
-
-        $this->logActivity(
-            'delete_setting',
-            'settings',
-            $setting->id,
-            "Menghapus setting: {$setting->key}"
-        );
-
-        $setting->delete();
-
-        return response()->json([
-            'message' => 'Setting berhasil dihapus.',
-            'data' => null,
+            'message' => 'Settings berhasil disimpan.',
+            'data'    => $this->settingService->getAllGrouped(),
         ]);
     }
 }

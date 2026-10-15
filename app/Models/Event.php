@@ -7,12 +7,13 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Event extends Model
 {
-    protected $fillable = ['name', 'description', 'location', 'event_date', 'start_time', 'is_active'];
+    protected $fillable = ['name', 'description', 'location', 'event_date', 'start_time', 'finish_time','is_active'];
 
     protected $casts = [
         'event_date' => 'date',
         'start_time' => 'datetime',
-        'is_active' => 'boolean',
+        'finish_time' => 'datetime',
+        'is_active'  => 'boolean',
     ];
 
     public function registrations(): HasMany

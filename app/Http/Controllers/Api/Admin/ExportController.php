@@ -30,7 +30,9 @@ class ExportController extends Controller
             // Header
             fputcsv($handle, [
                 'ID', 'Nama', 'Gender', 'Tempat Lahir', 'Tanggal Lahir',
-                'Email', 'Phone', 'Motivasi', 'Email Terkirim', 'Terdaftar Pada',
+                'Email', 'Phone', 'NIP', 'NIS', 'Unit', 'Kelas',
+                'Jabatan', 'Nama Anak', 'Kelas Anak', 'Tahun Lulus',
+                'Motivasi', 'Email Terkirim', 'Terdaftar Pada',
             ]);
 
             // Data
@@ -43,6 +45,14 @@ class ExportController extends Controller
                     $p->birth_date,
                     $p->email,
                     $p->phone,
+                    $p->nip,
+                    $p->nis,
+                    $p->unit,
+                    $p->class,
+                    $p->position,
+                    $p->child_name,
+                    $p->child_class,
+                    $p->graduation_year,
                     $p->motivation,
                     $p->email_sent_at,
                     $p->created_at,
