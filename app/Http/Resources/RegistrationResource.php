@@ -19,6 +19,10 @@ class RegistrationResource extends JsonResource
             'bib_ready' => in_array($this->payment_status, ['paid', 'free'], true) && $this->registration_status !== 'cancelled',
             'payment_proof' => $this->payment_proof,
             'payment_proof_url' => $this->payment_proof_url,
+            // Halaman pembayaran Snap (disimpan saat pendaftaran) untuk melanjutkan pembayaran
+            'payment_url' => $this->payment_status === 'unpaid' ? $this->snap_redirect_url : null,
+            'payment_method' => $this->payment_method,
+            'paid_at' => $this->paid_at,
 
             // Data participant (nama, email, phone, dll)
             'participant' => $this->participant ? [

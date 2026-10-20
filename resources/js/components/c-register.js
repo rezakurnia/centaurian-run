@@ -281,16 +281,36 @@ if (form) {
         formError.hidden = false;
     });
 
-    const showSuccess = ({ message, data }) => {
+    // A paid package comes back with payment.redirect_url. The participant is sent straight to
+    // Snap: the success panel (and the participant number) only appear after the payment is
+    // settled, on /pembayaran/selesai/{no}.
+    const showSuccess = ({ message, data, payment }) => {
         const reg = data.registration;
-        const paid = reg.payment_status === 'unpaid';
+        const payUrl = payment?.redirect_url ?? '';
+        const unpaid = reg.payment_status === 'unpaid';
+
+        if (payUrl) {
+            form.hidden = true;
+            const redirect = $('register-redirect');
+            $('register-redirect-link').hidden = false;
+            $('register-redirect-href').href = payUrl;
+            redirect.hidden = false;
+            redirect.scrollIntoView({ block: 'center' });
+            // Straight to the payment page; the link above is the fallback if navigation is blocked
+            window.setTimeout(() => window.location.assign(payUrl), 400);
+            return;
+        }
+
         $('success-message').textContent = message;
         $('success-number').textContent = reg.registration_number;
-        $('success-status').textContent = paid ? 'Menunggu pembayaran' : 'Terkonfirmasi';
-        $('success-pay').hidden = !paid;
+        $('success-status').textContent = unpaid ? 'Menunggu pembayaran' : 'Terkonfirmasi';
+
         const q = '?no=' + encodeURIComponent(reg.registration_number);
+        $('success-pay').hidden = !unpaid;
+        $('pay-unavailable').hidden = !unpaid;
         $('success-pay-link').href = '/cek-status' + q;
         $('success-status-link').href = '/cek-status' + q;
+
         form.hidden = true;
         const box = $('register-success');
         box.hidden = false;

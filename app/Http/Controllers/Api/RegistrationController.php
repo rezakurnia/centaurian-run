@@ -15,6 +15,7 @@ use App\Models\Package;
 use App\Models\Participant;
 use App\Models\Registration;
 use App\Services\BarcodeService;
+use App\Services\MidtransService;
 use App\Services\ParticipantNumberService;
 use App\Services\SettingService;
 use Illuminate\Support\Facades\DB;
@@ -27,7 +28,8 @@ class RegistrationController extends Controller
         StoreRegistrationRequest $request,
         ParticipantNumberService $numberService,
         BarcodeService $barcodeService,
-        SettingService $settingService
+        SettingService $settingService,
+        MidtransService $midtrans
     ) {
         // 1. Cek setting: pendaftaran dibuka?
         $registrationOpen = $settingService->get('registration_open', '1');
@@ -127,15 +129,23 @@ class RegistrationController extends Controller
             return [$participant, $registration];
         });
 
-        Mail::to($participant->email)->send(new RegistrationConfirmationMail($registration));
-        $participant->update(['email_sent_at' => now()]);
+        // Hanya pendaftaran gratis yang langsung dikonfirmasi. Paket berbayar baru mendapat
+        // nomor peserta lewat email setelah pembayarannya lunas (lihat PaymentController).
+        if ($registration->payment_status === 'free') {
+            Mail::to($participant->email)->send(new RegistrationConfirmationMail($registration));
+            $participant->update(['email_sent_at' => now()]);
+        }
+
+        // 7. Paket berbayar: buat transaksi Snap, lalu frontend mengarahkan peserta ke halaman pembayaran
+        $paymentUrl = $midtrans->createPayment($registration);
 
         return response()->json([
             'message' => 'Pendaftaran berhasil. Nomor peserta & barcode telah dikirim ke email Anda.',
             'data' => [
                 'participant' => new ParticipantResource($participant),
-                'registration' => new RegistrationResource($registration),
+                'registration' => new RegistrationResource($registration->fresh()),
             ],
+            'payment' => $paymentUrl ? ['redirect_url' => $paymentUrl] : null,
         ], 201);
     }
 

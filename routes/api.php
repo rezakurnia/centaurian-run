@@ -18,6 +18,7 @@ use App\Http\Controllers\Api\EventController;
 use App\Http\Controllers\Api\PackageController;
 use App\Http\Controllers\Api\Panitia\RecapController;
 use App\Http\Controllers\Api\Panitia\ScanController;
+use App\Http\Controllers\Api\PaymentController;
 use App\Http\Controllers\Api\RegistrationController;
 use App\Http\Controllers\Api\ResultController;
 use Illuminate\Support\Facades\Route;
@@ -28,6 +29,8 @@ Route::middleware('throttle:60,1')->group(function () {
     Route::post('/registrations', [RegistrationController::class, 'store']);
     Route::post('/registrations/check-status', [RegistrationController::class, 'checkStatus']);
     Route::post('/registrations/{registration_number}/payment-proof', [RegistrationController::class, 'uploadPaymentProof']);
+    // Polled by the Snap finish page; syncs the status straight from Midtrans
+    Route::post('/registrations/{registration_number}/payment-status', [PaymentController::class, 'refreshStatus']);
 });
 Route::get('/event/active', [EventController::class, 'active']);
 Route::get('/contents', [ContentController::class, 'index']);
@@ -39,6 +42,10 @@ Route::get('/categories/quota', [CategoryController::class, 'quota']);
 Route::get('/employees/{nip}', [EmployeeController::class, 'show'])->middleware('throttle:60,1');
 Route::get('/packages', [PackageController::class, 'index']);
 Route::get('/settings', [SettingController::class, 'publicIndex']);
+
+// Midtrans Snap notification (webhook): called by Midtrans, not by the browser
+Route::post('/payments/midtrans/notification', [PaymentController::class, 'midtransNotification'])
+    ->middleware('throttle:120,1');
 
 // Protected (butuh token Sanctum)
 Route::middleware('auth:sanctum')->group(function () {

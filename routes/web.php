@@ -4,6 +4,7 @@ use App\Models\Category;
 use App\Models\Content;
 use App\Models\Event;
 use App\Models\Package;
+use App\Models\Registration;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -32,6 +33,15 @@ Route::get('/daftar', function () {
 });
 
 Route::view('/cek-status', 'cek-status');
+
+// Snap returns the participant here after paying: the number appears only once payment is settled
+Route::get('/pembayaran/selesai/{registration_number}', function (string $registration_number) {
+    $registration = Registration::with(['participant', 'category', 'package', 'event'])
+        ->where('registration_number', $registration_number)
+        ->first();
+
+    return response()->view('pembayaran-selesai', ['registration' => $registration], $registration ? 200 : 404);
+});
 
 Route::get('/hasil', fn () => view('hasil', ['categories' => Category::orderBy('id')->get()]));
 

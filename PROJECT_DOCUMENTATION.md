@@ -160,8 +160,19 @@ alcent-centaurian-run/
 4. Sistem membuat data `Registration` dan `Participant`, menghasilkan:
    - Nomor registrasi unik (misal: `CR-2026-0001`).
    - Kode barcode/QR untuk check-in dan scan finis.
-5. Jika berbayar, peserta mengunggah bukti transfer melalui endpoint `/payment-proof`.
-6. Status pendaftaran dapat dipantau peserta melalui fitur **Cek Status**.
+5. **Paket berbayar — pembayaran Midtrans:** begitu pendaftaran tersimpan, server membuat transaksi **Snap** (`order_id` = nomor registrasi, `gross_amount` = harga paket) dan mengembalikan `payment.redirect_url`. Form langsung mengalihkan peserta ke halaman pembayaran Midtrans (tanpa menampilkan nomor peserta lebih dulu); tautannya juga disimpan (`snap_redirect_url`) sehingga bisa dibuka lagi selama 24 jam.
+6. Midtrans mengirim notifikasi ke `POST /api/payments/midtrans/notification`. Signature `sha512(order_id + status_code + gross_amount + server_key)` diverifikasi, lalu status `capture`/`settlement` menandai pendaftaran `paid` + `confirmed`, mengisi `paid_at`/`payment_method`, dan mengirim email berisi nomor peserta + barcode.
+7. Setelah halaman Snap selesai, peserta kembali ke **`/pembayaran/selesai/{nomor}`**. Selama pembayaran belum masuk, halaman menampilkan "Menunggu pembayaran" tanpa nomor peserta. Halaman menanyakan status lewat `POST /api/registrations/{nomor}/payment-status`, yang mengecek langsung ke **Core API Midtrans** (`/v2/{order_id}/status`) — jadi status lunas tetap terdeteksi walau Notification URL belum diatur — lalu memuat ulang halaman dan menampilkan **nomor peserta + "Pendaftaran berhasil!"**. Nomor baru terlihat setelah pembayaran berhasil.
+8. Paket gratis langsung `confirmed` + `free`, tanpa halaman pembayaran, dan email konfirmasi dikirim saat pendaftaran. Jika Snap tidak tersedia, pendaftaran tetap tersimpan dan peserta memakai jalur cadangan: unggah bukti transfer di `/payment-proof`.
+9. Status pendaftaran dapat dipantau peserta melalui fitur **Cek Status**.
+
+#### Konfigurasi Midtrans (test payment)
+```dotenv
+MIDTRANS_SERVER_KEY=SB-Mid-server-xxxxxxxxxxxxxxxx
+MIDTRANS_CLIENT_KEY=SB-Mid-client-xxxxxxxxxxxxxxxx
+MIDTRANS_IS_PRODUCTION=false
+```
+Kunci **sandbox** selalu berawalan `SB-Mid-server-`; kunci production (`Mid-server-…`) otomatis dilewati selama `MIDTRANS_IS_PRODUCTION=false` (transaksi Snap tidak dibuat, tercatat di log). Di dashboard Midtrans sandbox, isi **Payment → Notification URL** dengan `https://<domain-publik>/api/payments/midtrans/notification` (pakai URL ngrok saat uji lokal), dan gunakan tombol *Simulate Payment* di halaman Snap untuk melunasi transaksi uji.
 
 ### 2. Hari Pelaksanaan (Race Day & Panitia)
 1. **Start Acara:** Panitia membuka acara dan menekan tombol *Start* (`POST /api/panitia/start`) yang mencatat waktu mulai resmi lomba ke data `Event`.
@@ -199,6 +210,8 @@ alcent-centaurian-run/
 | `GET` | `/api/categories/quota` | Sisa kuota tiap kategori |
 | `GET` | `/api/employees/{nip}` | Cek NIP guru/karyawan pada master pegawai (dipakai form pendaftaran) |
 | `GET` | `/api/packages` | Mendapatkan daftar paket lomba |
+| `POST` | `/api/payments/midtrans/notification` | Webhook Midtrans: menandai pendaftaran lunas setelah signature diverifikasi |
+| `POST` | `/api/registrations/{reg_no}/payment-status` | Cek status langsung ke Midtrans (dipakai halaman pembayaran selesai) |
 
 ### Panitia Endpoints (`role:panitia,admin`)
 | Method | Endpoint | Deskripsi |

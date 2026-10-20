@@ -167,7 +167,16 @@
                                 </div>
                             </form>
 
-                            {{-- Shown by c-register.js after a 201 --}}
+                            {{-- Shown for a paid package: no participant number yet, the browser goes straight to Snap --}}
+                            <div id="register-redirect" class="c-step" tabindex="-1" hidden>
+                                <h2 class="heading-md">Mengarahkan ke pembayaran…</h2>
+                                <p class="body-lg mt-4">Kamu akan diarahkan ke halaman pembayaran Midtrans. Jangan tutup halaman ini.</p>
+                                <p class="mt-6" id="register-redirect-link" hidden>
+                                    <a class="c-link" id="register-redirect-href" href="#">Buka halaman pembayaran →</a>
+                                </p>
+                            </div>
+
+                            {{-- Shown by c-register.js after a 201 for free packages, or when Snap is unavailable --}}
                             <div id="register-success" class="c-step" tabindex="-1" hidden>
                                 <h2 class="heading-md" id="success-title">Pendaftaran berhasil!</h2>
                                 <p class="body-lg mt-4" id="success-message"></p>
@@ -178,6 +187,8 @@
                                 <div class="mt-8 grid gap-4 sm:grid-cols-2">
                                     <div class="rounded-sm bg-beige p-5" id="success-pay" hidden>
                                         <h3 class="heading-xs">Selesaikan pembayaran</h3>
+                                        {{-- Shown when the Snap transaction could not be created (paid package, no redirect URL) --}}
+                                        <p class="c-hint mt-2" id="pay-unavailable" hidden>Halaman pembayaran otomatis (QRIS/transfer) belum bisa disiapkan. Unggah bukti transfer agar panitia bisa memverifikasi.</p>
                                         <p class="body-md mt-2">Unggah bukti pembayaran agar panitia bisa memverifikasi.</p>
                                         <div class="mt-4"><a id="success-pay-link" class="c-link" href="/cek-status">Unggah bukti bayar →</a></div>
                                     </div>

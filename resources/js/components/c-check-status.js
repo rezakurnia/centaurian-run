@@ -54,11 +54,54 @@ if (form) {
         field(card, 'created').textContent = new Date(r.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
         badge(field(card, 'reg-badge'), REG, r.registration_status);
         badge(field(card, 'pay-badge'), PAY, r.payment_status);
+        // Snap page stored at registration lets an unpaid participant pick the payment back up
+        const payLink = field(card, 'pay-link');
+        const payRow = field(card, 'pay-row');
+        if (payLink && payRow && r.payment_url) {
+            payLink.href = r.payment_url;
+            payRow.hidden = false;
+        }
         field(card, 'note').textContent = note(r);
         return card;
     };
 
     const render = (r) => (r.bib_ready && bibTpl ? bibCard(r) : statusCard(r));
+
+    let lastQuery = '';
+    let pollTimer = 0;
+
+    const stopPolling = () => {
+        window.clearTimeout(pollTimer);
+        pollTimer = 0;
+    };
+
+    // Midtrans confirms the payment asynchronously. While a card is still unpaid, ask the status
+    // endpoint (which syncs with Midtrans) and re-render as soon as it flips to lunas, so nobody
+    // has to press "Cek BIB" again.
+    const startPolling = (rows) => {
+        stopPolling();
+        const unpaid = rows.filter((r) => r.payment_status === 'unpaid').map((r) => r.registration_number);
+        if (!unpaid.length) return;
+
+        const startedAt = Date.now();
+        const tick = async () => {
+            for (const number of unpaid) {
+                try {
+                    const res = await json(`/api/registrations/${encodeURIComponent(number)}/payment-status`, { method: 'POST' });
+                    const out = await res.json().catch(() => ({}));
+                    if (out.data?.payment_status && out.data.payment_status !== 'unpaid') {
+                        return lookup(lastQuery);
+                    }
+                } catch {
+                    // Offline or a hiccup: the next tick tries again
+                }
+            }
+            if (Date.now() - startedAt < 120000) {
+                pollTimer = window.setTimeout(tick, 5000);
+            }
+        };
+        pollTimer = window.setTimeout(tick, 5000);
+    };
 
     // Native <dialog> gives the pop-up focus trapping and Escape for free; older browsers get an
     // inline panel instead so the result is never hidden.
@@ -67,7 +110,7 @@ if (form) {
             return results.scrollIntoView({ block: 'nearest' });
         }
         if (typeof dialog.showModal === 'function') {
-            dialog.showModal();
+            if (!dialog.open) dialog.showModal();
             dialogClose?.focus();
         } else {
             dialog.setAttribute('open', '');
@@ -75,6 +118,7 @@ if (form) {
     };
 
     const closeDialog = () => {
+        stopPolling();
         if (dialog?.open) {
             dialog.close();
         } else {
@@ -83,6 +127,7 @@ if (form) {
     };
 
     const lookup = async (value) => {
+        stopPolling();
         setErr(err, '');
         input.removeAttribute('aria-invalid');
         results.replaceChildren();
@@ -91,6 +136,7 @@ if (form) {
             setErr(err, 'Masukkan nomor peserta atau email.');
             return input.focus();
         }
+        lastQuery = value;
         // Registration numbers look like "SW-0001"; anything with "@" is an email
         const body = value.includes('@') ? { email: value } : { registration_number: value.toUpperCase() };
         submit.disabled = true;
@@ -103,6 +149,7 @@ if (form) {
             const out = await res.json().catch(() => ({}));
             if (res.ok && out.data?.length) {
                 results.append(...out.data.map(render));
+                startPolling(out.data);
                 return openDialog();
             }
             input.setAttribute('aria-invalid', 'true');
@@ -121,6 +168,8 @@ if (form) {
     dialogClose?.addEventListener('click', closeDialog);
     // A click on the backdrop lands on the <dialog> element itself
     dialog?.addEventListener('click', (e) => { if (e.target === dialog) closeDialog(); });
+    // Escape closes the native dialog; stop the background status check with it
+    dialog?.addEventListener('close', stopPolling);
 
     // Arriving from the success screen: /cek-status?no=SW-0001
     const preset = new URLSearchParams(location.search).get('no');

@@ -15,11 +15,13 @@ class Registration extends Model
         'registration_number', 'sequence_number', 'barcode',
         'participant_id', 'event_id', 'category_id', 'package_id',
         'registration_status', 'payment_status', 'payment_proof',
+        'snap_token', 'snap_redirect_url', 'payment_method', 'paid_at',
         'verified_by', 'verified_at',
     ];
 
     protected $casts = [
         'verified_at' => 'datetime',
+        'paid_at' => 'datetime',
     ];
 
     protected $appends = ['payment_proof_url'];

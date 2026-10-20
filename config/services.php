@@ -35,4 +35,14 @@ return [
         ],
     ],
 
+    /*
+    | Snap (Midtrans). Sandbox keys start with "SB-Mid-server-", production keys with "Mid-server-".
+    | MIDTRANS_IS_PRODUCTION stays false for test payments so the sandbox endpoints are used.
+    */
+    'midtrans' => [
+        'server_key' => env('MIDTRANS_SERVER_KEY'),
+        'client_key' => env('MIDTRANS_CLIENT_KEY'),
+        'is_production' => (bool) env('MIDTRANS_IS_PRODUCTION', false),
+    ],
+
 ];

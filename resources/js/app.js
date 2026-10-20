@@ -7,6 +7,7 @@ import './components/c-deluxe-callout.js';
 import './components/c-homepage-timeline.js';
 import './components/c-register.js';
 import './components/c-check-status.js';
+import './components/c-payment-finish.js';
 import './components/c-results.js';
 import './components/c-result-detail.js';
 

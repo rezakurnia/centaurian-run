@@ -24,5 +24,9 @@
         <env name="QUEUE_CONNECTION" value="sync"/>
         <env name="SESSION_DRIVER" value="array"/>
         <env name="TELESCOPE_ENABLED" value="false"/>
+        <!-- Tests must never call the live Snap API; MidtransPaymentTest sets its own fake config -->
+        <env name="MIDTRANS_SERVER_KEY" value=""/>
+        <env name="MIDTRANS_CLIENT_KEY" value=""/>
+        <env name="MIDTRANS_IS_PRODUCTION" value="false"/>
     </php>
 </phpunit>
