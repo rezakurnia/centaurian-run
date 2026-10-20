@@ -21,12 +21,9 @@
         </div>
     </div>
     <div>
-        <c-button-quote>
-            <a href="/daftar" class="c-button-quote c-menu-desktop_contact">
-                <span class="c-button-quote_label">Daftar sekarang</span>
-                <span class="c-button-quote_icon"><canvas class="c-button-quote_icon_canvas" width="40" height="40" aria-hidden="true"></canvas></span>
-            </a>
-        </c-button-quote>
+        <a href="/daftar" class="c-button-quote c-menu-desktop_contact">
+            <span class="c-button-quote_label">Daftar sekarang</span>
+        </a>
     </div>
 </nav>
 

@@ -88,8 +88,8 @@ Fluid root font-size: `--text-md` (16 → 17px) by default, 15px from 1000 to 11
 - 40px circular icon on the right; on hover the label slides right and the icon swaps sides (`--ease-bounce`).
 - Colours: rose (`green`), yellow `#fdea00`, blush (`pink`) `#f9c9da`, peach (`red`) `#f2a28e`, orchid (`blue`) `#b5568b`.
 
-### 3. Nav Quote Button (`<c-button-quote>`)
-- White **10px** button whose 40px icon is a Rive face (`mindmarket_cursor_crop.riv`, state machine "State Machine 1") that follows the cursor and smiles on hover.
+### 3. Nav Quote Button
+- White **10px** text-only "Daftar sekarang" button (no icon); yellow hover fill rises from the bottom.
 
 ### 4. Content Card (`.c-homepage-timeline-cards` > `.c-tile-animated`)
 - White (`#ffffff`) panel, **10px radius**, `heading-md`/`heading-sm` title, `body-lg` copy, button at the bottom. Flat (no shadow).
@@ -109,10 +109,10 @@ Fluid root font-size: `--text-md` (16 → 17px) by default, 15px from 1000 to 11
 
 - **Result detail** (`/hasil/{no}`): one `.c-step` card (name heading-xs, category line, duration heading-md tabular, start/finish line). Registration numbers in the `/hasil` table link to it with `.c-link`.
 
-### 6. Footer Row
-- **Role:** Closing line inside the green callout, under the CTA (no separate footer block).
-- A "Login panitia" `.c-link` sits in the last column.
-- Column 1 is the app name from Admin → Pengaturan, with contact email/phone links under it. Column 2 adds WhatsApp/Instagram/Facebook links under the foundation name. Only filled http(s) links are shown. Footer links are `inline-block` with 12px block padding, so each is 44px tall. Three centred columns (`body-md`, `md:grid-cols-3`, 60 × `--spacing` above on desktop; stacked below 1000px), text in `#3a1f3f`.
+### 6. Footer
+- **Role:** Site footer inside the rose callout (landing) or rose panel (inner pages), text in Plum Night.
+- Four columns from 1000px (`1.4fr 1fr 1fr 1fr`), two from 700px, stacked below: brand (logo mark, app name, one-line tagline), "Jelajahi" nav links, "Kontak" (email/phone) and "Ikuti kami" (WhatsApp/Instagram/Facebook). Contact and social columns only render when Admin → Pengaturan has values; only http(s) social links are shown.
+- Links are `.c-link` `inline-block` with 12px block padding (44px tap height). A legal bar under a 1px plum rule holds the copyright and the "Login panitia" link.
 
 ### 7. Console (panitia/admin, `/login`, `/panitia/*`)
 - **Role:** Working screens for staff, not marketing. Same tokens as the public site, denser, no Locomotive/Rive (separate Vite entry `resources/js/console/main.js`).

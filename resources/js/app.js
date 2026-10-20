@@ -3,7 +3,6 @@ import LocomotiveScroll from 'locomotive-scroll';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import './components/c-rive.js';
-import './components/c-button-quote.js';
 import './components/c-deluxe-callout.js';
 import './components/c-homepage-timeline.js';
 import './components/c-register.js';
