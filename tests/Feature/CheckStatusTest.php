@@ -152,4 +152,33 @@ class CheckStatusTest extends TestCase
         $response->assertStatus(422)
             ->assertJsonValidationErrors(['email']);
     }
+
+    public function test_bib_ready_hanya_untuk_pendaftaran_yang_lunas_atau_gratis(): void
+    {
+        $this->buatRegistrasi('lunas@example.com', 'SW-0001', 'B1', 'confirmed', 'paid');
+        $this->buatRegistrasi('gratis@example.com', 'SW-0002', 'B2', 'confirmed', 'free');
+        $this->buatRegistrasi('belum@example.com', 'SW-0003', 'B3', 'pending', 'unpaid');
+        $this->buatRegistrasi('batal@example.com', 'SW-0004', 'B4', 'cancelled', 'paid');
+
+        foreach (['SW-0001' => true, 'SW-0002' => true, 'SW-0003' => false, 'SW-0004' => false] as $number => $expected) {
+            $this->postJson('/api/registrations/check-status', ['registration_number' => $number])
+                ->assertOk()
+                ->assertJsonPath('data.0.bib_ready', $expected);
+        }
+    }
+
+    public function test_halaman_bib_checking_tanpa_form_unggah_bukti(): void
+    {
+        $this->withoutVite();
+
+        $this->get('/cek-status')
+            ->assertOk()
+            ->assertSee('BIB Checking')
+            ->assertSee('SELAMAT !')
+            ->assertSee('id="bib-card"', false)
+            ->assertSee('id="status-dialog"', false)
+            ->assertSee('id="status-close"', false)
+            ->assertDontSee('Unggah bukti bayar')
+            ->assertDontSee('payment_proof');
+    }
 }

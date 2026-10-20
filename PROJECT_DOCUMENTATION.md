@@ -155,12 +155,13 @@ alcent-centaurian-run/
 
 ### 1. Pendaftaran Peserta (Public Registration)
 1. Peserta memilih **Kategori** (Siswa, Guru/Karyawan, Alumni, Tamu/Umum).
-2. Peserta memilih **Paket** (misal: *Gratis* atau *Berbayar* dengan benefit medali, jersey, dll.).
-3. Sistem membuat data `Registration` dan `Participant`, menghasilkan:
+2. Khusus **Guru Karyawan**, NIP diperiksa lebih dulu: form langsung mengarah ke kolom NIP, lalu NIP dicek ke tabel `employees` (master pegawai dari file *Data All Pegawai Alcent*). NIP yang tidak terdaftar ditandai silang merah; NIP yang cocok mengisi otomatis kolom nama dan mengunci kolom tersebut.
+3. Peserta memilih **Paket** (misal: *Gratis* atau *Berbayar* dengan benefit medali, jersey, dll.).
+4. Sistem membuat data `Registration` dan `Participant`, menghasilkan:
    - Nomor registrasi unik (misal: `CR-2026-0001`).
    - Kode barcode/QR untuk check-in dan scan finis.
-4. Jika berbayar, peserta mengunggah bukti transfer melalui endpoint `/payment-proof`.
-5. Status pendaftaran dapat dipantau peserta melalui fitur **Cek Status**.
+5. Jika berbayar, peserta mengunggah bukti transfer melalui endpoint `/payment-proof`.
+6. Status pendaftaran dapat dipantau peserta melalui fitur **Cek Status**.
 
 ### 2. Hari Pelaksanaan (Race Day & Panitia)
 1. **Start Acara:** Panitia membuka acara dan menekan tombol *Start* (`POST /api/panitia/start`) yang mencatat waktu mulai resmi lomba ke data `Event`.
@@ -195,6 +196,8 @@ alcent-centaurian-run/
 | `GET` | `/api/results` | Mendapatkan daftar hasil perlombaan / leaderboard |
 | `GET` | `/api/results/{reg_no}` | Mendapatkan detail hasil peserta tertentu |
 | `GET` | `/api/categories` | Mendapatkan daftar kategori peserta |
+| `GET` | `/api/categories/quota` | Sisa kuota tiap kategori |
+| `GET` | `/api/employees/{nip}` | Cek NIP guru/karyawan pada master pegawai (dipakai form pendaftaran) |
 | `GET` | `/api/packages` | Mendapatkan daftar paket lomba |
 
 ### Panitia Endpoints (`role:panitia,admin`)

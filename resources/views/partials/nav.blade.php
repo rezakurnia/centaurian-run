@@ -1,9 +1,19 @@
 {{-- Desktop + mobile menus. $base is '' on the landing page and '/' on every other page, so the section links resolve to /#kategori. --}}
 @php
     $base = $base ?? '';
-    $sections = ['kategori', 'paket', 'jadwal', 'hasil'];
-    // Desktop bar: label => href (section anchors live on the landing page)
-    $links = ['Tentang' => $base . '#tentang', 'Kategori' => $base . '#kategori', 'Paket' => $base . '#paket', 'Jadwal' => $base . '#jadwal', 'Cek Status' => '/cek-status', 'Hasil Lomba' => '/hasil'];
+    // Section anchors live on the landing page; the "tata-tertib" section only exists there
+    $sections = ['kategori' => 'Kategori', 'paket' => 'Paket', 'jadwal' => 'Jadwal', 'hasil' => 'Hasil'];
+    // Desktop bar: label => href
+    $links = ['Tentang' => $base . '#tentang', 'Kategori' => $base . '#kategori', 'Paket' => $base . '#paket', 'Jadwal' => $base . '#jadwal'];
+
+    if ($base === '') {
+        $sections['rute'] = 'Rute';
+        $sections['tata-tertib'] = 'Tata tertib';
+        $links['Rute'] = '#rute';
+        $links['Tata Tertib'] = '#tata-tertib';
+    }
+
+    $links += ['BIB Checking' => '/cek-status', 'Hasil Lomba' => '/hasil'];
     // Logo (shared by the desktop and mobile bars): 36x30 mark + wordmark
     $logo = '<span class="c-logo_mark"><img src="/images/logo.png" alt="" width="824" height="490"></span><span class="c-logo_text">Centaurian Run</span>';
 @endphp
@@ -42,12 +52,12 @@
     <nav id="menu-mobile-nav" class="c-menu-mobile_nav" aria-label="Utama">
         <div class="c-menu-mobile_nav_inner">
             <ul class="c-menu-mobile_list">
-                @foreach ($sections as $id)
-                    <li class="c-menu-mobile_list_item" style="--index: {{ $loop->index }}"><a href="{{ $base }}#{{ $id }}" class="c-menu-mobile_nav_link"><span class="c-menu-mobile_nav_label">{{ ucfirst($id) }}</span></a></li>
+                @foreach ($sections as $id => $label)
+                    <li class="c-menu-mobile_list_item" style="--index: {{ $loop->index }}"><a href="{{ $base }}#{{ $id }}" class="c-menu-mobile_nav_link"><span class="c-menu-mobile_nav_label">{{ $label }}</span></a></li>
                 @endforeach
-                <li class="c-menu-mobile_list_item" style="--index: 4"><a href="/daftar" class="c-menu-mobile_nav_link"><span class="c-menu-mobile_nav_label">Daftar</span></a></li>
-                <li class="c-menu-mobile_list_item" style="--index: 5"><a href="/cek-status" class="c-menu-mobile_nav_link"><span class="c-menu-mobile_nav_label">Cek status</span></a></li>
-                <li class="c-menu-mobile_list_item" style="--index: 6"><a href="/hasil" class="c-menu-mobile_nav_link"><span class="c-menu-mobile_nav_label">Hasil lomba</span></a></li>
+                <li class="c-menu-mobile_list_item" style="--index: {{ count($sections) }}"><a href="/daftar" class="c-menu-mobile_nav_link"><span class="c-menu-mobile_nav_label">Daftar</span></a></li>
+                <li class="c-menu-mobile_list_item" style="--index: {{ count($sections) + 1 }}"><a href="/cek-status" class="c-menu-mobile_nav_link"><span class="c-menu-mobile_nav_label">BIB Checking</span></a></li>
+                <li class="c-menu-mobile_list_item" style="--index: {{ count($sections) + 2 }}"><a href="/hasil" class="c-menu-mobile_nav_link"><span class="c-menu-mobile_nav_label">Hasil lomba</span></a></li>
             </ul>
             <a href="/daftar" class="c-menu-mobile_nav_contact">
                 <span class="c-menu-mobile_nav_label c-menu-mobile_nav_contact_label">Daftar sekarang</span>

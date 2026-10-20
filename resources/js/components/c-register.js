@@ -18,7 +18,6 @@ if (form) {
         S: { nis: 'NIS wajib diisi.', class: 'Kelas wajib diisi.' },
         E: { nip: 'NIP wajib diisi.', position: 'Jabatan wajib diisi.', unit: 'Unit wajib diisi.' },
         P: { child_name: 'Nama anak wajib diisi.', child_class: 'Kelas anak wajib diisi.' },
-        A: { graduation_year: 'Tahun lulus wajib diisi.' },
     };
     const allFields = Object.assign({ motivation: '' }, base, ...Object.values(byCode));
     const checkedCategory = () => form.querySelector('[name=category_id]:checked');
@@ -41,12 +40,18 @@ if (form) {
         first?.focus({ preventScroll: true });
     };
 
+    // Remaining spots per category, filled by the quota fetch below and reported in the summary
+    const quotas = new Map();
+    let quotasLoaded = false;
+
     // The package follows the category, so the summary and extra fields read from the checked category
     const summary = () => {
         const cat = checkedCategory();
         $('sum-category').textContent = cat?.dataset.name ?? 'Belum dipilih';
         $('sum-package').textContent = cat?.dataset.package || 'Ikut kategori';
         $('sum-price').textContent = cat?.dataset.price ? rupiah(Number(cat.dataset.price)) : '–';
+        const quota = quotas.get(cat?.value);
+        $('sum-quota').textContent = !quotasLoaded || !cat ? '–' : (quota ? `${quota.remaining} dari ${quota.quota} tempat` : 'Tidak terbatas');
         form.querySelectorAll('fieldset[data-for]').forEach((f) => {
             const on = f.dataset.for === cat?.dataset.code;
             f.hidden = !on;
@@ -55,6 +60,122 @@ if (form) {
     };
     form.addEventListener('change', summary);
     summary();
+
+    // ---- Guru Karyawan: NIP is checked against the employee master before anything else ----
+    const nipInput = form.querySelector('[name="nip"]');
+    const nipNote = $('nip-note');
+    const nipHint = $('nip-hint');
+    const nameNote = $('name-note');
+    const nameInput = $('full_name');
+    let verifiedNip = null;
+    let nipRequest = null;
+    let nipTimer = 0;
+
+    const setNipNote = (msg) => {
+        if (!nipNote) return;
+        nipNote.textContent = msg;
+        nipNote.hidden = !msg;
+    };
+
+    // The standing hint is only useful while the field is still empty
+    const syncNipHint = () => {
+        if (nipHint) nipHint.hidden = Boolean(nipInput?.value.trim());
+    };
+
+    // The name comes from the employee master, so the field is locked while that NIP is verified
+    const unlockName = ({ clear = false } = {}) => {
+        if (clear && nameInput?.readOnly) nameInput.value = '';
+        if (nameInput) nameInput.readOnly = false;
+        if (nameNote) nameNote.hidden = true;
+    };
+
+    const resetNip = ({ clearName = false } = {}) => {
+        verifiedNip = null;
+        setNipNote('');
+        syncNipHint();
+        unlockName({ clear: clearName });
+    };
+
+    const acceptNip = (employee) => {
+        verifiedNip = employee.nip;
+        setError('nip', '');
+        setNipNote(`NIP terdaftar sebagai ${employee.name}.`);
+        syncNipHint();
+        if (nameInput) {
+            nameInput.value = employee.name;
+            nameInput.readOnly = true;
+        }
+        if (nameNote) nameNote.hidden = false;
+    };
+
+    const rejectNip = (message) => {
+        verifiedNip = null;
+        setNipNote('');
+        syncNipHint();
+        setError('nip', message);
+        unlockName({ clear: true });
+    };
+
+    const checkNip = async () => {
+        const value = nipInput?.value.trim() ?? '';
+        if (!value) {
+            resetNip({ clearName: true });
+            return;
+        }
+        if (value === verifiedNip) return;
+
+        // Abort the previous lookup so an older answer can never overwrite a newer NIP
+        nipRequest?.abort();
+        const request = new AbortController();
+        nipRequest = request;
+
+        try {
+            const res = await fetch('/api/employees/' + encodeURIComponent(value), {
+                headers: { Accept: 'application/json' },
+                signal: request.signal,
+            });
+            const json = await res.json().catch(() => ({}));
+            if (nipRequest !== request) return;
+
+            if (res.ok && json.data?.name) acceptNip(json.data);
+            else if (res.status === 404) rejectNip('NIP tidak terdaftar sebagai guru/karyawan Alcent. Periksa kembali NIP-mu.');
+            else rejectNip('Tidak bisa memeriksa NIP sekarang. Coba lagi sebentar lagi.');
+        } catch (error) {
+            if (error.name !== 'AbortError' && nipRequest === request) {
+                rejectNip('Tidak bisa terhubung ke server. Periksa koneksimu lalu coba lagi.');
+            }
+        } finally {
+            if (nipRequest === request) nipRequest = null;
+        }
+    };
+
+    if (nipInput) {
+        nipInput.addEventListener('input', () => {
+            clearTimeout(nipTimer);
+            if (nipInput.value.trim() !== verifiedNip) resetNip({ clearName: true });
+            nipTimer = setTimeout(checkNip, 400);
+        });
+        nipInput.addEventListener('blur', () => {
+            clearTimeout(nipTimer);
+            checkNip();
+        });
+    }
+
+    // Picking Guru Karyawan jumps straight to the NIP field; leaving the category releases the name
+    form.addEventListener('change', (event) => {
+        if (event.target.name !== 'category_id') return;
+        clearTimeout(nipTimer);
+
+        if (event.target.dataset.code === 'E') {
+            if (nipInput && !nipInput.value.trim()) {
+                nipInput.closest('.c-field')?.scrollIntoView({ block: 'center' });
+                nipInput.focus({ preventScroll: true });
+            }
+            return;
+        }
+
+        resetNip();
+    });
 
     const close = (text) => {
         $('register-closed').hidden = false;
@@ -74,20 +195,29 @@ if (form) {
     // Remaining spots per category; quota 0/empty means unlimited (RegistrationController@store)
     fetch('/api/categories/quota', { headers: { Accept: 'application/json' } })
         .then((r) => r.json())
-        .then(({ data }) => data?.forEach((c) => {
-            const input = form.querySelector(`[name=category_id][value="${c.id}"]`);
-            const el = input?.closest('.c-option').querySelector('[data-quota]');
-            if (!el || !c.quota) return;
-            el.hidden = false;
-            if (c.is_full) {
-                el.innerHTML = '<span class="c-badge -bad">Penuh</span>';
+        .then(({ data }) => {
+            if (!Array.isArray(data)) return;
+
+            data.forEach((c) => {
+                const input = form.querySelector(`[name=category_id][value="${c.id}"]`);
+                if (!input || !c.quota) return;
+
+                quotas.set(String(c.id), c);
+                if (!c.is_full) return;
+
+                // A full category is disabled here so it cannot be picked; the API rejects it too
                 input.checked = false;
                 input.disabled = true;
-                summary();
-            } else {
-                el.textContent = `Sisa ${c.remaining} dari ${c.quota} tempat`;
-            }
-        }))
+                const badge = input.closest('.c-option')?.querySelector('[data-full]');
+                if (badge) {
+                    badge.hidden = false;
+                    badge.innerHTML = '<span class="c-badge -bad">Penuh</span>';
+                }
+            });
+
+            quotasLoaded = true;
+            summary();
+        })
         .catch(() => {});
 
     // Clear a field's error as soon as it's edited
@@ -106,6 +236,16 @@ if (form) {
             formError.textContent = 'Periksa kembali isian yang ditandai.';
             formError.hidden = false;
             return showFirst(missing);
+        }
+
+        // Guru Karyawan: never send a NIP that has not matched the employee master
+        if (checkedCategory()?.dataset.code === 'E' && nipInput?.value.trim() && nipInput.value.trim() !== verifiedNip) {
+            await checkNip();
+            if (nipInput.value.trim() !== verifiedNip) {
+                formError.textContent = 'Periksa kembali NIP-mu sebelum mengirim.';
+                formError.hidden = false;
+                return showFirst(['nip']);
+            }
         }
 
         submit.disabled = true;
@@ -131,7 +271,7 @@ if (form) {
             } else {
                 formError.textContent = res.status === 429
                     ? 'Terlalu banyak percobaan. Tunggu sebentar lalu coba lagi.'
-                    : 'Terjadi kendala di server. Datamu mungkin sudah tersimpan: cek status dengan emailmu sebelum mendaftar ulang.';
+                    : 'Terjadi kendala di server. Datamu mungkin sudah tersimpan: cek BIB dengan emailmu sebelum mendaftar ulang.';
             }
         } catch {
             formError.textContent = 'Tidak bisa terhubung ke server. Periksa koneksimu lalu coba lagi.';

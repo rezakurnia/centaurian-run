@@ -822,6 +822,16 @@ textarea.c-input { padding-block: calc(var(--spacing) * 3); resize: vertical; }
 }
 .c-error[hidden] { display: none; }
 .c-error::before { content: '!'; flex: none; width: 1.1em; height: 1.1em; border-radius: 100%; background: var(--color-grape); color: var(--color-white); font-size: .8em; line-height: 1.1em; text-align: center; }
+/* Unknown NIP (Guru Karyawan) — a cross instead of the generic "!" */
+.c-error.-nip::before { content: '×'; font-size: .95em; }
+/* Verified value (e.g. NIP matched in the employee master) */
+.c-note { display: flex; gap: calc(var(--spacing) * 2); align-items: baseline; font-size: var(--text-md); letter-spacing: -0.02em; }
+.c-note[hidden] { display: none; }
+.c-note::before { content: '✓'; flex: none; width: 1.1em; height: 1.1em; border-radius: 100%; background: var(--color-marigold); color: var(--color-plum-night); font-size: .8em; line-height: 1.1em; text-align: center; }
+.c-hint { font-size: var(--text-sm); line-height: 1.35; opacity: .75; }
+.c-hint[hidden] { display: none; }
+/* Auto-filled, locked field (name taken from the employee master) */
+input.c-input[readonly] { background-color: var(--color-beige); }
 
 /* Option card: a native radio drives the checked state (works without JS) */
 .c-options { display: grid; gap: calc(var(--spacing) * 3); }
@@ -871,6 +881,52 @@ select.c-input { appearance: auto; }
 .c-file { padding-block: calc(var(--spacing) * 2.5); }
 .c-link { text-decoration: underline; text-underline-offset: 4px; }
 .c-button[disabled] { opacity: .6; cursor: progress; }
+
+/* BIB checking result pop-up (native <dialog>: Escape, focus trap and backdrop come free).
+   The result card itself is the surface, so the dialog has no fill of its own. */
+.c-dialog {
+    width: min(46rem, calc(100% - 2rem));
+    max-height: calc(100svh - 2rem);
+    margin: auto;
+    padding: 0;
+    border: 0;
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--color-plum-night);
+}
+.c-dialog::backdrop { background: rgb(58 31 63 / .55); }
+.c-dialog[open] { animation: c-dialog-in var(--transition-duration) var(--ease-bounce) both; }
+@keyframes c-dialog-in {
+    from { opacity: 0; transform: translateY(calc(var(--spacing) * 4)) scale(.97); }
+    to { opacity: 1; transform: none; }
+}
+.c-dialog_body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-gutter);
+    max-height: calc(100svh - 2rem);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    border-radius: var(--radius-sm);
+}
+.c-dialog_close {
+    /* Sits inside the gradient panel's top-right corner, not over the card edge */
+    position: absolute;
+    top: calc(var(--spacing) * 12);
+    right: calc(var(--spacing) * 12);
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: calc(var(--spacing) * 11);
+    height: calc(var(--spacing) * 11);
+    border-radius: 100%;
+    background-color: var(--color-white);
+    color: var(--color-plum-night);
+    cursor: pointer;
+}
+.c-dialog_close:hover { background-color: var(--color-beige); }
+.c-dialog_close:focus-visible { outline: 2px solid var(--color-plum-night); outline-offset: 2px; }
 .c-faq summary { list-style: none; }
 .c-faq summary::-webkit-details-marker { display: none; }
 .c-faq summary::after { content: '+'; float: right; }

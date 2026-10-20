@@ -15,7 +15,7 @@ class RegistrationConfirmationMail extends Mailable
 
     public function build()
     {
-        return $this->subject('Konfirmasi Pendaftaran Centaurian FunRun')
+        return $this->subject('Konfirmasi Pendaftaran Centaurian Run')
             ->view('emails.registration_confirmation');
     }
 }

@@ -59,7 +59,7 @@
                     <div class="c-step mt-gutter">
                         <h2 class="heading-xs">Belum tahu statusmu?</h2>
                         <p class="body-md mt-3">Cek pendaftaranmu dengan nomor peserta atau email.</p>
-                        <div class="mt-4"><a class="c-link" href="/cek-status">Cek status →</a></div>
+                        <div class="mt-4"><a class="c-link" href="/cek-status">BIB Checking →</a></div>
                     </div>
                 </div>
             </div>

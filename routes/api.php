@@ -5,12 +5,15 @@ use App\Http\Controllers\Api\Admin\ContentController as AdminContentController;
 use App\Http\Controllers\Api\Admin\DataController;
 use App\Http\Controllers\Api\Admin\EventController as AdminEventController;
 use App\Http\Controllers\Api\Admin\ExportController;
+use App\Http\Controllers\Api\Admin\ParticipantImportController;
+use App\Http\Controllers\Api\Admin\ParticipantTemplateController;
 use App\Http\Controllers\Api\Admin\ScanLogController;
 use App\Http\Controllers\Api\Admin\SettingController;
 use App\Http\Controllers\Api\Admin\UserController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ContentController;
+use App\Http\Controllers\Api\EmployeeController;
 use App\Http\Controllers\Api\EventController;
 use App\Http\Controllers\Api\PackageController;
 use App\Http\Controllers\Api\Panitia\RecapController;
@@ -32,8 +35,10 @@ Route::get('/results', [ResultController::class, 'index']);
 Route::get('/results/{registration_number}', [ResultController::class, 'show']);
 Route::get('/categories', [CategoryController::class, 'index']);
 Route::get('/categories/quota', [CategoryController::class, 'quota']);
+// Guru/karyawan NIP lookup, used by the registration form before submitting
+Route::get('/employees/{nip}', [EmployeeController::class, 'show'])->middleware('throttle:60,1');
 Route::get('/packages', [PackageController::class, 'index']);
-Route::get('/settings', [\App\Http\Controllers\Api\Admin\SettingController::class, 'publicIndex']);
+Route::get('/settings', [SettingController::class, 'publicIndex']);
 
 // Protected (butuh token Sanctum)
 Route::middleware('auth:sanctum')->group(function () {
@@ -57,10 +62,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::apiResource('/contents', AdminContentController::class);
         Route::apiResource('/users', UserController::class);
         Route::get('/participants', [DataController::class, 'participants']);
-        Route::post('/participants/import', [\App\Http\Controllers\Api\Admin\ParticipantImportController::class, 'import']);
-        Route::get('/participants/import/template/siswa', [\App\Http\Controllers\Api\Admin\ParticipantTemplateController::class, 'siswa']);
-        Route::get('/participants/import/template/guru', [\App\Http\Controllers\Api\Admin\ParticipantTemplateController::class, 'guru']);
-        Route::get('/packages', [\App\Http\Controllers\Api\PackageController::class, 'adminIndex']);
+        Route::post('/participants/import', [ParticipantImportController::class, 'import']);
+        Route::get('/participants/import/template/siswa', [ParticipantTemplateController::class, 'siswa']);
+        Route::get('/participants/import/template/guru', [ParticipantTemplateController::class, 'guru']);
+        Route::get('/packages', [PackageController::class, 'adminIndex']);
         Route::get('/registrations', [DataController::class, 'registrations']);
         Route::get('/registrations/{id}', [DataController::class, 'showRegistration']);
         Route::put('/registrations/{id}/verify', [DataController::class, 'verifyRegistration']);

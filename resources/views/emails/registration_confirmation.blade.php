@@ -6,7 +6,7 @@
 <body>
     <h2>Halo, {{ $registration->participant->full_name }}</h2>
 
-    <p>Kabar baik! Pendaftaran Anda di <strong>Centaurian FunRun</strong> telah <strong>diverifikasi</strong>.</p>
+    <p>Kabar baik! Pendaftaran Anda di <strong>Centaurian Run</strong> telah <strong>diverifikasi</strong>.</p>
 
     <p>Berikut detail pendaftaran Anda:</p>
     <ul>
@@ -21,6 +21,6 @@
 
     <p>Tunjukkan barcode ini saat mencapai garis finis.</p>
 
-    <p>Salam,<br>Panitia Centaurian FunRun</p>
+    <p>Salam,<br>Panitia Centaurian Run</p>
 </body>
 </html>

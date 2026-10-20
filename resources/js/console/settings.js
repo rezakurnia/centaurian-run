@@ -16,7 +16,7 @@ export function initSettings() {
             return `<label class="k-check" for="${id}"><input type="checkbox" id="${id}" name="${key}"${value === '1' ? ' checked' : ''}> ${esc(label)}</label>`;
         }
         const control = type === 'textarea'
-            ? `<textarea class="c-input" id="${id}" name="${key}" rows="3">${esc(value)}</textarea>`
+            ? `<textarea class="c-input" id="${id}" name="${key}" rows="${Math.min(Math.max(String(value ?? '').split('\n').length, 3), 20)}">${esc(value)}</textarea>`
             : `<input class="c-input" id="${id}" name="${key}" type="${['email', 'url', 'number', 'date'].includes(type) ? type : 'text'}" value="${esc(value)}">`;
         return `<div class="c-field${type === 'textarea' ? ' sm:col-span-2' : ''}"><label class="c-label" for="${id}">${esc(label)}</label>${control}</div>`;
     };

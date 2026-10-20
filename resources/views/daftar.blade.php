@@ -1,5 +1,4 @@
 @php
-    $rupiah = fn (int $p) => $p === 0 ? 'Gratis' : 'Rp' . number_format($p, 0, ',', '.');
     $date = $event?->event_date?->locale('id')->translatedFormat('l, j F Y');
     $name = $event?->name ?? 'Centaurian Run ' . now()->year;
     $pickCategory = (int) request('category');
@@ -8,12 +7,11 @@
         'S' => [['nis', 'NIS', 'text', 30], ['class', 'Kelas', 'text', 30]],
         'E' => [['nip', 'NIP', 'text', 30], ['position', 'Jabatan', 'text', 50], ['unit', 'Unit', 'text', 50]],
         'P' => [['child_name', 'Nama anak', 'text', 100], ['child_class', 'Kelas anak', 'text', 30]],
-        'A' => [['graduation_year', 'Tahun lulus', 'number', 4]],
     ];
     $faqs = [
         ['Apakah paket gratis langsung terkonfirmasi?', 'Ya. Paket gratis langsung berstatus terkonfirmasi, dan nomor peserta beserta barcode dikirim ke emailmu.'],
-        ['Bagaimana membayar paket berbayar?', 'Setelah mendaftar, selesaikan pembayaran lalu unggah bukti pembayaran lewat halaman Cek status. Panitia memverifikasi, dan statusmu berubah menjadi terkonfirmasi.'],
-        ['Emailnya tidak masuk, bagaimana?', 'Periksa folder spam dulu. Nomor pesertamu juga bisa dilihat kapan saja lewat Cek status memakai emailmu.'],
+        ['Bagaimana membayar paket berbayar?', 'Setelah mendaftar, selesaikan pembayaran sesuai instruksi yang muncul. Begitu pembayaranmu lunas, kartu BIB langsung terbuka di halaman BIB Checking.'],
+        ['Emailnya tidak masuk, bagaimana?', 'Periksa folder spam dulu. Nomor pesertamu juga bisa dilihat kapan saja lewat BIB Checking memakai nomor peserta atau emailmu.'],
         ['Bisakah satu email mendaftar dua kali?', 'Tidak. Satu email hanya bisa terdaftar satu kali per event. Gunakan email lain untuk peserta lain.'],
     ];
 @endphp
@@ -83,9 +81,7 @@
                                                 <input type="radio" name="category_id" value="{{ $category->id }}" class="peer sr-only" data-name="{{ $category->name }}" data-code="{{ $category->code }}" data-package="{{ $package?->name }}" data-price="{{ $package?->price }}" @checked($pickCategory === $category->id)>
                                                 <span class="c-option_card"><span class="c-option_check" aria-hidden="true"></span>
                                                     <span class="c-option_title">{{ $category->name }}</span>
-                                                    @if ($package)<span class="c-option_price">{{ $rupiah($package->price) }}</span>@endif
-                                                    @if ($package?->description)<span class="c-option_desc">{{ $package->description }}</span>@endif
-                                                    <span class="c-option_desc" data-quota hidden></span>
+                                                    <span class="c-option_desc" data-full hidden></span>
                                                 </span>
                                             </label>
                                         @endforeach
@@ -100,6 +96,8 @@
                                         <div class="c-field sm:col-span-2">
                                             <label class="c-label" for="full_name">Nama lengkap</label>
                                             <input class="c-input" id="full_name" name="full_name" type="text" maxlength="100" autocomplete="name" aria-describedby="err-full_name">
+                                            {{-- Shown by c-register.js once a Guru Karyawan NIP matches the employee master --}}
+                                            <p class="c-hint" id="name-note" hidden>Terisi otomatis dari data pegawai dan tidak dapat diubah.</p>
                                             <p class="c-error" id="err-full_name" data-error="full_name" hidden></p>
                                         </div>
                                         <div class="c-field">
@@ -143,9 +141,14 @@
                                                         @if ($type === 'number')
                                                             <input class="c-input" id="{{ $field }}" name="{{ $field }}" type="number" inputmode="numeric" min="1900" max="{{ now()->year }}" aria-describedby="err-{{ $field }}">
                                                         @else
-                                                            <input class="c-input" id="{{ $field }}" name="{{ $field }}" type="text" maxlength="{{ $max }}" aria-describedby="err-{{ $field }}">
+                                                            <input class="c-input" id="{{ $field }}" name="{{ $field }}" type="text" maxlength="{{ $max }}" @if ($field === 'nip') placeholder="Contoh: 14000012" inputmode="numeric" autocomplete="off" aria-describedby="nip-hint err-nip" @else aria-describedby="err-{{ $field }}" @endif>
                                                         @endif
-                                                        <p class="c-error" id="err-{{ $field }}" data-error="{{ $field }}" hidden></p>
+                                                        @if ($field === 'nip')
+                                                            {{-- Checked live against GET /api/employees/{nip} by c-register.js --}}
+                                                            <p class="c-hint" id="nip-hint">NIP harus terdaftar sebagai guru/karyawan Alcent. Nama terisi otomatis setelah NIP cocok.</p>
+                                                            <p class="c-note" id="nip-note" role="status" hidden></p>
+                                                        @endif
+                                                        <p class="c-error{{ $field === 'nip' ? ' -nip' : '' }}" id="err-{{ $field }}" data-error="{{ $field }}" hidden></p>
                                                     </div>
                                                 @endforeach
                                             </fieldset>
@@ -181,7 +184,7 @@
                                     <div class="rounded-sm bg-beige p-5">
                                         <h3 class="heading-xs">Pantau statusmu</h3>
                                         <p class="body-md mt-2">Cek kapan saja dengan nomor peserta atau emailmu.</p>
-                                        <div class="mt-4"><a id="success-status-link" class="c-link" href="/cek-status">Cek status →</a></div>
+                                        <div class="mt-4"><a id="success-status-link" class="c-link" href="/cek-status">BIB Checking →</a></div>
                                     </div>
                                 </div>
                             </div>
@@ -194,6 +197,7 @@
                                 <div class="flex justify-between gap-4 py-3"><dt class="opacity-75">Kategori</dt><dd id="sum-category" class="text-right">Belum dipilih</dd></div>
                                 <div class="flex justify-between gap-4 py-3"><dt class="opacity-75">Paket</dt><dd id="sum-package" class="text-right">Ikut kategori</dd></div>
                                 <div class="flex justify-between gap-4 py-3"><dt class="opacity-75">Biaya</dt><dd id="sum-price" class="heading-xs text-right">–</dd></div>
+                                <div class="flex justify-between gap-4 py-3"><dt class="opacity-75">Kuota</dt><dd id="sum-quota" class="text-right">–</dd></div>
                             </dl>
                             <p class="body-md mt-5 rounded-sm bg-beige p-4" id="sum-note">Paket gratis langsung terkonfirmasi. Paket berbayar: transfer, unggah bukti, lalu tunggu verifikasi panitia.</p>
                         </aside>

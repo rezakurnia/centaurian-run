@@ -15,7 +15,7 @@ class RegistrationVerifiedMail extends Mailable
 
     public function build()
     {
-        return $this->subject('Pendaftaran Centaurian FunRun Telah Diverifikasi')
+        return $this->subject('Pendaftaran Centaurian Run Telah Diverifikasi')
             ->view('emails.registration_verified');
     }
 }

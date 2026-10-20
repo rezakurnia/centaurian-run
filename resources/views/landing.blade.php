@@ -4,6 +4,8 @@
     $s = app(\App\Services\SettingService::class)->getAllFlat();
     $description = $event?->description ?: ($s['event_description'] ?? '') ?: 'Lebih dari sekadar lomba lari, Centaurian Run 2026 adalah gerakan Yayasan Taqwa Cerdas Kreatif untuk kebenaran, keadilan, dan kemanusiaan. Move with faith: setiap langkah berakar pada keyakinan untuk terus memperjuangkan kebaikan. Run with care: saling peduli dan menjaga, termasuk aksi nyata solidaritas untuk Palestina.';
     $rupiah = fn (int $p) => $p === 0 ? 'Gratis' : 'Rp' . number_format($p, 0, ',', '.');
+    // The public price list only advertises paid packages; the free package stays internal to its category
+    $paidPackages = $packages->where('price', '>', 0);
     $date = $event?->event_date?->locale('id')->translatedFormat('l, j F Y');
     $time = $event?->start_time?->format('H:i');
     $ctaTitle = $c->get('cta')?->title ?? "Siap lari\nbareng?";
@@ -15,17 +17,17 @@
         [
             'id' => 'kategori', 'color' => 'red', 'href' => '/daftar', 'button' => 'Daftar',
             'title' => 'Semua bisa lari.',
-            'body' => 'Siswa, guru, alumni, orang tua, sampai tamu dari luar. Centaurian Run terbuka untuk semua kalangan, pilih kategorimu saat mendaftar.',
+            'body' => 'Siswa, guru, orang tua, umum, sampai tamu dari luar. Centaurian Run terbuka untuk semua kalangan, pilih kategorimu saat mendaftar.',
         ],
         [
             'id' => 'paket', 'color' => 'yellow', 'href' => '/daftar', 'button' => 'Daftar',
             'title' => 'Paket ikut kategorimu.',
-            'body' => 'Paketmu otomatis menyesuaikan kategori, mulai dari gratis. Untuk paket berbayar, cukup transfer, unggah bukti pembayaran, dan tunggu verifikasi panitia.',
+            'body' => 'Paketmu otomatis menyesuaikan kategori. Untuk paket berbayar, cukup transfer, unggah bukti pembayaran, dan tunggu verifikasi panitia.',
         ],
         [
-            'id' => 'jadwal', 'color' => 'blue', 'href' => '/cek-status', 'button' => 'Cek status',
+            'id' => 'jadwal', 'color' => 'blue', 'href' => '/cek-status', 'button' => 'BIB Checking',
             'title' => 'Catat tanggalnya.',
-            'body' => 'Datang lebih awal dan pemanasan bareng. Cek status pendaftaranmu kapan saja dengan nomor registrasi.',
+            'body' => 'Datang lebih awal dan pemanasan bareng. Nomor BIB-mu bisa dicek kapan saja setelah pembayaran lunas.',
         ],
         [
             'id' => 'hasil', 'color' => 'pink', 'href' => '/hasil', 'button' => 'Hasil lomba',
@@ -33,6 +35,10 @@
             'body' => 'Waktu tempuh dicatat dari scan start dan finish. Begitu kamu melewati garis finish, hasilmu langsung tercatat.',
         ],
     ];
+
+    // Tata tertib comes from Admin → Pengaturan; the expected text format is shown by the
+    // tata_tertib default in config/app_settings.php and parsed by TataTertibService
+    $tataTertib = app(\App\Services\TataTertibService::class)->groups((string) ($s['tata_tertib'] ?? ''));
 @endphp
 <!DOCTYPE html>
 <html lang="id">
@@ -120,10 +126,18 @@
                                         <li class="rounded-[10px] bg-beige px-3 py-1 text-[.9375rem] font-medium text-charcoal">{{ $category->name }}</li>
                                     @endforeach
                                 </ul>
-                            @elseif ($card['id'] === 'paket' && $packages->isNotEmpty())
+                            @elseif ($card['id'] === 'paket' && $paidPackages->isNotEmpty())
                                 <ul class="divide-y divide-beige-500">
-                                    @foreach ($packages as $package)
-                                        <li class="flex justify-between py-2"><span>{{ $package->name }}</span>@if (strcasecmp($package->name, $rupiah($package->price)) !== 0)<span>{{ $rupiah($package->price) }}</span>@endif</li>
+                                    @foreach ($paidPackages as $package)
+                                        <li class="py-3">
+                                            <div class="flex justify-between gap-4">
+                                                <span class="font-medium">{{ $package->name }}</span>
+                                                <span>{{ $rupiah($package->price) }}</span>
+                                            </div>
+                                            @if ($package->description)
+                                                <p class="body-md mt-1 opacity-75">{{ $package->description }}</p>
+                                            @endif
+                                        </li>
                                     @endforeach
                                 </ul>
                             @elseif ($card['id'] === 'jadwal')
@@ -276,6 +290,58 @@
                 </div>
             </div>
         </section>
+
+    {{-- Rute 5K: the map image already carries its own markers, so the legend mirrors what is drawn --}}
+    <section id="rute" class="bg-green py-fluid-2xl">
+        <div class="container">
+            <div class="grid grid-cols-6 gap-gutter md:grid-cols-16">
+                <div class="col-span-full md:col-start-2 md:col-span-14">
+                    <h2 class="heading-lg text-center text-balance">Rute 5K.</h2>
+                    <p class="body-lg mx-auto mt-4 max-w-140 text-center text-balance">CENTAURIAN RUN</p>
+
+                    <div class="mt-fluid-2xl overflow-x-auto rounded-sm bg-white">
+                        <img src="/images/rute-5k.webp" width="1800" height="871" loading="lazy" decoding="async"
+                             class="h-auto w-full min-w-[56rem] md:min-w-0"
+                             alt="Peta rute 5K Centaurian Run: garis merah putus-putus dari start dan finis di Untung Surapati Avenue, melewati penanda KM 1 sampai KM 4 dan satu pos air minum.">
+                    </div>
+                    <p class="body-md mt-3 opacity-75 md:hidden">Geser peta ke samping untuk melihat seluruh rute.</p>
+
+                    <ul class="mt-4 flex flex-wrap gap-2">
+                        @foreach (['Start / Finish', 'Water station', 'KM MARKER', 'MARSHAL'] as $legend)
+                            <li class="rounded-[10px] bg-beige px-3 py-1 text-[.9375rem] font-medium text-charcoal">{{ $legend }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {{-- Tata tertib resmi acara: continues the pink of the hills above into the CTA below --}}
+    <section id="tata-tertib" class="bg-green py-fluid-2xl">
+        <div class="container">
+            <div class="grid grid-cols-6 gap-gutter md:grid-cols-16">
+                <div class="col-span-full md:col-start-2 md:col-span-14">
+                    <h2 class="heading-lg text-center text-balance">Tata tertib resmi acara.</h2>
+                    <p class="body-lg mx-auto mt-4 max-w-140 text-center text-balance">
+                        Dengan mendaftar, peserta dianggap sudah membaca dan menyetujui ketentuan berikut.
+                    </p>
+
+                    <div class="mt-fluid-2xl grid gap-gutter md:grid-cols-2">
+                        @foreach ($tataTertib as $group)
+                            <div class="rounded-sm bg-white p-fluid-lg">
+                                <h3 class="heading-xs">{{ $group['title'] }}</h3>
+                                <ul class="mt-4 flex flex-col gap-3">
+                                    @foreach ($group['items'] as $item)
+                                        <li class="body-md">@if ($item['label'])<span class="font-medium">{{ $item['label'] }}:</span> @endif{{ $item['text'] }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
     {{-- Callout: pop-up runner rises on CTA hover --}}
     <c-deluxe-callout class="group relative block rounded-b-lg bg-green py-fluid-4xl">

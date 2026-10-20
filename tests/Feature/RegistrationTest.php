@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Category;
+use App\Models\Employee;
 use App\Models\Event;
 use App\Models\Package;
 use App\Models\Participant;
@@ -13,13 +14,21 @@ use Tests\TestCase;
 class RegistrationTest extends TestCase
 {
     protected Event $event;
+
     protected Category $categorySiswaSMP;
+
     protected Category $categorySiswaSMA;
+
     protected Category $categoryGuru;
+
     protected Category $categoryOrangtua;
-    protected Category $categoryAlumni;
+
+    protected Category $categoryUmum;
+
     protected Package $packageGratis;
+
     protected Package $package100k;
+
     protected Package $package150k;
 
     protected function setUp(): void
@@ -27,20 +36,23 @@ class RegistrationTest extends TestCase
         parent::setUp();
 
         $this->event = Event::create([
-            'name'       => 'Centaurian FunRun 2026',
+            'name' => 'Centaurian FunRun 2026',
             'event_date' => '2026-05-15',
-            'is_active'  => true,
+            'is_active' => true,
         ]);
 
-        $this->categorySiswaSMP  = Category::create(['name' => 'Siswa SMP', 'code' => 'S', 'quota' => 50]);
-        $this->categorySiswaSMA  = Category::create(['name' => 'Siswa SMA', 'code' => 'S', 'quota' => 150]);
-        $this->categoryGuru      = Category::create(['name' => 'Guru Karyawan', 'code' => 'E', 'quota' => 300]);
-        $this->categoryOrangtua  = Category::create(['name' => 'Orangtua', 'code' => 'P', 'quota' => 100]);
-        $this->categoryAlumni    = Category::create(['name' => 'Alumni', 'code' => 'A', 'quota' => 50]);
+        $this->categorySiswaSMP = Category::create(['name' => 'Siswa SMP', 'code' => 'S', 'quota' => 50]);
+        $this->categorySiswaSMA = Category::create(['name' => 'Siswa SMA', 'code' => 'S', 'quota' => 150]);
+        $this->categoryGuru = Category::create(['name' => 'Guru Karyawan', 'code' => 'E', 'quota' => 300]);
+        $this->categoryOrangtua = Category::create(['name' => 'Orangtua', 'code' => 'P', 'quota' => 100]);
+        $this->categoryUmum = Category::create(['name' => 'Umum', 'code' => 'A', 'quota' => 50]);
 
         $this->packageGratis = Package::create(['name' => 'Gratis', 'price' => 0, 'is_active' => true]);
-        $this->package100k   = Package::create(['name' => 'Paket 100K', 'price' => 100000, 'is_active' => true]);
-        $this->package150k   = Package::create(['name' => 'Paket 150K', 'price' => 150000, 'is_active' => true]);
+        $this->package100k = Package::create(['name' => 'Paket 100K', 'price' => 100000, 'is_active' => true]);
+        $this->package150k = Package::create(['name' => 'Paket 150K', 'price' => 150000, 'is_active' => true]);
+
+        // Guru/karyawan NIPs must exist in the employee master (EmployeeSeeder in production)
+        Employee::create(['nip' => 'NIP001', 'name' => 'Bu Sari']);
     }
 
     // ========================================================================
@@ -50,16 +62,16 @@ class RegistrationTest extends TestCase
     public function test_registrasi_berhasil_dan_penomoran_otomatis(): void
     {
         $response = $this->postJson('/api/registrations', [
-            'full_name'   => 'Budi Santoso',
-            'gender'      => 'L',
+            'full_name' => 'Budi Santoso',
+            'gender' => 'L',
             'birth_place' => 'Bandung',
-            'birth_date'  => '2000-05-15',
-            'motivation'  => 'Tetap semangat!',
-            'email'       => 'budi@example.com',
-            'phone'       => '08123456789',
-            'nis'         => '12345',
-            'class'       => '9A',
-            'event_id'    => $this->event->id,
+            'birth_date' => '2000-05-15',
+            'motivation' => 'Tetap semangat!',
+            'email' => 'budi@example.com',
+            'phone' => '08123456789',
+            'nis' => '12345',
+            'class' => '9A',
+            'event_id' => $this->event->id,
             'category_id' => $this->categorySiswaSMP->id,
         ]);
 
@@ -68,7 +80,7 @@ class RegistrationTest extends TestCase
             ->assertJsonStructure([
                 'message',
                 'data' => [
-                    'participant'  => ['id', 'full_name', 'email'],
+                    'participant' => ['id', 'full_name', 'email'],
                     'registration' => ['id', 'registration_number', 'barcode', 'category', 'package', 'event'],
                 ],
             ]);
@@ -100,14 +112,13 @@ class RegistrationTest extends TestCase
             'category_id' => $this->categorySiswaSMA->id,
         ])->assertStatus(201);
 
-        // Alumni #1 → kode A → nomor mulai A-0001
+        // Umum #1 → kode A → nomor mulai A-0001
         $response = $this->postJson('/api/registrations', [
             'full_name' => 'Ibu Sari', 'gender' => 'P',
             'birth_place' => 'Jakarta', 'birth_date' => '1985-03-10',
             'email' => 'sari@example.com', 'phone' => '08125',
-            'graduation_year' => 2005,
             'event_id' => $this->event->id,
-            'category_id' => $this->categoryAlumni->id,
+            'category_id' => $this->categoryUmum->id,
         ]);
 
         $response->assertStatus(201)
@@ -185,6 +196,56 @@ class RegistrationTest extends TestCase
             ->assertJsonValidationErrors(['nip', 'position', 'unit']);
     }
 
+    public function test_nip_guru_harus_terdaftar_di_data_pegawai(): void
+    {
+        $response = $this->postJson('/api/registrations', [
+            'full_name' => 'Orang Luar', 'gender' => 'L',
+            'birth_place' => 'Bandung', 'birth_date' => '1990-01-01',
+            'email' => 'luar@example.com', 'phone' => '08123',
+            'nip' => '99999999', 'position' => 'Guru', 'unit' => 'SMP',
+            'event_id' => $this->event->id,
+            'category_id' => $this->categoryGuru->id,
+        ]);
+
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors(['nip'])
+            ->assertJsonPath('errors.nip.0', 'NIP tidak terdaftar sebagai guru/karyawan Alcent.');
+
+        $this->assertDatabaseCount('registrations', 0);
+    }
+
+    public function test_nip_guru_tidak_boleh_daftar_dua_kali_di_event_sama(): void
+    {
+        $payload = [
+            'full_name' => 'Bu Sari', 'gender' => 'P',
+            'birth_place' => 'Jakarta', 'birth_date' => '1985-03-10',
+            'email' => 'sari@example.com', 'phone' => '08123',
+            'nip' => 'NIP001', 'position' => 'Guru', 'unit' => 'SD',
+            'event_id' => $this->event->id,
+            'category_id' => $this->categoryGuru->id,
+        ];
+
+        $this->postJson('/api/registrations', $payload)->assertStatus(201);
+
+        $this->postJson('/api/registrations', array_merge($payload, ['email' => 'sari.lain@example.com']))
+            ->assertStatus(422)
+            ->assertJsonValidationErrors(['nip']);
+    }
+
+    public function test_nama_guru_mengikuti_data_pegawai(): void
+    {
+        $this->postJson('/api/registrations', [
+            'full_name' => 'Nama Ketik Sendiri', 'gender' => 'P',
+            'birth_place' => 'Jakarta', 'birth_date' => '1985-03-10',
+            'email' => 'sari@example.com', 'phone' => '08123',
+            'nip' => 'NIP001', 'position' => 'Guru', 'unit' => 'SD',
+            'event_id' => $this->event->id,
+            'category_id' => $this->categoryGuru->id,
+        ])->assertStatus(201);
+
+        $this->assertSame('Bu Sari', Participant::where('email', 'sari@example.com')->sole()->full_name);
+    }
+
     public function test_orangtua_wajib_isi_nama_dan_kelas_anak(): void
     {
         $response = $this->postJson('/api/registrations', [
@@ -199,18 +260,22 @@ class RegistrationTest extends TestCase
             ->assertJsonValidationErrors(['child_name', 'child_class']);
     }
 
-    public function test_alumni_wajib_isi_tahun_lulus(): void
+    public function test_umum_tidak_wajib_isi_tahun_lulus(): void
     {
         $response = $this->postJson('/api/registrations', [
-            'full_name' => 'Alumni Test', 'gender' => 'L',
+            'full_name' => 'Umum Test', 'gender' => 'L',
             'birth_place' => 'Bandung', 'birth_date' => '2000-05-15',
-            'email' => 'alumni@example.com', 'phone' => '08123',
+            'email' => 'umum@example.com', 'phone' => '08123',
             'event_id' => $this->event->id,
-            'category_id' => $this->categoryAlumni->id,
+            'category_id' => $this->categoryUmum->id,
         ]);
 
-        $response->assertStatus(422)
-            ->assertJsonValidationErrors(['graduation_year']);
+        $response->assertStatus(201)
+            ->assertJsonPath('data.registration.registration_number', 'A-0001');
+
+        $this->assertNull(
+            Participant::where('email', 'umum@example.com')->sole()->graduation_year
+        );
     }
 
     // ========================================================================
