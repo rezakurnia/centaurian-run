@@ -40,7 +40,7 @@
                     <p class="body-md uppercase">Pendaftaran</p>
                     <h1 class="heading-lg mx-auto mt-4 max-w-[22ch] text-balance">Amankan nomor pesertamu.</h1>
                     <p class="body-lg mx-auto mt-4 max-w-140 text-balance">
-                        Pilih kategori, isi datamu, lalu bayar lewat Midtrans. Pendaftaran selesai setelah pembayaran berhasil.
+                        Pilih kategori, isi datamu, lalu bayar. Pendaftaran selesai setelah pembayaran berhasil.
                         @if ($event) <br>{{ $name }} · {{ $date }}@if ($event->location) · {{ $event->location }}@endif @endif
                     </p>
                 </div>
