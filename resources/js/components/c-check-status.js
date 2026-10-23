@@ -1,5 +1,7 @@
 // BIB Checking page: POST /api/registrations/check-status, then open the result as a pop-up —
-// the celebration BIB card for lunas/gratis registrations, an informational card for the rest.
+// the celebration BIB card (with the QR) for lunas/gratis registrations, an informational card for the rest.
+import { drawBarcode, stashedBarcode } from './barcode-card.js';
+
 const form = document.getElementById('status-form');
 
 if (form) {
@@ -42,7 +44,57 @@ if (form) {
         field(card, 'name').textContent = r.participant?.full_name ?? '—';
         field(card, 'category').textContent = r.category;
         field(card, 'package').textContent = r.package;
+        qrBlock(card, r.registration_number, r.barcode ?? stashedBarcode(r.registration_number));
         return card;
+    };
+
+    // The API sends the barcode only for a lookup that included the email; a number-only lookup
+    // gets a small email form that repeats the lookup with both and then draws the QR.
+    const qrBlock = (card, number, barcode) => {
+        const wrap = field(card, 'qr-wrap');
+        const qrForm = field(card, 'qr-form');
+        const draw = async (code) => {
+            const canvas = field(card, 'qr');
+            await drawBarcode(canvas, code);
+            field(card, 'qr-download').href = canvas.toDataURL('image/png');
+            wrap.hidden = false;
+            qrForm.hidden = true;
+        };
+        if (barcode) return draw(barcode);
+
+        const email = field(card, 'qr-email');
+        const qrErr = field(card, 'qr-error');
+        email.id = `qr-email-${number}`;
+        field(card, 'qr-label').htmlFor = email.id;
+        qrErr.id = `${email.id}-error`;
+        email.setAttribute('aria-describedby', qrErr.id);
+        qrForm.hidden = false;
+        qrForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const value = email.value.trim();
+            if (!value) return setErr(qrErr, 'Masukkan email yang dipakai saat mendaftar.'), email.focus();
+            const btn = qrForm.querySelector('button');
+            btn.disabled = true;
+            setErr(qrErr, '');
+            try {
+                const res = await json('/api/registrations/check-status', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ registration_number: number, email: value }),
+                });
+                const out = await res.json().catch(() => ({}));
+                const code = out.data?.[0]?.barcode;
+                if (res.ok && code) return await draw(code);
+                setErr(qrErr, res.status === 429 ? 'Terlalu banyak percobaan. Tunggu sebentar lalu coba lagi.'
+                    : res.status === 422 ? 'Format email tidak valid.'
+                    : 'Email tidak cocok dengan nomor peserta ini.');
+                email.focus();
+            } catch {
+                setErr(qrErr, 'Tidak bisa terhubung ke server. Periksa koneksimu lalu coba lagi.');
+            } finally {
+                btn.disabled = false;
+            }
+        });
     };
 
     const statusCard = (r) => {

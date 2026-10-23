@@ -193,9 +193,11 @@ class RegistrationController extends Controller
     {
         $query = Registration::with(['participant', 'category', 'package', 'event']);
 
+        // Number and email together must both match: that pair is what unlocks the barcode (see PublicRegistrationResource)
         if ($request->filled('registration_number')) {
             $query->where('registration_number', $request->registration_number);
-        } else {
+        }
+        if ($request->filled('email')) {
             $query->whereHas('participant', function ($q) use ($request) {
                 $q->where('email', $request->email);
             });

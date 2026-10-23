@@ -6,7 +6,9 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
- * Slim shape for the unauthenticated BIB check: no email, phone, barcode, or other personal data.
+ * Slim shape for the unauthenticated BIB check: no email, phone or other personal data.
+ * The barcode is the scan credential, so it is only returned when the lookup included the
+ * participant's email (registration numbers are sequential and easy to guess).
  */
 class PublicRegistrationResource extends JsonResource
 {
@@ -23,8 +25,14 @@ class PublicRegistrationResource extends JsonResource
             'created_at' => $this->created_at,
             'registration_status' => $this->registration_status,
             'payment_status' => $this->payment_status,
-            'bib_ready' => in_array($this->payment_status, ['paid', 'free'], true) && $this->registration_status !== 'cancelled',
+            'bib_ready' => $this->isBibReady(),
             'payment_url' => $this->payment_status === 'unpaid' ? $this->snap_redirect_url : null,
+            'barcode' => $this->when($request->filled('email') && $this->isBibReady(), $this->barcode),
         ];
+    }
+
+    private function isBibReady(): bool
+    {
+        return in_array($this->payment_status, ['paid', 'free'], true) && $this->registration_status !== 'cancelled';
     }
 }

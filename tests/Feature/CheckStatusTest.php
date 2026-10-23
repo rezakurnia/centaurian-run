@@ -167,6 +167,23 @@ class CheckStatusTest extends TestCase
         }
     }
 
+    public function test_barcode_hanya_dengan_email_dan_bib_siap(): void
+    {
+        $this->buatRegistrasi('budi@example.com', 'SW-0001', 'BUDI-SW-0001', 'confirmed', 'paid');
+        $this->buatRegistrasi('ani@example.com', 'SW-0002', 'ANI-SW-0002', 'pending', 'unpaid');
+        $url = '/api/registrations/check-status';
+
+        // Number alone is guessable: no barcode
+        $this->postJson($url, ['registration_number' => 'SW-0001'])->assertOk()->assertJsonMissingPath('data.0.barcode');
+        $this->postJson($url, ['email' => 'budi@example.com'])->assertOk()->assertJsonPath('data.0.barcode', 'BUDI-SW-0001');
+        $this->postJson($url, ['registration_number' => 'SW-0001', 'email' => 'budi@example.com'])
+            ->assertOk()->assertJsonCount(1, 'data')->assertJsonPath('data.0.barcode', 'BUDI-SW-0001');
+        // Mismatched pair finds nothing
+        $this->postJson($url, ['registration_number' => 'SW-0001', 'email' => 'ani@example.com'])->assertNotFound();
+        // Unpaid: email matches but the BIB is not ready, so still no barcode
+        $this->postJson($url, ['email' => 'ani@example.com'])->assertOk()->assertJsonMissingPath('data.0.barcode');
+    }
+
     public function test_halaman_bib_checking_tanpa_form_unggah_bukti(): void
     {
         $this->withoutVite();

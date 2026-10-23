@@ -14,10 +14,12 @@ export const stashedBarcode = (number) => {
     try { return sessionStorage.getItem(key(number)); } catch { return null; }
 };
 
+export const drawBarcode = (canvas, barcode) => QRCode.toCanvas(canvas, barcode, { width: 256, margin: 2 });
+
 export const showBarcode = async (number, barcode) => {
     if (!dialog || !barcode) return;
     const canvas = document.getElementById('barcode-canvas');
-    await QRCode.toCanvas(canvas, barcode, { width: 256, margin: 2 });
+    await drawBarcode(canvas, barcode);
     document.getElementById('barcode-number').textContent = number;
     document.getElementById('barcode-download').href = canvas.toDataURL('image/png');
 

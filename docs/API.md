@@ -1145,12 +1145,14 @@ Fitur-fitur tambahan yang ditambahkan setelah versi awal.
 
 **Deskripsi:** Cek status pendaftaran dengan nomor peserta **atau** email.
 
+Boleh juga keduanya: nomor **dan** email harus cocok (kalau tidak, 404). Field `barcode` hanya ada di respons bila request menyertakan `email` dan BIB sudah siap (lunas/gratis, tidak dibatalkan); nomor peserta saja tidak pernah membuka barcode karena nomornya berurutan dan mudah ditebak.
+
 **Request Body:**
 
 | Field | Tipe | Wajib |
 |---|---|---|
-| registration_number | string | Salah satu |
-| email | email | Salah satu |
+| registration_number | string | Salah satu (atau keduanya) |
+| email | email | Salah satu (atau keduanya) |
 
 **Contoh Request:**
 ```json

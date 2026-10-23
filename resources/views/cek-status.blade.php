@@ -72,7 +72,22 @@
                 </dl>
             </div>
 
-            <p class="body-md mt-gutter rounded-sm bg-beige p-4">Tunjukkan nomor BIB ini saat pengambilan racepack dan check-in di hari acara.</p>
+            {{-- QR kartu masuk: drawn when the lookup included the email (the API only returns the barcode then); otherwise an email form asks for it --}}
+            <div class="mt-gutter rounded-sm bg-beige p-fluid-lg text-center">
+                <div data-f="qr-wrap" hidden>
+                    <canvas data-f="qr" class="mx-auto max-w-full rounded-sm" role="img" aria-label="QR code kartu masuk"></canvas>
+                    <p class="mt-4"><a class="c-link inline-block py-3 -my-3" data-f="qr-download" href="#" download="qr-peserta.png">Unduh QR</a></p>
+                </div>
+                <form data-f="qr-form" class="mx-auto max-w-sm" novalidate hidden>
+                    <label class="c-label mb-2 block" data-f="qr-label">Email pendaftaran untuk menampilkan QR</label>
+                    <input class="c-input text-center" data-f="qr-email" type="email" autocomplete="email" autocapitalize="off" spellcheck="false" placeholder="nama@email.com">
+                    <p class="c-error justify-center" data-f="qr-error" role="alert" hidden></p>
+                    <div class="mt-4 flex justify-center">
+                        @include('partials.btn', ['type' => 'submit', 'label' => 'Tampilkan QR', 'color' => 'green', 'primary' => true])
+                    </div>
+                </form>
+                <p class="body-md mt-4">Tunjukkan QR dan nomor BIB ini saat pengambilan racepack dan check-in di hari acara.</p>
+            </div>
         </article>
     </template>
 
