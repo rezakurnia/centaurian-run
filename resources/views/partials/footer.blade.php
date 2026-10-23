@@ -14,7 +14,7 @@
         ['WhatsApp' => $s['whatsapp_url'] ?? '', 'Instagram' => $s['instagram_url'] ?? '', 'Facebook' => $s['facebook_url'] ?? ''],
         fn ($url) => preg_match('#^https?://#i', $url)
     );
-    $nav = ['Tentang' => '/#tentang', 'Kategori' => '/#kategori', 'Paket' => '/#paket', 'Jadwal' => '/#jadwal', 'Daftar' => '/daftar', 'BIB Checking' => '/cek-status', 'Hasil Lomba' => '/hasil'];
+    $nav = ['Tentang' => '/#tentang', 'Kategori' => '/#kategori', 'Paket' => '/#paket', 'Jadwal' => '/#jadwal', 'Daftar' => '/daftar', 'Cek BIB' => '/cek-status', 'Hasil lomba' => '/hasil'];
 @endphp
 <footer class="body-md {{ $class ?? '' }}">
     <div class="grid gap-x-gutter gap-y-8 sm:grid-cols-2 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
@@ -60,6 +60,6 @@
 
     <div class="mt-10 flex flex-col gap-x-gutter gap-y-1 border-t border-current pt-4 sm:flex-row sm:items-center sm:justify-between">
         <p>© {{ now()->year }} Alcent Centaurian Run · Yayasan Taqwa Cerdas Kreatif. Hak cipta dilindungi.</p>
-        <a class="c-link inline-block py-3" href="/login">Login panitia</a>
+        <a class="c-link inline-block py-3" href="/login">Masuk panitia</a>
     </div>
 </footer>

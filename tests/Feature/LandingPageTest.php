@@ -103,7 +103,7 @@ class LandingPageTest extends TestCase
             ->assertOk()
             ->assertSee('/#kategori')
             ->assertDontSee('#rute')
-            ->assertDontSee('#tata-tertib');
+            ->assertDontSee('href="#tata-tertib"');
     }
 
     public function test_rute_5k_tampil_beserta_penandanya(): void

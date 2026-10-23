@@ -40,15 +40,15 @@
                     {{-- Unknown participant number --}}
                     <article class="c-step">
                         <h2 class="heading-md">Pendaftaran tidak ditemukan.</h2>
-                        <p class="body-lg mt-4">Periksa kembali tautannya, atau cek status dengan nomor peserta/emailmu di halaman BIB Checking.</p>
-                        <p class="mt-6"><a class="c-link" href="/cek-status">Buka BIB Checking →</a></p>
+                        <p class="body-lg mt-4">Periksa kembali tautannya, atau cek status dengan nomor peserta/emailmu di halaman Cek BIB.</p>
+                        <p class="mt-6"><a class="c-link" href="/cek-status">Buka Cek BIB →</a></p>
                     </article>
                 @elseif ($paid)
                     {{-- The participant number only appears once the payment is settled --}}
                     <article class="c-step">
                         <div class="rounded-sm bg-(image:--gradient-hero) p-fluid-lg text-center">
                             <p class="body-md uppercase">Peserta Resmi</p>
-                            <h2 class="heading-sm mt-2">Pendaftaran berhasil!</h2>
+                            <h2 class="heading-sm mt-2">Pendaftaran berhasil.</h2>
                             <p class="body-lg mx-auto mt-3 max-w-140 text-balance">
                                 {{ $registration->payment_status === 'free'
                                     ? 'Pendaftaranmu sudah terkonfirmasi sebagai peserta.'
@@ -93,7 +93,7 @@
                                 <a class="c-link" href="{{ $registration->snap_redirect_url }}">Lanjutkan pembayaran →</a>
                             @endif
                             <a class="c-link" href="/pembayaran/selesai/{{ rawurlencode($registration->registration_number) }}">Muat ulang halaman</a>
-                            <a class="c-link" href="/cek-status">BIB Checking</a>
+                            <a class="c-link" href="/cek-status">Cek BIB</a>
                         </div>
                     </article>
                 @endif

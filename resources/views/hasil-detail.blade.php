@@ -20,7 +20,7 @@
             <div class="grid grid-cols-6 gap-gutter md:grid-cols-16">
                 <div class="col-span-full md:col-start-2 md:col-span-14 text-center">
                     <p class="body-md uppercase">Hasil lomba</p>
-                    <h1 class="heading-lg mx-auto mt-4 max-w-[22ch] text-balance">{{ $no }}</h1>
+                    <h1 class="heading-lg mx-auto mt-4 max-w-[22ch] text-balance">Hasil {{ $no }}</h1>
                 </div>
             </div>
         </div>

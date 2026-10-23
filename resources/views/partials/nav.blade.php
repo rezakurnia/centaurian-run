@@ -7,10 +7,10 @@
 
     if ($base === '') {
         $links['Rute'] = '#rute';
-        $links['Tata Tertib'] = '#tata-tertib';
+        $links['Tata tertib'] = '#tata-tertib';
     }
 
-    $links += ['BIB Checking' => '/cek-status', 'Hasil Lomba' => '/hasil'];
+    $links += ['Cek BIB' => '/cek-status', 'Hasil lomba' => '/hasil'];
     $current = fn (string $href) => $href === '/' . request()->path() ? 'page' : null;
     // Logo (shared by the desktop and mobile bars): 36x30 mark + wordmark
     $logo = '<span class="c-logo_mark"><img src="/images/logo.png" alt="" width="824" height="490"></span><span class="c-logo_text">Centaurian Run</span>';

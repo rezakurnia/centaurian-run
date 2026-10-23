@@ -2,7 +2,7 @@
     $c = $contents;
     // Admin → Pengaturan (same values as GET /api/settings); the active event's own fields win over these
     $s = app(\App\Services\SettingService::class)->getAllFlat();
-    $description = $event?->description ?: ($s['event_description'] ?? '') ?: 'Lebih dari sekadar lomba lari, Centaurian Run 2026 adalah gerakan Yayasan Taqwa Cerdas Kreatif untuk kebenaran, keadilan, dan kemanusiaan. Move with faith: setiap langkah berakar pada keyakinan untuk terus memperjuangkan kebaikan. Run with care: saling peduli dan menjaga, termasuk aksi nyata solidaritas untuk Palestina.';
+    $description = $event?->description ?: ($s['event_description'] ?? '') ?: 'Centaurian Run 2026 adalah lomba lari sekaligus gerakan Yayasan Taqwa Cerdas Kreatif untuk kebenaran, keadilan, dan kemanusiaan. Move with faith: setiap langkah berakar pada keyakinan untuk terus memperjuangkan kebaikan. Run with care: saling peduli dan menjaga, termasuk aksi nyata solidaritas untuk Palestina.';
     $rupiah = fn (int $p) => $p === 0 ? 'Gratis' : 'Rp' . number_format($p, 0, ',', '.');
     // The public price list only advertises paid packages; the free package stays internal to its category
     $paidPackages = $packages->where('price', '>', 0);
@@ -17,7 +17,7 @@
         [
             'id' => 'kategori', 'color' => 'red', 'href' => '/daftar', 'button' => 'Daftar',
             'title' => 'Semua bisa lari.',
-            'body' => 'Siswa, guru, orang tua, umum, sampai tamu dari luar. Centaurian Run terbuka untuk semua kalangan, pilih kategorimu saat mendaftar.',
+            'body' => 'Siswa, guru, orang tua, umum, sampai tamu dari luar. Pilih kategorimu saat mendaftar.',
         ],
         [
             'id' => 'paket', 'color' => 'yellow', 'href' => '/daftar', 'button' => 'Daftar',
@@ -25,7 +25,7 @@
             'body' => 'Paketmu otomatis menyesuaikan kategori. Untuk paket berbayar, kamu diarahkan ke halaman pembayaran dan kartu BIB terbuka begitu pembayaranmu lunas.',
         ],
         [
-            'id' => 'jadwal', 'color' => 'blue', 'href' => '/cek-status', 'button' => 'BIB Checking',
+            'id' => 'jadwal', 'color' => 'blue', 'href' => '/cek-status', 'button' => 'Cek BIB',
             'title' => 'Catat tanggalnya.',
             'body' => 'Datang lebih awal dan pemanasan bareng. Nomor BIB-mu bisa dicek kapan saja setelah pembayaran lunas.',
         ],
@@ -45,7 +45,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ $name }}</title>
+    <title>{{ $name }} · Lomba lari 5K Yayasan Taqwa Cerdas Kreatif</title>
     <meta name="description" content="{{ Str::limit($description, 155) }}">
     <link rel="icon" href="/favicon.ico" sizes="any">
     <link rel="icon" href="/favicon.png" type="image/png">
@@ -143,7 +143,7 @@
                             @elseif ($card['id'] === 'jadwal')
                                 <dl class="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1">
                                     <dt class="opacity-75">Tanggal</dt><dd>{{ $date ?? 'Segera diumumkan' }}</dd>
-                                    @if ($time)<dt class="opacity-75">Start</dt><dd>{{ $time }} WIB</dd>@endif
+                                    @if ($time)<dt class="opacity-75">Mulai</dt><dd>{{ $time }} WIB</dd>@endif
                                     @if ($event?->location)<dt class="opacity-75">Lokasi</dt><dd>{{ $event->location }}</dd>@endif
                                 </dl>
                             @endif
@@ -323,7 +323,7 @@
                 <div class="col-span-full md:col-start-2 md:col-span-14">
                     <h2 class="heading-lg text-center text-balance">Tata tertib resmi acara.</h2>
                     <p class="body-lg mx-auto mt-4 max-w-140 text-center text-balance">
-                        Dengan mendaftar, peserta dianggap sudah membaca dan menyetujui ketentuan berikut.
+                        Dengan mendaftar, kamu menyetujui ketentuan berikut.
                     </p>
 
                     <div class="mt-fluid-2xl grid gap-gutter md:grid-cols-2">

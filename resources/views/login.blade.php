@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="noindex">
-    <title>Login · Centaurian Run</title>
+    <title>Masuk · Centaurian Run</title>
     <link rel="icon" href="/favicon.ico" sizes="any">
     <link rel="icon" href="/favicon.png" type="image/png">
     @fonts
@@ -13,7 +13,7 @@
 <body class="font-sans k-body">
 <main class="k-login">
     <form id="login-form" class="c-step k-login_card" novalidate>
-        <h1 class="heading-xs">Login panitia &amp; admin</h1>
+        <h1 class="heading-xs">Masuk panitia dan admin</h1>
         <div class="c-field mt-5">
             <label class="c-label" for="username">Username</label>
             <input class="c-input" id="username" name="username" type="text" autocomplete="username" autocapitalize="off" spellcheck="false" aria-describedby="login-error">

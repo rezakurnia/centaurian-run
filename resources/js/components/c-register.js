@@ -50,6 +50,7 @@ if (form) {
         $('sum-category').textContent = cat?.dataset.name ?? 'Belum dipilih';
         $('sum-package').textContent = cat?.dataset.package || 'Ikut kategori';
         $('sum-price').textContent = cat?.dataset.price ? rupiah(Number(cat.dataset.price)) : '–';
+        submit.querySelector('.c-button_label').textContent = Number(cat?.dataset.price) > 0 ? 'Lanjut ke pembayaran' : 'Kirim pendaftaran';
         const quota = quotas.get(cat?.value);
         $('sum-quota').textContent = !quotasLoaded || !cat ? '–' : (quota ? `${quota.remaining} dari ${quota.quota} tempat` : 'Tidak terbatas');
         form.querySelectorAll('fieldset[data-for]').forEach((f) => {

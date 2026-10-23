@@ -10,8 +10,8 @@
     ];
     $faqs = [
         ['Apakah paket gratis langsung terkonfirmasi?', 'Ya. Paket gratis langsung berstatus terkonfirmasi, dan nomor peserta beserta barcode dikirim ke emailmu.'],
-        ['Bagaimana membayar paket berbayar?', 'Setelah mendaftar, selesaikan pembayaran sesuai instruksi yang muncul. Begitu pembayaranmu lunas, kartu BIB langsung terbuka di halaman BIB Checking.'],
-        ['Emailnya tidak masuk, bagaimana?', 'Periksa folder spam dulu. Nomor pesertamu juga bisa dilihat kapan saja lewat BIB Checking memakai nomor peserta atau emailmu.'],
+        ['Bagaimana membayar paket berbayar?', 'Setelah mendaftar, selesaikan pembayaran sesuai instruksi yang muncul. Begitu pembayaranmu lunas, kartu BIB langsung terbuka di halaman Cek BIB.'],
+        ['Emailnya tidak masuk, bagaimana?', 'Periksa folder spam dulu. Nomor pesertamu juga bisa dilihat kapan saja lewat halaman Cek BIB dengan nomor peserta atau emailmu.'],
         ['Bisakah satu email mendaftar dua kali?', 'Tidak. Satu email hanya bisa terdaftar satu kali per event. Gunakan email lain untuk peserta lain.'],
     ];
 @endphp
@@ -159,6 +159,7 @@
 
                                 <div class="flex flex-col items-start gap-4">
                                     <p class="c-error c-error_form" id="form-error" role="alert" hidden></p>
+                                    <p class="body-md">Dengan mengirim, kamu menyetujui <a class="c-link" href="/#tata-tertib">tata tertib acara</a>.</p>
                                     @include('partials.btn', ['type' => 'submit', 'label' => 'Kirim pendaftaran', 'color' => 'green', 'primary' => true, 'attributes' => 'id="register-submit"'])
                                 </div>
                             </form>
@@ -174,7 +175,7 @@
 
                             {{-- Shown by c-register.js after a 201 for free packages, or when Snap is unavailable --}}
                             <div id="register-success" class="c-step" tabindex="-1" hidden>
-                                <h2 class="heading-md" id="success-title">Pendaftaran berhasil!</h2>
+                                <h2 class="heading-md" id="success-title">Pendaftaran berhasil.</h2>
                                 <p class="body-lg mt-4" id="success-message"></p>
                                 <dl class="mt-6 grid grid-cols-[auto_1fr] gap-x-6 gap-y-2">
                                     <dt class="opacity-75">Nomor peserta</dt><dd class="heading-xs" id="success-number"></dd>
@@ -184,12 +185,12 @@
                                     <div class="rounded-sm bg-beige p-5" id="success-pay" hidden>
                                         <h3 class="heading-xs">Pembayaran belum tersedia</h3>
                                         {{-- Shown when the Snap transaction could not be created (paid package, no redirect URL) --}}
-                                        <p class="body-md mt-2">Halaman pembayaran belum bisa disiapkan. Pendaftaranmu tersimpan; hubungi panitia untuk menyelesaikan pembayaran.</p>
+                                        <p class="body-md mt-2">Halaman pembayaran belum bisa disiapkan. Pendaftaranmu tersimpan; hubungi panitia lewat kontak di bagian bawah halaman untuk menyelesaikan pembayaran.</p>
                                     </div>
                                     <div class="rounded-sm bg-beige p-5">
                                         <h3 class="heading-xs">Pantau statusmu</h3>
                                         <p class="body-md mt-2">Cek kapan saja dengan nomor peserta atau emailmu.</p>
-                                        <div class="mt-4"><a id="success-status-link" class="c-link" href="/cek-status">BIB Checking →</a></div>
+                                        <div class="mt-4"><a id="success-status-link" class="c-link" href="/cek-status">Cek BIB →</a></div>
                                     </div>
                                 </div>
                             </div>

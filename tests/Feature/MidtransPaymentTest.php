@@ -231,7 +231,7 @@ class MidtransPaymentTest extends TestCase
         $this->withoutVite();
         $this->get('/pembayaran/selesai/A-0001')
             ->assertOk()
-            ->assertSee('Pendaftaran berhasil!')
+            ->assertSee('Pendaftaran berhasil.')
             ->assertSee('A-0001');
     }
 
@@ -363,7 +363,7 @@ class MidtransPaymentTest extends TestCase
             ->assertOk()
             ->assertSee('Pembayaran sedang kami verifikasi')
             ->assertSee('Selesaikan pembayaranmu.')
-            ->assertDontSee('Pendaftaran berhasil!');
+            ->assertDontSee('Pendaftaran berhasil.');
     }
 
     public function test_halaman_selesai_menampilkan_nomor_setelah_pembayaran_lunas(): void
@@ -382,7 +382,7 @@ class MidtransPaymentTest extends TestCase
 
         $this->get('/pembayaran/selesai/A-0001')
             ->assertOk()
-            ->assertSee('Pendaftaran berhasil!')
+            ->assertSee('Pendaftaran berhasil.')
             ->assertSee('A-0001')
             ->assertSee('Lunas');
     }

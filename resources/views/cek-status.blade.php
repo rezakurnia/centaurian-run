@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>BIB Checking · Centaurian Run</title>
+    <title>Cek BIB · Centaurian Run</title>
     <meta name="description" content="Cek nomor BIB peserta Centaurian Run. Kartu BIB resmi muncul untuk pendaftaran yang pembayarannya sudah lunas.">
     <link rel="icon" href="/favicon.ico" sizes="any">
     <link rel="icon" href="/favicon.png" type="image/png">
@@ -24,8 +24,8 @@
         <div class="container">
             <div class="grid grid-cols-6 gap-gutter md:grid-cols-16">
                 <div class="col-span-full md:col-start-2 md:col-span-14 text-center">
-                    <p class="body-md uppercase">BIB Checking</p>
-                    <h1 class="heading-lg mx-auto mt-4 max-w-[22ch] text-balance">Ambil nomor BIB-mu.</h1>
+                    <p class="body-md uppercase">Cek BIB</p>
+                    <h1 class="heading-lg mx-auto mt-4 max-w-[22ch] text-balance">Cek nomor BIB-mu.</h1>
                     <p class="body-lg mx-auto mt-4 max-w-140 text-balance">Masukkan nomor peserta atau emailmu.</p>
                 </div>
             </div>
@@ -56,13 +56,13 @@
         <article class="c-step">
             <div class="rounded-sm bg-(image:--gradient-hero) p-fluid-lg text-center">
                 <p class="body-md uppercase">Peserta Resmi</p>
-                <h2 class="heading-sm mt-2">Selamat!</h2>
+                <h2 class="heading-sm mt-2">Selamat, kamu resmi ikut.</h2>
                 <p class="body-lg mx-auto mt-3 max-w-140 text-balance">Kamu sudah terdaftar sebagai peserta <strong data-f="event"></strong>.</p>
             </div>
 
             <div class="mt-gutter grid gap-gutter md:grid-cols-[minmax(0,0.9fr)_1.1fr] md:items-center">
                 <div class="rounded-sm bg-beige p-fluid-lg text-center">
-                    <p class="body-md opacity-75">Nomor BIB</p>
+                    <p class="body-md opacity-75">Nomor peserta (BIB)</p>
                     <p class="heading-md mt-2" data-f="number"></p>
                 </div>
                 <dl class="grid grid-cols-[auto_1fr] gap-x-6 gap-y-2">

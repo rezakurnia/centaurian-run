@@ -173,8 +173,8 @@ class CheckStatusTest extends TestCase
 
         $this->get('/cek-status')
             ->assertOk()
-            ->assertSee('BIB Checking')
-            ->assertSee('Selamat!')
+            ->assertSee('Cek BIB')
+            ->assertSee('Selamat, kamu resmi ikut.')
             ->assertSee('id="bib-card"', false)
             ->assertSee('id="status-dialog"', false)
             ->assertSee('id="status-close"', false)

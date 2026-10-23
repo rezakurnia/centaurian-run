@@ -18,12 +18,12 @@
 
     <p>Berikut detail pendaftaranmu:</p>
     <ul>
-        <li><strong>Nomor Peserta:</strong> {{ $registration->registration_number }}</li>
+        <li><strong>Nomor peserta:</strong> {{ $registration->registration_number }}</li>
         <li><strong>Barcode:</strong> {{ $registration->barcode }}</li>
         <li><strong>Kategori:</strong> {{ $registration->category->name ?? '-' }}</li>
         <li><strong>Paket:</strong> {{ $registration->package->name ?? '-' }}</li>
         <li><strong>Event:</strong> {{ $registration->event->name ?? '-' }}</li>
-        <li><strong>Status Pembayaran:</strong> {{ $registration->payment_status === 'free' ? 'Gratis' : 'Lunas' }}</li>
+        <li><strong>Status pembayaran:</strong> {{ $registration->payment_status === 'free' ? 'Gratis' : 'Lunas' }}</li>
     </ul>
 
     <p>Tunjukkan barcode ini saat pengambilan racepack dan check-in di hari acara.</p>
