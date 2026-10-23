@@ -851,7 +851,10 @@ input.c-input[readonly] { background-color: var(--color-beige); }
     background-color: var(--color-beige);
     transition: border-color var(--transition-duration-fast) ease, background-color var(--transition-duration-fast) ease;
 }
-.c-option_card.-compact { padding-block: calc(var(--spacing) * 3); }
+/* Two-up (gender): tighter padding, ring centred, body-md title so "Perempuan" fits at 375px */
+.c-option_card.-compact { padding: calc(var(--spacing) * 3) calc(var(--spacing) * 10) calc(var(--spacing) * 3) calc(var(--spacing) * 3); }
+.c-option_card.-compact .c-option_check { top: 50%; right: calc(var(--spacing) * 3); translate: 0 -50%; }
+.c-option_card.-compact .c-option_title { font-size: var(--text-md); }
 .c-option:hover .c-option_card { border-color: var(--color-sand); }
 .c-option input:checked + .c-option_card { border-color: var(--color-plum-night); background-color: var(--color-pink); }
 .c-option input:focus-visible + .c-option_card { outline: 2px solid var(--color-rose-pop); outline-offset: 2px; }
@@ -1023,6 +1026,13 @@ c-deluxe-callout { display: block; }
 .k-shell { display: grid; grid-template-columns: minmax(0, 1fr); min-height: 100svh; }
 @media (width >= 1000px) { .k-shell { grid-template-columns: 15rem minmax(0, 1fr); } }
 .k-side { display: flex; flex-direction: column; gap: calc(var(--spacing) * 4); padding: calc(var(--spacing) * 4); background-color: var(--color-white); border-bottom: 1px solid var(--color-hairline-mist); }
+/* Phones: brand + user on one row, nav scrolling under them; rows sized to content so the header never stretches */
+@media (width < 1000px) {
+    .k-shell { grid-template-rows: auto 1fr; }
+    .k-side { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: calc(var(--spacing) * 2) calc(var(--spacing) * 3); align-items: center; padding-block: calc(var(--spacing) * 3); }
+    .k-nav { grid-column: 1 / -1; grid-row: 2; mask-image: linear-gradient(to right, #000 calc(100% - 2rem), transparent); }
+    .k-nav:has(a:last-child[aria-current]) { mask-image: none; }
+}
 @media (width >= 1000px) { .k-side { position: sticky; top: 0; height: 100svh; border-bottom: 0; border-right: 1px solid var(--color-hairline-mist); } }
 .k-brand { display: inline-flex; align-items: center; min-height: calc(var(--spacing) * 11); font-size: var(--text-heading-xs); letter-spacing: -0.06em; font-weight: 700; }
 .k-nav { display: flex; gap: calc(var(--spacing) * 1); overflow-x: auto; }
@@ -1039,6 +1049,8 @@ c-deluxe-callout { display: block; }
 .k-card { padding: calc(var(--spacing) * 5); border-radius: var(--radius-sm); background-color: var(--color-white); }
 .k-row { display: flex; flex-wrap: wrap; gap: calc(var(--spacing) * 2); }
 .k-row .c-input { flex: 1 1 14rem; }
+/* Phones: row buttons share the width, easier to hit one-handed (scan, start/finish, pager, dialog actions) */
+@media (width < 700px) { .k-row > .k-btn { flex: 1 1 auto; } }
 .k-btn { height: calc(var(--spacing) * 13); padding: 0 calc(var(--spacing) * 5); border-radius: var(--radius-sm); background-color: var(--color-plum-night); color: var(--color-white); font-weight: 500; cursor: pointer; }
 .k-btn.-ghost { background: transparent; color: var(--color-plum-night); border: 1px solid var(--color-plum-night); height: calc(var(--spacing) * 11); }
 .k-btn[disabled] { opacity: .5; cursor: not-allowed; }
@@ -1068,6 +1080,18 @@ c-deluxe-callout { display: block; }
 .k-check { display: flex; align-items: center; gap: calc(var(--spacing) * 3); min-height: calc(var(--spacing) * 11); font-weight: 500; cursor: pointer; }
 .k-check input { width: 1.25rem; height: 1.25rem; accent-color: var(--color-plum-night); }
 .k-check input:focus-visible { outline: 2px solid var(--color-rose-pop); outline-offset: 2px; }
+
+/* Phones: each table row is a card of label/value lines (labels come from data-label, set in main.js) */
+@media (width < 700px) {
+    .k-card .c-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+    .k-card .c-table tr { display: block; padding-block: calc(var(--spacing) * 3); border-bottom: 1px solid var(--color-hairline-mist); }
+    .k-card .c-table td { display: flex; justify-content: space-between; align-items: center; gap: calc(var(--spacing) * 4); padding: calc(var(--spacing) * 1) 0; border: 0; white-space: normal; text-align: right; overflow-wrap: anywhere; }
+    .k-card .c-table td::before { content: attr(data-label); flex: none; max-width: 45%; opacity: .75; font-size: var(--text-md); text-align: left; }
+    .k-card .c-table td:is([colspan], [data-label='']) { display: block; text-align: left; }
+    .k-card .c-table td:is([colspan], [data-label=''])::before { content: none; }
+    .k-card .c-table td[data-label=''] { display: flex; flex-wrap: wrap; gap: calc(var(--spacing) * 2); padding-top: calc(var(--spacing) * 2); overflow-wrap: normal; }
+    .k-card .c-table td[data-label=''] .k-btn { flex: 1 1 auto; padding-inline: calc(var(--spacing) * 3); white-space: nowrap; }
+}
 
 .k-login_card .c-link, .k-dialog .c-link { display: inline-block; padding-block: calc(var(--spacing) * 3); }
 .k-nav { scrollbar-width: thin; }

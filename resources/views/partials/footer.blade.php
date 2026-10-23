@@ -28,7 +28,7 @@
 
         <nav aria-label="Footer">
             <h2 class="font-bold">Jelajahi</h2>
-            <ul class="mt-2">
+            <ul class="mt-2 grid grid-cols-2 gap-x-gutter sm:block">
                 @foreach ($nav as $label => $href)
                     <li><a class="c-link inline-block py-3" href="{{ $href }}">{{ $label }}</a></li>
                 @endforeach

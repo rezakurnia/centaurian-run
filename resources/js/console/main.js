@@ -56,6 +56,17 @@ if (main) {
             .filter(([, , r]) => r === 'panitia' || a.user.role === 'admin')
             .map(([label, href]) => `<a href="${href}"${location.pathname === href ? ' aria-current="page"' : ''}>${label}</a>`)
             .join('');
+        document.querySelector('.k-nav [aria-current]')?.scrollIntoView({ inline: 'center', block: 'nearest' });
+        // Phones show table rows as cards: label each cell with its column header, whichever module rendered the rows
+        for (const body of document.querySelectorAll('.k-scroll tbody')) {
+            const label = () => {
+                // The actions column has only an sr-only "Aksi" header: no visible label, buttons go full width
+                const heads = [...body.closest('table').querySelectorAll('thead th')].map((th) => (th.querySelector('.sr-only') ? '' : th.textContent.trim()));
+                for (const tr of body.rows) [...tr.cells].forEach((td, i) => { if (td.colSpan === 1) td.dataset.label = heads[i] ?? ''; });
+            };
+            new MutationObserver(label).observe(body, { childList: true });
+            label();
+        }
         document.getElementById('k-logout').addEventListener('click', async () => {
             await api('/logout', { method: 'POST' });
             auth.clear();

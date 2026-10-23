@@ -10,9 +10,9 @@
         </table>
     </div>
     <div class="k-row mt-4 items-center">
-        <button type="button" class="k-btn -ghost" id="log-prev">Sebelumnya</button>
-        <span id="log-page" class="body-md" aria-live="polite"></span>
-        <button type="button" class="k-btn -ghost" id="log-next">Berikutnya</button>
+        <button type="button" class="k-btn -ghost flex-1 sm:flex-none" id="log-prev">Sebelumnya</button>
+        <span id="log-page" class="body-md order-last w-full text-center sm:order-none sm:w-auto" aria-live="polite"></span>
+        <button type="button" class="k-btn -ghost flex-1 sm:flex-none" id="log-next">Berikutnya</button>
     </div>
 </section>
 
