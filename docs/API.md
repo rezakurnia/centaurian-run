@@ -1090,50 +1090,9 @@ Fitur-fitur tambahan yang ditambahkan setelah versi awal.
 
 ---
 
-## 7.3 Upload Bukti Bayar
+## 7.3 Pembayaran Midtrans
 
-**Endpoint:** `POST /registrations/{registration_number}/payment-proof`
-
-**Akses:** Publik (peserta yang sudah daftar).
-
-**Deskripsi:** Upload bukti transfer untuk paket berbayar.
-
-**Request:** `multipart/form-data`
-
-| Field | Tipe | Wajib | Keterangan |
-|---|---|---|---|
-| payment_proof | file | Ya | JPG, JPEG, PNG, atau PDF. Maks 2 MB. |
-
-**Response Sukses (200):**
-
-```json
-{
-  "message": "Bukti pembayaran berhasil diunggah. Menunggu verifikasi admin.",
-  "data": {
-    "id": 1,
-    "registration_number": "SW-0001",
-    "payment_status": "unpaid",
-    "payment_proof": "payment_proofs/xxxxx.jpg",
-    "payment_proof_url": "http://127.0.0.1:8000/storage/payment_proofs/xxxxx.jpg"
-  }
-}
-```
-
-**Response Gagal — Format File Salah (422):**
-```json
-{
-  "message": "File harus berupa JPG, JPEG, PNG, atau PDF.",
-  "errors": { "payment_proof": ["..."] }
-}
-```
-
-**Response Gagal — Paket Gratis (422):**
-```json
-{
-  "message": "Paket gratis tidak memerlukan bukti pembayaran.",
-  "data": null
-}
-```
+Tidak ada unggah bukti bayar. Paket berbayar langsung dibuatkan transaksi Snap pada `POST /registrations`; respons 201 membawa `payment.redirect_url` dan peserta diarahkan ke sana. Jika Snap gagal dibuat, pendaftaran dibatalkan dan API mengembalikan 503.
 
 ---
 

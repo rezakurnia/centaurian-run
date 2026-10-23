@@ -9,6 +9,7 @@ use App\Models\Package;
 use App\Models\Participant;
 use App\Models\Registration;
 use App\Models\Setting;
+use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
 class RegistrationTest extends TestCase
@@ -34,6 +35,15 @@ class RegistrationTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+
+        // A paid registration needs a Snap page, otherwise it is rolled back
+        config(['services.midtrans.server_key' => 'SB-Mid-server-test']);
+        Http::fake([
+            'app.sandbox.midtrans.com/*' => Http::response([
+                'token' => 'snap-token',
+                'redirect_url' => 'https://app.sandbox.midtrans.com/snap/v2/vtweb/snap-token',
+            ], 201),
+        ]);
 
         $this->event = Event::create([
             'name' => 'Centaurian FunRun 2026',

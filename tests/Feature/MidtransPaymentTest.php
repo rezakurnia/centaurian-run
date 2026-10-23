@@ -118,20 +118,31 @@ class MidtransPaymentTest extends TestCase
         Mail::assertNotSent(RegistrationConfirmationMail::class);
     }
 
-    public function test_snap_gagal_tetap_menyimpan_pendaftaran(): void
+    public function test_order_id_yang_sudah_terpakai_diulang_dengan_akhiran_baru(): void
+    {
+        Http::fake([
+            'app.sandbox.midtrans.com/*' => Http::sequence()
+                ->push(['error_messages' => ['transaction_details.order_id sudah digunakan']], 400)
+                ->push(['token' => 'snap-token-123', 'redirect_url' => 'https://app.sandbox.midtrans.com/snap/v2/vtweb/snap-token-123'], 201),
+        ]);
+
+        $this->postJson('/api/registrations', $this->umumPayload())
+            ->assertCreated()
+            ->assertJsonPath('payment.redirect_url', 'https://app.sandbox.midtrans.com/snap/v2/vtweb/snap-token-123');
+
+        $this->assertMatchesRegularExpression('/^A-0001-R[a-z0-9]{5}$/', Registration::sole()->payment_order_id);
+    }
+
+    public function test_snap_gagal_membatalkan_pendaftaran_berbayar(): void
     {
         Http::fake([
             'app.sandbox.midtrans.com/*' => Http::response(['status_message' => 'unauthorized'], 401),
         ]);
 
         $this->postJson('/api/registrations', $this->umumPayload())
-            ->assertCreated()
-            ->assertJsonPath('payment', null);
+            ->assertStatus(503);
 
-        $registration = Registration::sole();
-
-        $this->assertNull($registration->snap_token);
-        $this->assertSame('unpaid', $registration->payment_status);
+        $this->assertSame(0, Registration::count());
     }
 
     public function test_kunci_sandbox_tanpa_prefix_sb_tetap_memakai_endpoint_sandbox(): void
@@ -280,17 +291,20 @@ class MidtransPaymentTest extends TestCase
     public function test_status_pembayaran_tanpa_snap_token_tidak_memanggil_status_api(): void
     {
         Http::fake([
-            'app.sandbox.midtrans.com/*' => Http::response(['status_message' => 'unauthorized'], 401),
+            'app.sandbox.midtrans.com/*' => Http::response([
+                'token' => 'snap-token-123',
+                'redirect_url' => 'https://app.sandbox.midtrans.com/snap/v2/vtweb/snap-token-123',
+            ], 201),
             'api.sandbox.midtrans.com/*' => Http::response([
-                'order_id' => 'A-0002',
+                'order_id' => 'A-0001',
                 'transaction_status' => 'settlement',
                 'status_code' => '200',
                 'gross_amount' => '150000.00',
             ], 200),
         ]);
 
-        // Snap fails, so the registration is stored without a token
         $this->postJson('/api/registrations', $this->umumPayload())->assertCreated();
+        Registration::sole()->update(['snap_token' => null]);
 
         $this->postJson('/api/registrations/A-0001/payment-status')
             ->assertOk()
@@ -319,6 +333,127 @@ class MidtransPaymentTest extends TestCase
         $this->assertSame('unpaid', $registration->payment_status);
         $this->assertNull($registration->paid_at);
         Mail::assertNotSent(RegistrationVerifiedMail::class);
+    }
+
+    private function fakeSnap(): void
+    {
+        Mail::fake();
+        Http::fake([
+            'app.sandbox.midtrans.com/*' => Http::response([
+                'token' => 'snap-token-123',
+                'redirect_url' => 'https://app.sandbox.midtrans.com/snap/v2/vtweb/snap-token-123',
+            ], 201),
+            'api.sandbox.midtrans.com/*' => Http::response(['status_message' => 'Transaction not found.', 'status_code' => '404'], 404),
+        ]);
+    }
+
+    public function test_notifikasi_expire_melepas_kuota_dan_membuka_bayar_ulang(): void
+    {
+        $this->fakeSnap();
+        $this->postJson('/api/registrations', $this->umumPayload())->assertCreated();
+
+        $this->postJson('/api/payments/midtrans/notification', $this->notification('A-0001', 'expire'))->assertOk();
+
+        $registration = Registration::sole();
+        $this->assertSame('cancelled', $registration->registration_status);
+        $this->assertSame('unpaid', $registration->payment_status);
+        $this->assertNotNull($registration->payment_expired_at);
+
+        $this->postJson('/api/registrations/check-status', ['registration_number' => 'A-0001'])
+            ->assertJsonPath('data.0.can_retry_payment', true)
+            ->assertJsonPath('data.0.payment_url', null);
+    }
+
+    public function test_bayar_ulang_membuat_order_baru_dan_mengambil_kuota_lagi(): void
+    {
+        $this->fakeSnap();
+        $this->postJson('/api/registrations', $this->umumPayload())->assertCreated();
+        $this->postJson('/api/payments/midtrans/notification', $this->notification('A-0001', 'expire'))->assertOk();
+
+        $this->postJson('/api/registrations/A-0001/payment-retry')
+            ->assertOk()
+            ->assertJsonPath('payment.redirect_url', 'https://app.sandbox.midtrans.com/snap/v2/vtweb/snap-token-123');
+
+        $registration = Registration::sole();
+        $this->assertSame('pending', $registration->registration_status);
+        $this->assertNull($registration->payment_expired_at);
+        $this->assertMatchesRegularExpression('/^A-0001-R[a-z0-9]{5}$/', $registration->payment_order_id);
+
+        // The first attempt expiring later must not cancel the new one
+        $this->postJson('/api/payments/midtrans/notification', $this->notification('A-0001', 'expire'))->assertOk();
+        $this->assertSame('pending', $registration->fresh()->registration_status);
+
+        // Paying the new attempt confirms it
+        $this->postJson('/api/payments/midtrans/notification', $this->notification($registration->payment_order_id))->assertOk();
+        $this->assertSame('paid', $registration->fresh()->payment_status);
+        $this->assertSame('confirmed', $registration->fresh()->registration_status);
+    }
+
+    public function test_bayar_ulang_ditolak_saat_kuota_penuh(): void
+    {
+        $this->fakeSnap();
+        $this->categoryUmum->update(['quota' => 1]);
+        $this->postJson('/api/registrations', $this->umumPayload())->assertCreated();
+        $this->postJson('/api/payments/midtrans/notification', $this->notification('A-0001', 'expire'))->assertOk();
+
+        $other = $this->umumPayload();
+        $other['email'] = 'lain@example.com';
+        $other['phone'] = '081200000099';
+        $this->postJson('/api/registrations', $other)->assertCreated();
+
+        $this->postJson('/api/registrations/A-0001/payment-retry')->assertStatus(422);
+        $this->assertSame('cancelled', Registration::where('registration_number', 'A-0001')->first()->registration_status);
+    }
+
+    public function test_pembayaran_terlambat_menghidupkan_lagi_pendaftaran_yang_lepas(): void
+    {
+        $this->fakeSnap();
+        $this->postJson('/api/registrations', $this->umumPayload())->assertCreated();
+        $this->postJson('/api/payments/midtrans/notification', $this->notification('A-0001', 'expire'))->assertOk();
+
+        $this->postJson('/api/payments/midtrans/notification', $this->notification('A-0001'))->assertOk();
+
+        $registration = Registration::sole();
+        $this->assertSame('paid', $registration->payment_status);
+        $this->assertSame('confirmed', $registration->registration_status);
+        Mail::assertSent(RegistrationVerifiedMail::class, 1);
+    }
+
+    public function test_pembayaran_untuk_pendaftaran_dibatalkan_panitia_tidak_menghidupkannya(): void
+    {
+        $this->fakeSnap();
+        $this->postJson('/api/registrations', $this->umumPayload())->assertCreated();
+        Registration::sole()->update(['registration_status' => 'cancelled']);
+
+        $this->postJson('/api/payments/midtrans/notification', $this->notification('A-0001'))->assertOk();
+
+        $this->assertSame('cancelled', Registration::sole()->registration_status);
+        $this->assertSame('paid', Registration::sole()->payment_status);
+        Mail::assertNotSent(RegistrationVerifiedMail::class);
+    }
+
+    public function test_notifikasi_ganda_hanya_mengirim_satu_email(): void
+    {
+        $this->fakeSnap();
+        $this->postJson('/api/registrations', $this->umumPayload())->assertCreated();
+
+        $this->postJson('/api/payments/midtrans/notification', $this->notification('A-0001'))->assertOk();
+        $this->postJson('/api/payments/midtrans/notification', $this->notification('A-0001'))->assertOk();
+
+        Mail::assertSent(RegistrationVerifiedMail::class, 1);
+    }
+
+    public function test_command_melepas_pembayaran_yang_kedaluwarsa(): void
+    {
+        $this->fakeSnap();
+        $this->postJson('/api/registrations', $this->umumPayload())->assertCreated();
+        Registration::sole()->update(['payment_expires_at' => now()->subHour()]);
+
+        $this->artisan('payments:release-lapsed')->assertSuccessful();
+
+        $registration = Registration::sole();
+        $this->assertSame('cancelled', $registration->registration_status);
+        $this->assertNotNull($registration->payment_expired_at);
     }
 
     public function test_notifikasi_dengan_signature_salah_ditolak(): void

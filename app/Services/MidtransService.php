@@ -2,9 +2,13 @@
 
 namespace App\Services;
 
+use App\Mail\RegistrationVerifiedMail;
 use App\Models\Registration;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 use Throwable;
 
 /**
@@ -39,10 +43,10 @@ class MidtransService
     /**
      * Creates the Snap transaction for a paid registration and remembers the token and
      * redirect URL. Returns the payment page URL, or null when the package is free,
-     * Midtrans is not configured, or the API call fails — the registration itself is
-     * already stored, so the manual payment-proof flow stays available as a fallback.
+     * Midtrans is not configured, or the API call fails (the caller then rolls the
+     * registration back, since there is no other way to pay).
      */
-    public function createPayment(Registration $registration): ?string
+    public function createPayment(Registration $registration, bool $retry = false): ?string
     {
         $price = (int) ($registration->package?->price ?? 0);
 
@@ -52,9 +56,14 @@ class MidtransService
 
         $serverKey = (string) config('services.midtrans.server_key');
 
+        // Midtrans never accepts an order_id twice, so a new attempt gets a suffix
+        $orderId = $retry
+            ? $registration->registration_number.'-R'.Str::lower(Str::random(5))
+            : $registration->registration_number;
+
         $payload = [
             'transaction_details' => [
-                'order_id' => $registration->registration_number,
+                'order_id' => $orderId,
                 'gross_amount' => $price,
             ],
             'item_details' => [[
@@ -86,6 +95,20 @@ class MidtransService
                 ->timeout(15)
                 ->post($this->snapEndpoint(), $payload);
 
+            // Number already used by an earlier transaction (a number freed by a rolled-back or deleted
+            // registration, or leftovers in the Midtrans account): retry once under a fresh order_id.
+            // Midtrans words the error in English or Indonesian depending on the account.
+            if ($response->status() === 400 && preg_match('/order_id.*(already been taken|sudah digunakan)/i', (string) json_encode($response->json('error_messages')))) {
+                $orderId = $registration->registration_number.'-R'.Str::lower(Str::random(5));
+                $payload['transaction_details']['order_id'] = $orderId;
+
+                $response = Http::withBasicAuth($serverKey, '')
+                    ->acceptJson()
+                    ->asJson()
+                    ->timeout(15)
+                    ->post($this->snapEndpoint(), $payload);
+            }
+
             if ($response->failed()) {
                 Log::error('Midtrans Snap ditolak.', [
                     'registration' => $registration->registration_number,
@@ -110,6 +133,8 @@ class MidtransService
             $registration->forceFill([
                 'snap_token' => $token,
                 'snap_redirect_url' => $redirectUrl,
+                'payment_order_id' => $orderId,
+                'payment_expires_at' => now()->addHours(24),
             ])->save();
 
             return $redirectUrl;
@@ -160,12 +185,12 @@ class MidtransService
             $response = Http::withBasicAuth((string) config('services.midtrans.server_key'), '')
                 ->acceptJson()
                 ->timeout(10)
-                ->get($this->statusEndpoint($registration->registration_number));
+                ->get($this->statusEndpoint($this->orderId($registration)));
 
             $payload = $response->json();
 
             // Before the participant starts paying, the Core API answers 404 "Transaction not found"
-            if (! is_array($payload) || ($payload['order_id'] ?? '') !== $registration->registration_number) {
+            if (! is_array($payload) || ($payload['order_id'] ?? '') !== $this->orderId($registration)) {
                 return null;
             }
 
@@ -202,38 +227,208 @@ class MidtransService
     }
 
     /**
-     * Applies a verified notification. Safe to run more than once: a registration that is
-     * already paid is left untouched, and pending/deny/cancel/expire keep it unpaid.
+     * Applies a verified notification inside a row lock, so the webhook and the finish-page
+     * polling can never both treat the same payment as new. Safe to run more than once.
+     *
+     * - settlement/capture marks the registration paid (any attempt of that registration counts,
+     *   money received is never ignored). A registration cancelled by an admin stays cancelled.
+     * - expire/cancel/deny/failure of the CURRENT attempt releases the registration (status
+     *   cancelled, so its quota seat is freed) and lets the participant pay again.
      *
      * @return array{registration: Registration, became_paid: bool}|null
      */
     public function applyNotification(array $payload): ?array
     {
-        $registration = Registration::with(['participant', 'category', 'package', 'event'])
-            ->where('registration_number', (string) ($payload['order_id'] ?? ''))
-            ->first();
+        $orderId = (string) ($payload['order_id'] ?? '');
+        $number = $this->registrationNumber($orderId);
 
-        if (! $registration) {
-            return null;
+        return DB::transaction(function () use ($payload, $orderId, $number) {
+            $registration = Registration::where('registration_number', $number)->lockForUpdate()->first();
+
+            if (! $registration) {
+                return null;
+            }
+
+            $transactionStatus = (string) ($payload['transaction_status'] ?? '');
+            $fraudStatus = (string) ($payload['fraud_status'] ?? 'accept');
+            $settled = in_array($transactionStatus, ['capture', 'settlement'], true)
+                && ! in_array($fraudStatus, ['deny', 'challenge'], true);
+            $isCurrent = $this->orderId($registration) === $orderId;
+            $becamePaid = false;
+
+            if ($settled && $registration->payment_status !== 'paid') {
+                // Cancelled by the lapse of this very payment is revived; cancelled by an admin is not
+                $revive = $registration->registration_status !== 'cancelled' || $registration->payment_expired_at !== null;
+
+                $registration->payment_status = 'paid';
+                $registration->payment_method = $payload['payment_type'] ?? $registration->payment_method;
+                $registration->paid_at = now();
+                $registration->verified_at = now();
+                $registration->payment_expired_at = null;
+
+                if ($revive) {
+                    $registration->registration_status = 'confirmed';
+                    $becamePaid = true;
+                } else {
+                    Log::warning('Pembayaran masuk untuk pendaftaran yang dibatalkan panitia, perlu ditinjau manual.', [
+                        'registration' => $registration->registration_number,
+                    ]);
+                }
+            } elseif (! $settled && $isCurrent) {
+                $registration->payment_method = $payload['payment_type'] ?? $registration->payment_method;
+
+                if (in_array($transactionStatus, ['expire', 'cancel', 'deny', 'failure'], true)) {
+                    $this->release($registration);
+                }
+            }
+
+            $registration->save();
+
+            return ['registration' => $registration->fresh(['participant', 'category', 'package', 'event']), 'became_paid' => $becamePaid];
+        });
+    }
+
+    /**
+     * Frees the seat of an unpaid registration whose payment lapsed. Keeps the registration so the
+     * participant can pay again (see retryPayment); does nothing for paid, free or admin-cancelled ones.
+     */
+    private function release(Registration $registration): void
+    {
+        if ($registration->payment_status === 'unpaid' && $registration->registration_status === 'pending') {
+            $registration->registration_status = 'cancelled';
+            $registration->payment_expired_at = now();
+        }
+    }
+
+    /**
+     * Cancels every unpaid registration whose Snap page has lapsed. Midtrans is asked first, so a
+     * payment that went through without a notification is still credited. Returns the number released.
+     */
+    public function releaseLapsed(): int
+    {
+        $released = 0;
+
+        Registration::where('payment_status', 'unpaid')
+            ->where('registration_status', 'pending')
+            ->whereNotNull('payment_expires_at')
+            ->where('payment_expires_at', '<', now()->subMinutes(5))
+            ->each(function (Registration $registration) use (&$released) {
+                $synced = $this->syncStatus($registration);
+
+                if ($synced && $synced['became_paid']) {
+                    $this->sendVerifiedMail($synced['registration']);
+                }
+
+                DB::transaction(function () use ($registration, &$released) {
+                    $locked = Registration::lockForUpdate()->find($registration->id);
+
+                    if ($locked && $locked->payment_status === 'unpaid' && $locked->registration_status === 'pending') {
+                        $this->release($locked);
+                        $locked->save();
+                        $released++;
+                    }
+                });
+            });
+
+        return $released;
+    }
+
+    /**
+     * New Snap page for an unpaid registration. A page that still works is returned as is; a lapsed
+     * one is replaced and the seat taken again. A participant who already paid is credited first.
+     *
+     * @return array{url: ?string, paid: bool, error: ?string}
+     */
+    public function retryPayment(Registration $registration): array
+    {
+        if ($registration->payment_status !== 'unpaid') {
+            return ['url' => null, 'paid' => in_array($registration->payment_status, ['paid', 'free'], true), 'error' => null];
         }
 
-        $transactionStatus = (string) ($payload['transaction_status'] ?? '');
-        $fraudStatus = (string) ($payload['fraud_status'] ?? 'accept');
-        $settled = in_array($transactionStatus, ['capture', 'settlement'], true)
-            && ! in_array($fraudStatus, ['deny', 'challenge'], true);
-
-        $registration->payment_method = $payload['payment_type'] ?? $registration->payment_method;
-        $becamePaid = $settled && $registration->payment_status !== 'paid';
-
-        if ($becamePaid) {
-            $registration->payment_status = 'paid';
-            $registration->registration_status = 'confirmed';
-            $registration->paid_at = now();
-            $registration->verified_at = now();
+        if ($registration->registration_status === 'cancelled' && $registration->payment_expired_at === null) {
+            return ['url' => null, 'paid' => false, 'error' => 'Pendaftaran ini dibatalkan panitia.'];
         }
 
-        $registration->save();
+        $synced = $this->syncStatus($registration);
 
-        return ['registration' => $registration->fresh(['participant', 'category', 'package', 'event']), 'became_paid' => $becamePaid];
+        if ($synced) {
+            if ($synced['became_paid']) {
+                $this->sendVerifiedMail($synced['registration']);
+            }
+
+            if ($synced['registration']->payment_status === 'paid') {
+                return ['url' => null, 'paid' => true, 'error' => null];
+            }
+        }
+
+        $registration->refresh();
+
+        if ($registration->registration_status === 'pending'
+            && $registration->snap_redirect_url
+            && $registration->payment_expires_at?->isFuture()) {
+            return ['url' => $registration->snap_redirect_url, 'paid' => false, 'error' => null];
+        }
+
+        $reopened = DB::transaction(function () use ($registration) {
+            $locked = Registration::with('category')->lockForUpdate()->find($registration->id);
+
+            if ($locked->registration_status === 'cancelled') {
+                $taken = Registration::where('category_id', $locked->category_id)
+                    ->whereIn('registration_status', ['pending', 'confirmed'])
+                    ->count();
+
+                if ($locked->category?->quota && $taken >= $locked->category->quota) {
+                    return false;
+                }
+
+                $locked->forceFill(['registration_status' => 'pending', 'payment_expired_at' => null])->save();
+            }
+
+            return true;
+        });
+
+        if (! $reopened) {
+            return ['url' => null, 'paid' => false, 'error' => 'Kuota pendaftaran untuk kategori ini sudah penuh.'];
+        }
+
+        $url = $this->createPayment($registration->fresh(), retry: true);
+
+        if (! $url) {
+            // Put it back as it was: lapsed, so the participant can try again
+            $registration->forceFill(['registration_status' => 'cancelled', 'payment_expired_at' => now()])->save();
+
+            return ['url' => null, 'paid' => false, 'error' => 'Halaman pembayaran belum bisa dibuat. Coba lagi sebentar lagi.'];
+        }
+
+        return ['url' => $url, 'paid' => false, 'error' => null];
+    }
+
+    /**
+     * Mail with the participant number once the payment is settled. A failed mail never fails the payment.
+     */
+    public function sendVerifiedMail(Registration $registration): void
+    {
+        try {
+            Mail::to($registration->participant->email)->send(new RegistrationVerifiedMail($registration));
+            $registration->participant->update(['email_sent_at' => now()]);
+        } catch (Throwable $exception) {
+            Log::error('Gagal kirim email verifikasi pembayaran: '.$exception->getMessage());
+        }
+    }
+
+    /**
+     * The order_id of the registration's current Snap attempt.
+     */
+    private function orderId(Registration $registration): string
+    {
+        return $registration->payment_order_id ?: $registration->registration_number;
+    }
+
+    /**
+     * Retries carry a "-Rxxxxx" suffix on top of the registration number.
+     */
+    private function registrationNumber(string $orderId): string
+    {
+        return (string) preg_replace('/-R[a-z0-9]{5}$/', '', $orderId);
     }
 }

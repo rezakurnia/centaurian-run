@@ -76,7 +76,7 @@
             <div class="mt-gutter rounded-sm bg-beige p-fluid-lg text-center">
                 <div data-f="qr-wrap" hidden>
                     <canvas data-f="qr" class="mx-auto max-w-full rounded-sm" role="img" aria-label="QR code kartu masuk"></canvas>
-                    <p class="mt-4"><a class="c-link inline-block py-3 -my-3" data-f="qr-download" href="#" download="qr-peserta.png">Unduh QR</a></p>
+                    <p class="mt-4"><a class="c-link inline-block py-3 -my-3" data-f="qr-download" href="#" download="qr-peserta.png">Simpan QR</a></p>
                 </div>
                 <form data-f="qr-form" class="mx-auto max-w-sm" novalidate hidden>
                     <label class="c-label mb-2 block" data-f="qr-label">Email pendaftaran untuk menampilkan QR</label>
@@ -106,6 +106,8 @@
                 <dt class="opacity-75">Didaftarkan</dt><dd data-f="created"></dd>
             </dl>
             <p class="mt-4" data-f="pay-row" hidden><a class="c-link inline-block py-3 -my-3" data-f="pay-link" href="#" target="_blank" rel="noopener">Lanjutkan pembayaran →</a></p>
+            <p class="mt-4" data-f="retry-row" hidden><button type="button" class="c-link inline-block py-3 -my-3" data-f="retry-btn">Bayar lagi →</button></p>
+            <p class="c-error mt-2" data-f="retry-error" role="alert" hidden></p>
             <p class="body-md mt-5 rounded-sm bg-beige p-4" data-f="note"></p>
         </article>
     </template>

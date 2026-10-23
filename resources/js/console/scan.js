@@ -1,3 +1,4 @@
+import jsQR from 'jsqr';
 import { api, errText, esc, fmtDur, setErr } from './api.js';
 
 export function initScan() {
@@ -132,28 +133,41 @@ export function initScan() {
     });
     input.focus();
 
-    // Kamera: hanya jika browser punya BarcodeDetector
+    // Kamera: BarcodeDetector bila ada, jika tidak pakai jsQR (Firefox, Chrome desktop Windows)
     const camBtn = document.getElementById('cam-btn');
-    if ('BarcodeDetector' in window) {
+    if (navigator.mediaDevices?.getUserMedia) {
         camBtn.hidden = false;
         const video = document.getElementById('cam');
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d', { willReadFrequently: true });
+        const det = 'BarcodeDetector' in window ? new BarcodeDetector({ formats: ['qr_code'] }) : null;
         let stream = null;
         const stop = () => { stream?.getTracks().forEach((t) => t.stop()); stream = null; video.hidden = true; camBtn.textContent = 'Kamera'; };
+        const read = async () => {
+            if (det) return (await det.detect(video).catch(() => []))[0]?.rawValue;
+            if (!video.videoWidth) return;
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            ctx.drawImage(video, 0, 0);
+            return jsQR(ctx.getImageData(0, 0, canvas.width, canvas.height).data, canvas.width, canvas.height)?.data;
+        };
         camBtn.addEventListener('click', async () => {
             if (stream) return stop();
-            try { stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } }); } catch { return setErr(startErr, 'Kamera tidak bisa dibuka.'); }
+            if (!window.isSecureContext) return setErr(startErr, 'Kamera butuh HTTPS atau localhost.');
+            try { stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } }); } catch { return setErr(startErr, 'Kamera tidak bisa dibuka. Izinkan akses kamera di browser.'); }
+            setErr(startErr, '');
+            const mine = stream;
             video.srcObject = stream;
             video.hidden = false;
             await video.play();
             camBtn.textContent = 'Tutup kamera';
-            const det = new BarcodeDetector();
             let busy = false;
             const tick = async () => {
-                if (!stream) return;
+                if (stream !== mine) return;
                 if (!busy) {
                     busy = true;
-                    const found = await det.detect(video).catch(() => []);
-                    if (found[0]) { await scan(found[0].rawValue); await new Promise((r) => setTimeout(r, cfg.cooldown * 1000)); }
+                    const code = await read();
+                    if (code) { await scan(code); await new Promise((r) => setTimeout(r, cfg.cooldown * 1000)); }
                     busy = false;
                 }
                 setTimeout(tick, 300);

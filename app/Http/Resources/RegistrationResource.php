@@ -17,10 +17,10 @@ class RegistrationResource extends JsonResource
             'payment_status' => $this->payment_status,
             // Hanya pendaftaran yang sudah lunas (atau gratis) yang boleh menampilkan kartu BIB
             'bib_ready' => in_array($this->payment_status, ['paid', 'free'], true) && $this->registration_status !== 'cancelled',
-            'payment_proof' => $this->payment_proof,
-            'payment_proof_url' => $this->payment_proof_url,
             // Halaman pembayaran Snap (disimpan saat pendaftaran) untuk melanjutkan pembayaran
-            'payment_url' => $this->payment_status === 'unpaid' ? $this->snap_redirect_url : null,
+            'payment_url' => $this->payment_status === 'unpaid' && $this->registration_status === 'pending' ? $this->snap_redirect_url : null,
+            // Payment lapsed (or was abandoned): the participant can open a new payment page
+            'can_retry_payment' => $this->payment_status === 'unpaid' && $this->registration_status === 'cancelled' && $this->payment_expired_at !== null,
             'payment_method' => $this->payment_method,
             'paid_at' => $this->paid_at,
 

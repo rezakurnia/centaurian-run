@@ -140,6 +140,17 @@ class RegistrationController extends Controller
         // 7. Paket berbayar: buat transaksi Snap, lalu frontend mengarahkan peserta ke halaman pembayaran
         $paymentUrl = $midtrans->createPayment($registration);
 
+        // Tanpa halaman pembayaran peserta tidak bisa melunasi apa pun, jadi pendaftaran dibatalkan
+        // agar nomor dan kuotanya tidak tertahan; peserta cukup mendaftar ulang.
+        if ($registration->payment_status === 'unpaid' && ! $paymentUrl) {
+            $registration->delete();
+
+            return response()->json([
+                'message' => 'Halaman pembayaran belum bisa dibuat. Pendaftaran belum tersimpan, silakan coba lagi.',
+                'data' => null,
+            ], 503);
+        }
+
         return response()->json([
             'message' => 'Pendaftaran berhasil. Nomor peserta & barcode telah dikirim ke email Anda.',
             'data' => [
@@ -148,45 +159,6 @@ class RegistrationController extends Controller
             ],
             'payment' => $paymentUrl ? ['redirect_url' => $paymentUrl] : null,
         ], 201);
-    }
-
-    public function uploadPaymentProof(
-        UploadPaymentProofRequest $request,
-        string $registrationNumber
-    ) {
-        $registration = Registration::where('registration_number', $registrationNumber)->first();
-
-        if (! $registration) {
-            return response()->json([
-                'message' => 'Pendaftaran tidak ditemukan.',
-                'data' => null,
-            ], 404);
-        }
-
-        if ($registration->payment_status === 'free') {
-            return response()->json([
-                'message' => 'Paket gratis tidak memerlukan bukti pembayaran.',
-                'data' => null,
-            ], 422);
-        }
-
-        if ($registration->payment_status === 'paid') {
-            return response()->json([
-                'message' => 'Pembayaran sudah terverifikasi.',
-                'data' => null,
-            ], 422);
-        }
-
-        $path = $request->file('payment_proof')->store('payment_proofs', 'public');
-
-        $registration->update([
-            'payment_proof' => $path,
-        ]);
-
-        return response()->json([
-            'message' => 'Bukti pembayaran berhasil diunggah. Menunggu verifikasi admin.',
-            'data' => new RegistrationResource($registration->fresh()),
-        ]);
     }
 
     public function checkStatus(CheckRegistrationStatusRequest $request)

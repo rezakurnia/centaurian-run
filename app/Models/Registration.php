@@ -14,24 +14,18 @@ class Registration extends Model
     protected $fillable = [
         'registration_number', 'sequence_number', 'barcode',
         'participant_id', 'event_id', 'category_id', 'package_id',
-        'registration_status', 'payment_status', 'payment_proof',
-        'snap_token', 'snap_redirect_url', 'payment_method', 'paid_at',
+        'registration_status', 'payment_status',
+        'snap_token', 'snap_redirect_url', 'payment_order_id', 'payment_expires_at', 'payment_expired_at',
+        'payment_method', 'paid_at',
         'verified_by', 'verified_at',
     ];
 
     protected $casts = [
         'verified_at' => 'datetime',
         'paid_at' => 'datetime',
+        'payment_expires_at' => 'datetime',
+        'payment_expired_at' => 'datetime',
     ];
-
-    protected $appends = ['payment_proof_url'];
-
-    public function getPaymentProofUrlAttribute(): ?string
-    {
-        return $this->payment_proof
-            ? asset('storage/'.$this->payment_proof)
-            : null;
-    }
 
     public function participant(): BelongsTo
     {

@@ -67,8 +67,6 @@ function pendaftaran() {
         current = list[b.dataset.i];
         document.getElementById('reg-dialog-title').textContent = `Verifikasi ${current.registration_number}`;
         document.getElementById('reg-dialog-info').textContent = [`${current.category}, ${current.package}`, current.payment_method && `Metode ${current.payment_method}`, current.paid_at && `Dibayar ${new Date(current.paid_at).toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' })}`].filter(Boolean).join(' · ');
-        document.getElementById('reg-dialog-proof').innerHTML = current.payment_proof_url
-            ? `<a class="c-link" href="${esc(current.payment_proof_url)}" target="_blank" rel="noopener">Buka bukti pembayaran</a>` : '';
         document.getElementById('v-reg').value = current.registration_status;
         document.getElementById('v-pay').value = current.payment_status;
         setErr(err, '');

@@ -19,6 +19,7 @@
     "dependencies": {
         "@rive-app/canvas-lite": "2.31.5",
         "gsap": "^3.15.0",
+        "jsqr": "^1.4.0",
         "locomotive-scroll": "^5.0.1",
         "qrcode": "^1.5.4"
     }

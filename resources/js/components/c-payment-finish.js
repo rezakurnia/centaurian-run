@@ -54,3 +54,28 @@ if (waiting) {
 
     window.setTimeout(check, 2000);
 }
+
+// Payment lapsed: ask for a fresh Snap page (takes the quota seat again) and go there
+const retry = document.getElementById('payment-retry');
+if (retry) {
+    const number = document.getElementById('payment-waiting').dataset.number;
+    const error = document.getElementById('payment-retry-error');
+    retry.addEventListener('click', async () => {
+        retry.disabled = true;
+        error.hidden = true;
+        try {
+            const res = await fetch('/api/registrations/' + encodeURIComponent(number) + '/payment-retry', {
+                method: 'POST',
+                headers: { Accept: 'application/json' },
+            });
+            const json = await res.json().catch(() => ({}));
+            if (res.ok && json.payment?.redirect_url) return window.location.assign(json.payment.redirect_url);
+            if (res.ok && json.data?.paid) return window.location.reload();
+            error.textContent = res.status === 429 ? 'Terlalu banyak percobaan. Tunggu sebentar lalu coba lagi.' : json.message || 'Tidak bisa membuka halaman pembayaran.';
+        } catch {
+            error.textContent = 'Tidak bisa terhubung ke server. Periksa koneksimu lalu coba lagi.';
+        }
+        error.hidden = false;
+        retry.disabled = false;
+    });
+}

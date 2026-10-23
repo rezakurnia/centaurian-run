@@ -3,13 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Mail\RegistrationVerifiedMail;
 use App\Models\Registration;
 use App\Services\MidtransService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
-use Throwable;
 
 class PaymentController extends Controller
 {
@@ -44,7 +41,7 @@ class PaymentController extends Controller
         $registration = $result['registration'];
 
         if ($result['became_paid']) {
-            $this->sendVerifiedMail($registration);
+            $midtrans->sendVerifiedMail($registration);
         }
 
         return response()->json([
@@ -78,7 +75,7 @@ class PaymentController extends Controller
             $registration = $synced['registration'];
 
             if ($synced['became_paid']) {
-                $this->sendVerifiedMail($registration);
+                $midtrans->sendVerifiedMail($registration);
             }
         }
 
@@ -93,15 +90,34 @@ class PaymentController extends Controller
         ]);
     }
 
-    private function sendVerifiedMail(Registration $registration): void
+    /**
+     * "Bayar lagi": the participant's Snap page lapsed (24 hours) or was abandoned. Gives back a page
+     * that works, taking the quota seat again; answers paid=true when the money already arrived.
+     */
+    public function retry(string $registration_number, MidtransService $midtrans)
     {
-        try {
-            Mail::to($registration->participant->email)
-                ->send(new RegistrationVerifiedMail($registration));
-            $registration->participant->update(['email_sent_at' => now()]);
-        } catch (Throwable $exception) {
-            // The payment is already recorded; a failed email must not fail the webhook
-            Log::error('Gagal kirim email verifikasi pembayaran: '.$exception->getMessage());
+        $registration = Registration::where('registration_number', $registration_number)->first();
+
+        if (! $registration) {
+            return response()->json([
+                'message' => 'Pendaftaran tidak ditemukan.',
+                'data' => null,
+            ], 404);
         }
+
+        $result = $midtrans->retryPayment($registration);
+
+        if ($result['error']) {
+            return response()->json([
+                'message' => $result['error'],
+                'data' => null,
+            ], $result['url'] === null && str_contains($result['error'], 'Halaman') ? 503 : 422);
+        }
+
+        return response()->json([
+            'message' => $result['paid'] ? 'Pembayaran sudah diterima.' : 'Halaman pembayaran siap.',
+            'data' => ['paid' => $result['paid']],
+            'payment' => $result['url'] ? ['redirect_url' => $result['url']] : null,
+        ]);
     }
 }

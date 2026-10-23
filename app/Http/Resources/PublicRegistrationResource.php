@@ -26,7 +26,9 @@ class PublicRegistrationResource extends JsonResource
             'registration_status' => $this->registration_status,
             'payment_status' => $this->payment_status,
             'bib_ready' => $this->isBibReady(),
-            'payment_url' => $this->payment_status === 'unpaid' ? $this->snap_redirect_url : null,
+            'payment_url' => $this->payment_status === 'unpaid' && $this->registration_status === 'pending' ? $this->snap_redirect_url : null,
+            // Payment lapsed (or was abandoned): the participant can open a new payment page
+            'can_retry_payment' => $this->payment_status === 'unpaid' && $this->registration_status === 'cancelled' && $this->payment_expired_at !== null,
             'barcode' => $this->when($request->filled('email') && $this->isBibReady(), $this->barcode),
         ];
     }

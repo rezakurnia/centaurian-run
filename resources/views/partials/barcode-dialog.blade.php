@@ -5,12 +5,13 @@
     </button>
     <div class="c-dialog_body">
         <article class="c-step text-center">
-            <p class="body-md uppercase">Peserta Resmi</p>
-            <h2 class="heading-sm mt-2">Ini kartu masukmu.</h2>
+            <p class="body-md uppercase">Pendaftaran berhasil</p>
+            <h2 class="heading-sm mt-2">QR masukmu sudah siap.</h2>
             <canvas id="barcode-canvas" class="mx-auto mt-6 max-w-full rounded-sm" role="img" aria-label="QR code kartu masuk"></canvas>
-            <p class="heading-xs mt-4" id="barcode-number"></p>
-            <p class="body-md mx-auto mt-3 max-w-100 text-balance">Tunjukkan QR ini saat pengambilan racepack dan check-in di hari acara.</p>
-            <p class="mt-6"><a class="c-link inline-block py-3 -my-3" id="barcode-download" href="#" download="qr-peserta.png">Unduh QR</a></p>
+            <p class="body-md mt-4 opacity-75">Nomor peserta</p>
+            <p class="heading-xs" id="barcode-number"></p>
+            <p class="body-md mx-auto mt-3 max-w-100 text-balance">Simpan QR ini dan tunjukkan ke panitia saat mengambil racepack dan check-in di hari acara. Salinannya juga kami kirim ke emailmu.</p>
+            <p class="mt-6"><a class="c-link inline-block py-3 -my-3" id="barcode-download" href="#" download="qr-peserta.png">Simpan QR</a></p>
         </article>
     </div>
 </dialog>

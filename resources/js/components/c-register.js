@@ -275,6 +275,8 @@ if (form) {
             } else {
                 formError.textContent = res.status === 429
                     ? 'Terlalu banyak percobaan. Tunggu sebentar lalu coba lagi.'
+                    : res.status === 503
+                    ? (json.message || 'Halaman pembayaran belum bisa dibuat. Coba lagi sebentar lagi.')
                     : 'Terjadi kendala di server. Datamu mungkin sudah tersimpan: cek BIB dengan emailmu sebelum mendaftar ulang.';
             }
         } catch {

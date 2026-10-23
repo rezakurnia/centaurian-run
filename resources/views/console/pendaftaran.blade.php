@@ -25,7 +25,6 @@
         <p class="body-md" id="reg-dialog-info"></p>
         {{-- Filled from GET /admin/registrations/{id} --}}
         <dl id="reg-dialog-person" class="k-dl mt-3"></dl>
-        <p id="reg-dialog-proof" class="body-md mt-2"></p>
         <div class="c-field mt-4">
             <label class="c-label" for="v-reg">Status pendaftaran</label>
             <select class="c-input" id="v-reg" name="registration_status"><option value="pending">Menunggu</option><option value="confirmed">Terkonfirmasi</option><option value="cancelled">Dibatalkan</option></select>

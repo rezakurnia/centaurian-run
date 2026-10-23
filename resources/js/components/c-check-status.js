@@ -32,6 +32,7 @@ if (form) {
     };
 
     const note = (r) => {
+        if (r.can_retry_payment) return 'Waktu pembayaran habis, jadi tempatmu dilepas. Bayar lagi selama kuota kategori masih ada.';
         if (r.registration_status === 'cancelled') return 'Pendaftaran ini dibatalkan. Hubungi panitia jika menurutmu ini keliru.';
         if (r.payment_status === 'unpaid') return 'Pembayaran belum selesai, jadi nomor BIB belum bisa dibuka. Kartu BIB terbuka otomatis begitu pembayaranmu lunas.';
         return 'Pendaftaranmu sudah terkonfirmasi.';
@@ -112,6 +113,25 @@ if (form) {
         if (payLink && payRow && r.payment_url) {
             payLink.href = r.payment_url;
             payRow.hidden = false;
+        }
+        if (r.can_retry_payment) {
+            const retryBtn = field(card, 'retry-btn');
+            const retryErr = field(card, 'retry-error');
+            field(card, 'retry-row').hidden = false;
+            retryBtn.addEventListener('click', async () => {
+                retryBtn.disabled = true;
+                setErr(retryErr, '');
+                try {
+                    const res = await json(`/api/registrations/${encodeURIComponent(r.registration_number)}/payment-retry`, { method: 'POST' });
+                    const out = await res.json().catch(() => ({}));
+                    if (res.ok && out.payment?.redirect_url) return window.location.assign(out.payment.redirect_url);
+                    if (res.ok && out.data?.paid) return window.location.assign('/pembayaran/selesai/' + encodeURIComponent(r.registration_number));
+                    setErr(retryErr, res.status === 429 ? 'Terlalu banyak percobaan. Tunggu sebentar lalu coba lagi.' : out.message || 'Tidak bisa membuka halaman pembayaran.');
+                } catch {
+                    setErr(retryErr, 'Tidak bisa terhubung ke server. Periksa koneksimu lalu coba lagi.');
+                }
+                retryBtn.disabled = false;
+            });
         }
         field(card, 'note').textContent = note(r);
         return card;

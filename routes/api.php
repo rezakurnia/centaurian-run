@@ -27,7 +27,6 @@ use Illuminate\Support\Facades\Route;
 Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:login');
 Route::middleware('throttle:60,1')->group(function () {
     Route::post('/registrations', [RegistrationController::class, 'store']);
-    Route::post('/registrations/{registration_number}/payment-proof', [RegistrationController::class, 'uploadPaymentProof']);
 });
 // Status lookups and the Snap finish-page polling get their own bucket (prefix "status") so they
 // never eat into the registration limit
@@ -35,6 +34,7 @@ Route::middleware('throttle:120,1,status')->group(function () {
     Route::post('/registrations/check-status', [RegistrationController::class, 'checkStatus']);
     // Polled by the Snap finish page; syncs the status straight from Midtrans
     Route::post('/registrations/{registration_number}/payment-status', [PaymentController::class, 'refreshStatus']);
+    Route::post('/registrations/{registration_number}/payment-retry', [PaymentController::class, 'retry']);
 });
 Route::get('/event/active', [EventController::class, 'active']);
 Route::get('/contents', [ContentController::class, 'index']);

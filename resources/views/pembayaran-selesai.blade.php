@@ -90,10 +90,14 @@
                             <dt class="opacity-75">Paket</dt><dd>{{ $registration->package->name }}</dd>
                         </dl>
 
+                        <p class="c-error mt-4" id="payment-retry-error" role="alert" hidden></p>
+
                         <p class="body-md mt-6" id="payment-slow" role="status" hidden>Pembayaran belum terkonfirmasi. Kalau kamu menutup halaman pembayaran, buka lagi lewat tautan di bawah, lalu muat ulang halaman ini.</p>
 
                         <div class="mt-6 flex flex-wrap justify-center gap-x-6 gap-y-2">
-                            @if ($registration->snap_redirect_url)
+                            @if ($registration->registration_status === 'cancelled' && $registration->payment_expired_at)
+                                <button type="button" class="c-link inline-block py-3 -my-3" id="payment-retry">Bayar lagi →</button>
+                            @elseif ($registration->snap_redirect_url)
                                 <a class="c-link inline-block py-3 -my-3" href="{{ $registration->snap_redirect_url }}">Lanjutkan pembayaran →</a>
                             @endif
                             <a class="c-link inline-block py-3 -my-3" href="/pembayaran/selesai/{{ rawurlencode($registration->registration_number) }}">Muat ulang halaman</a>
