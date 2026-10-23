@@ -41,7 +41,7 @@
                     <article class="c-step">
                         <h2 class="heading-md">Pendaftaran tidak ditemukan.</h2>
                         <p class="body-lg mt-4">Periksa kembali tautannya, atau cek status dengan nomor peserta/emailmu di halaman Cek BIB.</p>
-                        <p class="mt-6"><a class="c-link" href="/cek-status">Buka Cek BIB →</a></p>
+                        <p class="mt-6"><a class="c-link inline-block py-3 -my-3" href="/cek-status">Buka Cek BIB →</a></p>
                     </article>
                 @elseif ($paid)
                     {{-- The participant number only appears once the payment is settled --}}
@@ -74,8 +74,8 @@
                         <p class="body-md mt-gutter rounded-sm bg-beige p-4">Nomor peserta dan barcode juga dikirim ke emailmu.</p>
                         <p class="mt-6 flex flex-wrap gap-x-6 gap-y-2">
                             {{-- Shown by c-payment-finish.js only in the browser that registered; the barcode never comes from the server here --}}
-                            <button type="button" class="c-link" id="barcode-open" data-number="{{ $registration->registration_number }}" hidden>Lihat QR kartu masuk</button>
-                            <a class="c-link" href="/cek-status?no={{ rawurlencode($registration->registration_number) }}">Lihat kartu BIB →</a>
+                            <button type="button" class="c-link inline-block py-3 -my-3" id="barcode-open" data-number="{{ $registration->registration_number }}" hidden>Lihat QR kartu masuk</button>
+                            <a class="c-link inline-block py-3 -my-3" href="/cek-status?no={{ rawurlencode($registration->registration_number) }}">Lihat kartu BIB →</a>
                         </p>
                     </article>
                 @else
@@ -94,10 +94,10 @@
 
                         <div class="mt-6 flex flex-wrap justify-center gap-x-6 gap-y-2">
                             @if ($registration->snap_redirect_url)
-                                <a class="c-link" href="{{ $registration->snap_redirect_url }}">Lanjutkan pembayaran →</a>
+                                <a class="c-link inline-block py-3 -my-3" href="{{ $registration->snap_redirect_url }}">Lanjutkan pembayaran →</a>
                             @endif
-                            <a class="c-link" href="/pembayaran/selesai/{{ rawurlencode($registration->registration_number) }}">Muat ulang halaman</a>
-                            <a class="c-link" href="/cek-status">Cek BIB</a>
+                            <a class="c-link inline-block py-3 -my-3" href="/pembayaran/selesai/{{ rawurlencode($registration->registration_number) }}">Muat ulang halaman</a>
+                            <a class="c-link inline-block py-3 -my-3" href="/cek-status">Cek BIB</a>
                         </div>
                     </article>
                 @endif

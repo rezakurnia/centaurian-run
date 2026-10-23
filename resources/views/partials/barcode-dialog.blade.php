@@ -10,7 +10,7 @@
             <canvas id="barcode-canvas" class="mx-auto mt-6 max-w-full rounded-sm" role="img" aria-label="QR code kartu masuk"></canvas>
             <p class="heading-xs mt-4" id="barcode-number"></p>
             <p class="body-md mx-auto mt-3 max-w-100 text-balance">Tunjukkan QR ini saat pengambilan racepack dan check-in di hari acara.</p>
-            <p class="mt-6"><a class="c-link" id="barcode-download" href="#" download="qr-peserta.png">Unduh QR</a></p>
+            <p class="mt-6"><a class="c-link inline-block py-3 -my-3" id="barcode-download" href="#" download="qr-peserta.png">Unduh QR</a></p>
         </article>
     </div>
 </dialog>

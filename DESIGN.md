@@ -80,6 +80,7 @@ Fluid root font-size: `--text-md` (16 → 17px) by default, 15px from 1000 to 11
 
 ### 1. Floating Navigation Bar
 - **Role:** Primary site navigation. Desktop bar (`.c-menu-desktop`, ≥1000px) and mobile bar + sliding list (`.c-menu-mobile`).
+- The 40px burger circle has an invisible 2px ring (`::after`) for a 44px tap area. Standalone `.c-link`s (not inside running text) are `inline-block py-3 -my-3`: 44px tap height, no layout change. FAQ `summary` rows carry the `py-4` themselves so the whole row is the tap target.
 - White (`#ffffff`) bar, **10px radius**, 16 × spacing tall, floating 4 × spacing from the top and inset to grid column 1 (2 from 1600px).
 - Logo mark 36 × 30px + wordmark 32 × spacing wide; links `--text-md` Inter 500 with a beige hover pill (50px): Tentang, Kategori, Paket, Jadwal, Rute and Tata Tertib (landing only), BIB Checking, Hasil Lomba (no dropdown); the mobile list is the same set. A skip link ("Lewati ke konten") sits before the bars and the current page link carries `aria-current`; quote button on the right.
 
@@ -135,7 +136,7 @@ Fluid root font-size: `--text-md` (16 → 17px) by default, 15px from 1000 to 11
 - Scan (`/panitia/scan`): "Mulai serentak" `.k-btn` and "Akhiri acara" `.k-btn.-ghost` side by side; after finish the status line says "Scan ditutup" and the scan form is disabled.
 - Peserta (`/admin/peserta`): "Impor peserta" `.k-card` under the table: template downloads as `.k-btn.-ghost`, type and package selects, `.c-input.c-file`. The outcome is a `.k-result` (`-ok`, `-wait` when some rows failed, `-bad`), with per-row lines in a `<details>`.
 - Log pages (`/admin/scan-log|log-aktivitas`): filter row of `.c-input` + `.c-table` + prev/next `.k-btn.-ghost` (50 rows per page); scan status uses `.c-badge`. `/admin/ekspor` and the import templates download through `download()` in `api.js` (fetch + blob, Bearer header needed).
-- Mobile rules: `.k-shell` column is `minmax(0, 1fr)` so the long nav scrolls inside `.k-nav` instead of widening the page; every tappable control in the console is at least 44px tall (`.k-nav a`, `.k-btn.-ghost`, links in `.k-dialog` / login card get block padding). Tables scroll inside `.k-scroll`.
+- Mobile rules: `.k-shell` column is `minmax(0, 1fr)` so the long nav scrolls inside `.k-nav` instead of widening the page; every tappable control in the console is at least 44px tall (`.k-nav a`, `.k-btn.-ghost`, links in `.k-dialog` / login card get block padding). Tables scroll inside `.k-scroll` (`position: relative`, so the absolute `sr-only` "Aksi" header cannot widen the page); console tables drop the 34rem `.c-table` floor and size to their nowrap cells. Stat tiles are two per row from 300px (`minmax(9rem, 1fr)`) with the value pinned to the tile bottom.
 - Forms and tables reuse `.c-input`, `.c-error`, `.c-table`, `.c-badge`.
 
 ---

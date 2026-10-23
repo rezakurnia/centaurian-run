@@ -169,7 +169,7 @@
                                 <h2 class="heading-md">Mengarahkan ke pembayaran…</h2>
                                 <p class="body-lg mt-4">Kamu akan diarahkan ke halaman pembayaran Midtrans. Jangan tutup halaman ini.</p>
                                 <p class="mt-6" id="register-redirect-link" hidden>
-                                    <a class="c-link" id="register-redirect-href" href="#">Buka halaman pembayaran →</a>
+                                    <a class="c-link inline-block py-3 -my-3" id="register-redirect-href" href="#">Buka halaman pembayaran →</a>
                                 </p>
                             </div>
 
@@ -181,7 +181,7 @@
                                     <dt class="opacity-75">Nomor peserta</dt><dd class="heading-xs" id="success-number"></dd>
                                     <dt class="opacity-75">Status</dt><dd id="success-status"></dd>
                                 </dl>
-                                <p class="mt-6"><button type="button" class="c-link" id="success-qr" hidden>Lihat QR kartu masuk</button></p>
+                                <p class="mt-6"><button type="button" class="c-link inline-block py-3 -my-3" id="success-qr" hidden>Lihat QR kartu masuk</button></p>
                                 <div class="mt-8 grid gap-4 sm:grid-cols-2">
                                     <div class="rounded-sm bg-beige p-5" id="success-pay" hidden>
                                         <h3 class="heading-xs">Pembayaran belum tersedia</h3>
@@ -191,7 +191,7 @@
                                     <div class="rounded-sm bg-beige p-5">
                                         <h3 class="heading-xs">Pantau statusmu</h3>
                                         <p class="body-md mt-2">Cek kapan saja dengan nomor peserta atau emailmu.</p>
-                                        <div class="mt-4"><a id="success-status-link" class="c-link" href="/cek-status">Cek BIB →</a></div>
+                                        <div class="mt-4"><a id="success-status-link" class="c-link inline-block py-3 -my-3" href="/cek-status">Cek BIB →</a></div>
                                     </div>
                                 </div>
                             </div>
@@ -214,9 +214,9 @@
                         <h2 class="heading-sm">Pertanyaan umum</h2>
                         <div class="mt-6 divide-y divide-beige-500 rounded-sm bg-white px-5">
                             @foreach ($faqs as [$q, $a])
-                                <details class="c-faq py-4">
-                                    <summary class="heading-xs cursor-pointer">{{ $q }}</summary>
-                                    <p class="body-lg mt-3 max-w-160">{{ $a }}</p>
+                                <details class="c-faq open:pb-4">
+                                    <summary class="heading-xs cursor-pointer py-4">{{ $q }}</summary>
+                                    <p class="body-lg max-w-160">{{ $a }}</p>
                                 </details>
                             @endforeach
                         </div>

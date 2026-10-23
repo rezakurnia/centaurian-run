@@ -90,7 +90,7 @@
                 <dt class="opacity-75">Paket</dt><dd data-f="package"></dd>
                 <dt class="opacity-75">Didaftarkan</dt><dd data-f="created"></dd>
             </dl>
-            <p class="mt-4" data-f="pay-row" hidden><a class="c-link" data-f="pay-link" href="#" target="_blank" rel="noopener">Lanjutkan pembayaran →</a></p>
+            <p class="mt-4" data-f="pay-row" hidden><a class="c-link inline-block py-3 -my-3" data-f="pay-link" href="#" target="_blank" rel="noopener">Lanjutkan pembayaran →</a></p>
             <p class="body-md mt-5 rounded-sm bg-beige p-4" data-f="note"></p>
         </article>
     </template>

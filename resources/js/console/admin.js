@@ -21,7 +21,7 @@ async function dashboard() {
     const r = await api('/admin/dashboard');
     if (!r.ok) { stats.textContent = errText(r); document.getElementById('dash-category').innerHTML = row(3, esc(errText(r))); return; }
     const d = r.data.data;
-    const card = (label, v) => `<div class="k-card"><p class="body-md">${label}</p><p class="k-stat">${v}</p></div>`;
+    const card = (label, v) => `<div class="k-card k-stat-card"><p class="body-md">${label}</p><p class="k-stat">${v}</p></div>`;
     const sum = (arr, key, v) => arr.find((x) => x[key] === v)?.total ?? 0;
     stats.innerHTML = card('Peserta', d.total_participants) + card('Pendaftaran', d.total_registrations)
         + card('Lunas / gratis', sum(d.by_payment_status, 'payment_status', 'paid') + sum(d.by_payment_status, 'payment_status', 'free'))

@@ -39,7 +39,7 @@
                             <p class="body-md mt-2">Start <span data-f="start"></span> · Finish <span data-f="finish"></span></p>
                         </div>
                     </div>
-                    <div class="mt-gutter"><a class="c-link" href="/hasil">← Semua hasil</a></div>
+                    <div class="mt-gutter"><a class="c-link inline-block py-3 -my-3" href="/hasil">← Semua hasil</a></div>
                 </div>
             </div>
         </div>

@@ -417,6 +417,8 @@ html.has-menu-mobile-open { overflow: hidden; }
     border-radius: 100%;
     cursor: pointer;
 }
+/* 40px circle per the reference; the invisible ring takes the tap area to 44px */
+.c-menu-mobile_burger::after { content: ''; position: absolute; inset: -2px; }
 .c-menu-mobile_burger::before {
     content: '';
     position: absolute;
@@ -1040,7 +1042,8 @@ c-deluxe-callout { display: block; }
 .k-btn { height: calc(var(--spacing) * 13); padding: 0 calc(var(--spacing) * 5); border-radius: var(--radius-sm); background-color: var(--color-plum-night); color: var(--color-white); font-weight: 500; cursor: pointer; }
 .k-btn.-ghost { background: transparent; color: var(--color-plum-night); border: 1px solid var(--color-plum-night); height: calc(var(--spacing) * 11); }
 .k-btn[disabled] { opacity: .5; cursor: not-allowed; }
-.k-scroll { overflow-x: auto; }
+/* relative: the sr-only "Aksi" header is absolute and would otherwise widen the page past the scroller */
+.k-scroll { position: relative; overflow-x: auto; }
 .k-cam { width: 100%; max-width: 24rem; margin-top: calc(var(--spacing) * 3); border-radius: var(--radius-sm); background: var(--color-plum-night); }
 .k-result { margin-top: calc(var(--spacing) * 4); padding: calc(var(--spacing) * 4); border-radius: var(--radius-sm); font-size: var(--text-lg); font-weight: 500; }
 .k-result:empty { display: none; }
@@ -1049,8 +1052,12 @@ c-deluxe-callout { display: block; }
 .k-result.-bad { background-color: var(--color-grape); color: var(--color-white); }
 .k-login { display: grid; place-items: center; min-height: 100svh; padding: calc(var(--spacing) * 5); }
 .k-login_card { width: 100%; max-width: 26rem; }
+/* nowrap cells size the table, so no 34rem floor: short tables fit the phone and wide ones still scroll in .k-scroll */
+.k-card .c-table { min-width: 0; }
 .k-card .c-table :is(td, th) { white-space: nowrap; }
-.k-stats { display: grid; gap: calc(var(--spacing) * 3); grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr)); }
+.k-stats { display: grid; gap: calc(var(--spacing) * 3); grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)); }
+/* value sits on the bottom edge so a two-line label does not knock it out of line with its neighbour */
+.k-stat-card { display: flex; flex-direction: column; justify-content: space-between; }
 .k-stat { font-size: var(--text-heading-sm); font-weight: 700; letter-spacing: -0.06em; line-height: 1.1; }
 .k-dialog { width: min(28rem, calc(100% - 2rem)); margin: auto; padding: calc(var(--spacing) * 6); border: 0; border-radius: var(--radius-sm); background: var(--color-white); color: var(--color-plum-night); }
 .k-dialog::backdrop { background: color-mix(in srgb, var(--color-plum-night) 50%, transparent); }
