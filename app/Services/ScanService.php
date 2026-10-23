@@ -20,6 +20,10 @@ class ScanService
         return DB::transaction(function () use ($eventId) {
             $event = Event::findOrFail($eventId);
 
+            if ($event->start_time) {
+                throw new \Exception('Acara sudah dimulai sebelumnya.');
+            }
+
             $event->update(['start_time' => now()]);
 
             // Update start_time di semua results yang belum punya start_time
@@ -90,6 +94,26 @@ class ScanService
 
             $participant = $registration->participant;
             $event       = $registration->event;
+
+            // 1b. Pendaftaran dibatalkan atau belum lunas: barcode tidak sah
+            if ($registration->registration_status === 'cancelled'
+                || ! in_array($registration->payment_status, ['paid', 'free'], true)) {
+                ScanLog::create([
+                    'participant_id' => $registration->participant->id,
+                    'barcode'        => $barcode,
+                    'scan_status'    => 'invalid',
+                    'scanned_by'     => $userId,
+                    'ip_address'     => $ip,
+                    'user_agent'     => $agent,
+                    'scanned_at'     => now(),
+                ]);
+
+                return [
+                    'status'  => 'invalid',
+                    'message' => 'Pendaftaran dibatalkan atau belum lunas.',
+                    'data'    => null,
+                ];
+            }
 
             // 2. Acara belum dimulai
             if (!$event || !$event->start_time) {

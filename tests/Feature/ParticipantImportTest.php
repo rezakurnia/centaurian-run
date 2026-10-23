@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Category;
+use App\Models\Employee;
 use App\Models\Event;
 use App\Models\Package;
 use App\Models\Participant;
@@ -86,6 +87,7 @@ class ParticipantImportTest extends TestCase
     public function test_import_guru_dengan_heading_template_tersimpan_lengkap(): void
     {
         Category::create(['name' => 'Guru Karyawan', 'code' => 'E', 'quota' => 300]);
+        Employee::create(['nip' => 'NIP001', 'name' => 'Ibu Sari']);
 
         $result = $this->import([[
             'nip'                    => 'NIP001',

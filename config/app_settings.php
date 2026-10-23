@@ -162,38 +162,6 @@ return [
     ],
 
     // ========================================================================
-    // GRUP 5: TAMPILAN & BRANDING
-    // ========================================================================
-    [
-        'key' => 'primary_color',
-        'label' => 'Warna Utama',
-        'type' => 'text',
-        'default' => '#2563EB',
-        'group' => 'Tampilan & Branding',
-    ],
-    [
-        'key' => 'primary_light',
-        'label' => 'Warna Utama (Terang)',
-        'type' => 'text',
-        'default' => '#3B82F6',
-        'group' => 'Tampilan & Branding',
-    ],
-    [
-        'key' => 'secondary_color',
-        'label' => 'Warna Sekunder (Lembut)',
-        'type' => 'text',
-        'default' => '#EFF6FF',
-        'group' => 'Tampilan & Branding',
-    ],
-    [
-        'key' => 'accent_color',
-        'label' => 'Warna Aksen',
-        'type' => 'text',
-        'default' => '#1E40AF',
-        'group' => 'Tampilan & Branding',
-    ],
-
-    // ========================================================================
     // GRUP 6: TATA TERTIB
     // Format teks: baris "# Judul bagian" membuka bagian baru, baris lain jadi
     // satu butir "Label: isi" (label boleh dikosongkan). Lihat TataTertibService.

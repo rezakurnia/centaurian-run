@@ -1,25 +1,30 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-    <title>Pendaftaran Diverifikasi</title>
+    <meta charset="utf-8">
+    <title>Pendaftaran Terkonfirmasi</title>
 </head>
 <body>
+    @php
+        $regStatus = ['pending' => 'Menunggu', 'confirmed' => 'Terkonfirmasi', 'cancelled' => 'Dibatalkan'];
+        $payStatus = ['unpaid' => 'Menunggu pembayaran', 'paid' => 'Lunas', 'free' => 'Gratis'];
+    @endphp
     <h2>Halo, {{ $registration->participant->full_name }}</h2>
 
-    <p>Kabar baik! Pendaftaran Anda di <strong>Centaurian Run</strong> telah <strong>diverifikasi</strong>.</p>
+    <p>Kabar baik! Pendaftaranmu di <strong>Centaurian Run</strong> sudah <strong>terkonfirmasi</strong>.</p>
 
-    <p>Berikut detail pendaftaran Anda:</p>
+    <p>Berikut detail pendaftaranmu:</p>
     <ul>
         <li><strong>Nomor Peserta:</strong> {{ $registration->registration_number }}</li>
         <li><strong>Barcode:</strong> {{ $registration->barcode }}</li>
         <li><strong>Kategori:</strong> {{ $registration->category->name ?? '-' }}</li>
         <li><strong>Paket:</strong> {{ $registration->package->name ?? '-' }}</li>
         <li><strong>Event:</strong> {{ $registration->event->name ?? '-' }}</li>
-        <li><strong>Status Pendaftaran:</strong> {{ ucfirst($registration->registration_status) }}</li>
-        <li><strong>Status Pembayaran:</strong> {{ ucfirst($registration->payment_status) }}</li>
+        <li><strong>Status Pendaftaran:</strong> {{ $regStatus[$registration->registration_status] ?? $registration->registration_status }}</li>
+        <li><strong>Status Pembayaran:</strong> {{ $payStatus[$registration->payment_status] ?? $registration->payment_status }}</li>
     </ul>
 
-    <p>Tunjukkan barcode ini saat mencapai garis finis.</p>
+    <p>Tunjukkan barcode ini saat pengambilan racepack dan check-in di hari acara.</p>
 
     <p>Salam,<br>Panitia Centaurian Run</p>
 </body>

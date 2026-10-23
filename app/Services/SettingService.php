@@ -27,7 +27,7 @@ class SettingService
 
         foreach ($config as $item) {
             $group = $item['group'];
-            $value = $values[$item['key']] ?? $item['default'];
+            $value = array_key_exists($item['key'], $values) ? $values[$item['key']] : $item['default'];
 
             if (!isset($grouped[$group])) {
                 $grouped[$group] = [];
@@ -56,7 +56,7 @@ class SettingService
         $result = [];
 
         foreach ($config as $item) {
-            $result[$item['key']] = $values[$item['key']] ?? $item['default'];
+            $result[$item['key']] = array_key_exists($item['key'], $values) ? $values[$item['key']] : $item['default'];
         }
 
         return $result;

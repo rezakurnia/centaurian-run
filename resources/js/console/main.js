@@ -69,6 +69,28 @@ if (main) {
             auth.set({ ...a, user: r.data });
             if (r.data.role !== a.user.role) location.replace(need === 'admin' && r.data.role !== 'admin' ? home(r.data) : location.href);
         });
+        // Staff announcements (Konten "panitia"), fetched only after auth
+        api('/panitia/announcements').then((r) => {
+            const box = document.getElementById('k-notes');
+            if (!r.ok || !box) return;
+            for (const n of r.data.data ?? []) {
+                const sec = document.createElement('section');
+                sec.className = 'k-card k-note';
+                sec.setAttribute('aria-label', 'Pengumuman');
+                if (n.title) {
+                    const h = document.createElement('h2');
+                    h.className = 'k-h2';
+                    h.textContent = n.title;
+                    sec.append(h);
+                }
+                const p = document.createElement('p');
+                p.className = 'body-md';
+                p.style.whiteSpace = 'pre-line';
+                p.textContent = n.body ?? '';
+                sec.append(p);
+                box.append(sec);
+            }
+        });
         initScan();
         initRekap();
         initAdmin();

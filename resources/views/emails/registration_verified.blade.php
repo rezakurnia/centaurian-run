@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
+    <meta charset="utf-8">
     <title>Pendaftaran Terkonfirmasi</title>
 </head>
 <body>

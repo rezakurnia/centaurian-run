@@ -11,7 +11,12 @@ class RecapController extends Controller
 {
     public function byCategory()
     {
-        $recap = Category::leftJoin('registrations', 'registrations.category_id', '=', 'categories.id')
+        // Only real participants: not cancelled and settled (paid or free)
+        $recap = Category::leftJoin('registrations', function ($join) {
+            $join->on('registrations.category_id', '=', 'categories.id')
+                ->where('registrations.registration_status', '!=', 'cancelled')
+                ->whereIn('registrations.payment_status', ['paid', 'free']);
+        })
             ->select(
                 'categories.id',
                 'categories.name',
@@ -31,6 +36,8 @@ class RecapController extends Controller
     public function byRegistrationNumber()
     {
         $recap = Registration::with(['participant', 'category', 'package'])
+            ->where('registration_status', '!=', 'cancelled')
+            ->whereIn('payment_status', ['paid', 'free'])
             ->orderBy('registration_number', 'asc')
             ->get()
             ->map(function ($reg) {

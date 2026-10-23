@@ -9,6 +9,8 @@ class Event extends Model
 {
     protected $fillable = ['name', 'description', 'location', 'event_date', 'start_time', 'finish_time','is_active'];
 
+    protected $attributes = ['is_active' => true];
+
     protected $casts = [
         'event_date' => 'date',
         'start_time' => 'datetime',

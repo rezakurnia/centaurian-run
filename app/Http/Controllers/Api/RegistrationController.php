@@ -7,6 +7,7 @@ use App\Http\Requests\CheckRegistrationStatusRequest;
 use App\Http\Requests\StoreRegistrationRequest;
 use App\Http\Requests\UploadPaymentProofRequest;
 use App\Http\Resources\ParticipantResource;
+use App\Http\Resources\PublicRegistrationResource;
 use App\Http\Resources\RegistrationResource;
 use App\Mail\RegistrationConfirmationMail;
 use App\Models\Category;
@@ -211,7 +212,7 @@ class RegistrationController extends Controller
 
         return response()->json([
             'message' => 'Status pendaftaran ditemukan.',
-            'data' => RegistrationResource::collection($registrations),
+            'data' => PublicRegistrationResource::collection($registrations),
         ]);
     }
 

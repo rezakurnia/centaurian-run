@@ -78,8 +78,9 @@ class ContentController extends Controller
             ], 404);
         }
 
+        // sort_order is NOT NULL: a null from the form means "leave as is"
         $content->update(array_merge(
-            $request->validated(),
+            array_filter($request->validated(), fn ($v, $k) => $k !== 'sort_order' || $v !== null, ARRAY_FILTER_USE_BOTH),
             ['updated_by' => $request->user()->id]
         ));
 

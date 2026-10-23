@@ -27,7 +27,9 @@ class CategoryController extends Controller
         $categories = Category::orderBy('id')->get();
 
         $result = $categories->map(function ($category) {
-            $registeredCount = Registration::where('category_id', $category->id)->count();
+            $registeredCount = Registration::where('category_id', $category->id)
+                ->whereIn('registration_status', ['pending', 'confirmed'])
+                ->count();
             $remaining = max(0, $category->quota - $registeredCount);
 
             return [

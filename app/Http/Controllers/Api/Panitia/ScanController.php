@@ -18,12 +18,16 @@ class ScanController extends Controller
             'event_id' => 'required|exists:events,id',
         ]);
 
-        $result = $scanService->startEvent(
-            $request->event_id,
-            $request->user()->id,
-            $request->ip(),
-            $request->userAgent()
-        );
+        try {
+            $result = $scanService->startEvent(
+                $request->event_id,
+                $request->user()->id,
+                $request->ip(),
+                $request->userAgent()
+            );
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage(), 'data' => null], 422);
+        }
 
         $this->logActivity(
             'start_event',

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Category;
+use App\Models\Employee;
 use App\Models\Participant;
 use App\Models\Registration;
 use Illuminate\Support\Facades\DB;
@@ -29,6 +30,7 @@ class ParticipantImportService
         $category = Category::where('code', $categoryCode)->firstOrFail();
 
         $seenEmails = [];
+        $seenNips = [];
 
         foreach ($rows as $index => $row) {
             $rowNum = $index + 2; // Baris Excel (2 = setelah header)
@@ -58,6 +60,32 @@ class ParticipantImportService
                 if (Participant::where('email', $email)->exists()) {
                     $skipped[] = "Baris {$rowNum}: Email '{$email}' sudah terdaftar.";
                     continue;
+                }
+
+                // Guru/karyawan: NIP must be in the employee master, one registration per NIP per event,
+                // and the category quota (pending + confirmed, same as the public form) must have room.
+                if ($type === 'guru') {
+                    $nip = $this->getValue($row, ['nip']);
+
+                    if (empty($nip) || ! Employee::where('nip', $nip)->exists()) {
+                        $errors[] = "Baris {$rowNum}: NIP '{$nip}' tidak terdaftar sebagai guru/karyawan.";
+                        continue;
+                    }
+
+                    if (in_array($nip, $seenNips, true) || Registration::where('event_id', $eventId)
+                        ->whereHas('participant', fn ($q) => $q->where('nip', $nip))->exists()) {
+                        $skipped[] = "Baris {$rowNum}: NIP '{$nip}' sudah terdaftar pada event ini.";
+                        continue;
+                    }
+
+                    $filled = Registration::where('category_id', $category->id)
+                        ->whereIn('registration_status', ['pending', 'confirmed'])->count();
+                    if ($category->quota && $filled >= $category->quota) {
+                        $errors[] = "Baris {$rowNum}: Kuota kategori sudah penuh.";
+                        continue;
+                    }
+
+                    $seenNips[] = $nip;
                 }
 
                 $seenEmails[] = $email;

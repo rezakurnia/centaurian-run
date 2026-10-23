@@ -37,7 +37,7 @@ class ExportController extends Controller
 
             // Data
             foreach ($participants as $p) {
-                fputcsv($handle, [
+                fputcsv($handle, self::safe([
                     $p->id,
                     $p->full_name,
                     $p->gender,
@@ -56,7 +56,7 @@ class ExportController extends Controller
                     $p->motivation,
                     $p->email_sent_at,
                     $p->created_at,
-                ]);
+                ]));
             }
 
             fclose($handle);
@@ -97,12 +97,12 @@ class ExportController extends Controller
             fputcsv($handle, [
                 'No Peserta', 'Barcode', 'Nama', 'Email', 'Phone',
                 'Kategori', 'Paket', 'Event',
-                'Status Pendaftaran', 'Status Pembayaran', 'Terdaftar Pada',
+                'Status Pendaftaran', 'Status Pembayaran', 'Metode Pembayaran', 'Dibayar Pada', 'Terdaftar Pada',
             ]);
 
             // Data
             foreach ($registrations as $r) {
-                fputcsv($handle, [
+                fputcsv($handle, self::safe([
                     $r->registration_number,
                     $r->barcode,
                     $r->participant->full_name ?? '-',
@@ -113,8 +113,10 @@ class ExportController extends Controller
                     $r->event->name ?? '-',
                     $r->registration_status,
                     $r->payment_status,
+                    $r->payment_method,
+                    $r->paid_at,
                     $r->created_at,
-                ]);
+                ]));
             }
 
             fclose($handle);
@@ -122,5 +124,16 @@ class ExportController extends Controller
             'Content-Type' => 'text/csv',
             'Content-Disposition' => "attachment; filename=\"{$filename}\"",
         ]);
+    }
+
+    /**
+     * Stop spreadsheet apps from running user-typed cells as formulas.
+     */
+    public static function safe(array $row): array
+    {
+        return array_map(
+            fn ($v) => is_string($v) && $v !== '' && str_contains('=+-@', $v[0]) ? "'".$v : $v,
+            $row
+        );
     }
 }

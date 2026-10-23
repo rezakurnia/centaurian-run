@@ -22,13 +22,8 @@
     </aside>
     <main class="k-main" id="k-main" hidden>
         <h1 class="k-title">@yield('title')</h1>
-        {{-- Konten with target_site "panitia": announcements for staff, managed in Admin → Konten --}}
-        @foreach (\App\Models\Content::where('target_site', 'panitia')->where('status', 'published')->orderBy('sort_order')->get() as $note)
-            <section class="k-card k-note" aria-label="Pengumuman">
-                @if ($note->title)<h2 class="k-h2">{{ $note->title }}</h2>@endif
-                <p class="body-md">{!! nl2br(e($note->body)) !!}</p>
-            </section>
-        @endforeach
+        {{-- Konten with target_site "panitia": announcements for staff, loaded after auth from /api/panitia/announcements --}}
+        <div id="k-notes"></div>
         @yield('content')
     </main>
 </div>
