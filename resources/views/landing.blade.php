@@ -154,7 +154,7 @@
                 </div>
             @endforeach
 
-                {{-- MindMarket 1:1 Rive Characters --}}
+                {{-- Rive characters --}}
                 <c-rive data-src="/rive/climber.riv" data-autoplay="true" data-reveal="true" data-reveal-delay="0.15" data-reveal-delay-with-preloader="false" data-reveal-translate-x="0%" data-disable-firefox-renderer="true">
                     <div class="absolute z-10 aspect-[1000/1225] max-md:top-[2.8%] max-md:left-[-16%] max-md:w-[68%] md:top-[10%] md:left-[-3.2%] md:w-[43%]">
                         <div class="h-full w-full"><canvas class="h-full w-full"></canvas></div>
@@ -203,7 +203,7 @@
                     </div>
                 </c-rive>
 
-                {{-- MindMarket 1:1 Floating SVG Ornaments --}}
+                {{-- Floating SVG ornaments --}}
                 <img loading="lazy" decoding="async" src="/timeline/clock.svg" alt="" class="absolute z-above max-md:top-[1.5%] max-md:left-[15%] max-md:hidden max-md:w-[16%] md:top-[5%] md:left-[13%] md:w-[10%] max-md:transform-none!" width="203" height="210" aria-hidden="true" data-scroll data-scroll-speed="0.05">
                 <img loading="lazy" decoding="async" src="/timeline/clock-shape.svg" alt="" class="absolute top-[2%] left-[8%] z-10 w-[30%] max-md:hidden" width="533" height="537" aria-hidden="true">
                 <img loading="lazy" decoding="async" src="/timeline/clock-shape-mobile.svg" alt="" class="absolute top-[1%] left-[8%] z-10 hidden w-[40%]" width="222" height="190" aria-hidden="true">
@@ -230,7 +230,7 @@
                 <img loading="lazy" decoding="async" src="/timeline/soccer-trace.svg" alt="" class="absolute z-above max-md:top-[83.5%] max-md:right-[-5%] max-md:w-[44%] md:top-[69%] md:right-[49%] md:w-[18%]" width="409" height="432" aria-hidden="true">
                 <img loading="lazy" decoding="async" src="/timeline/soccer-circle-2.svg" alt="" class="absolute z-above max-md:top-[84%] max-md:left-[45%] max-md:w-[3%] md:top-[70%] md:left-[19%] md:w-[1%] max-md:transform-none!" width="31" height="75" data-scroll data-scroll-speed="0.1" aria-hidden="true">
 
-                {{-- MindMarket 1:1 SVG Track / Rail --}}
+                {{-- SVG track / rail --}}
                 <c-homepage-timeline class="c-homepage-timeline_path md:aspect-[1944.2/6151.5]" data-scroll data-scroll-event-progress="pathProgress" data-scroll-offset="-27%,100%">
                     <!-- Desktop Path -->
                     <svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" xml:space="preserve" viewBox="0 0 1944.2 6151.5" class="absolute inset-0 h-full w-full max-md:hidden" id="desktop-svg" preserveAspectRatio="none">
@@ -258,7 +258,7 @@
                     </svg>
                 </c-homepage-timeline>
 
-                {{-- Timeline End Section: Binoculars, Unicycle, Basketball Player, Clouds & Green Hills (MindMarket 1:1) --}}
+                {{-- Timeline End Section: Binoculars, Unicycle, Basketball Player, Clouds & Green Hills --}}
                 <div class="c-homepage-timeline_end" data-scroll data-scroll-css-progress>
                     <c-rive data-src="/rive/binoculars.riv" data-autoplay="true" data-reveal="true" data-reveal-delay="0.15" data-reveal-delay-with-preloader="false" data-reveal-translate-x="0%" data-disable-firefox-renderer="true">
                         <div class="absolute z-10 aspect-[1789/1438] max-md:right-[-16%] max-md:bottom-[2%] max-md:w-[73%] md:right-[-8.5%] md:bottom-[2%] md:w-[60%]">
@@ -360,7 +360,7 @@
                         @include('partials.btn', ['href' => '/daftar', 'label' => 'Daftar sekarang', 'color' => 'green', 'attributes' => 'data-deluxe-callout-action="true" data-callout-action'])
                     </div>
 
-                    {{-- Footer row: same position and style as the reference's three taglines under the CTA --}}
+                    {{-- Footer row: three taglines under the CTA --}}
                     @include('partials.footer', ['class' => 'mt-fluid-2xl md:mt-60'])
                 </div>
             </div>

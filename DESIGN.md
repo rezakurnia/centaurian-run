@@ -1,11 +1,11 @@
-# Design — MindMarket Style Reference (Centaurian Run)
+# Design — Centaurian Run
 
 > Warm storybook on sand-cream paper — a friendly editorial canvas where oversized Inter headlines and paper-cut characters share a sunlit, sticker-soft surface.
 
 **Theme:** light  
-Public UI style, modelled 1:1 on MindMarket (layout, tokens, motion, components).
+Public UI style: layout, tokens, motion and components.
 
-Tokens live in `resources/css/app.css` (`@theme` and `:root`). Values are measured against the reference by `audit/` (see `audit/README.md`); change them there and here together.
+Tokens live in `resources/css/app.css` (`@theme` and `:root`); change them there and here together.
 
 ---
 
@@ -57,7 +57,7 @@ Fluid root font-size: `--text-md` (16 → 17px) by default, 15px from 1000 to 11
 **Density:** comfortable  
 **Spacing scale:** `--spacing` (.25rem) multiples, `--unit-md` 20px (grid gutter and margin), fluid steps `--spacing-fluid-xs` … `--spacing-fluid-4xl` (8px → 160px).
 
-### Breakpoints (reference scale, not Tailwind's defaults)
+### Breakpoints (own scale, not Tailwind's defaults)
 `2xs` 400px · `xs` 500px · `sm` 700px · **`md` 1000px (desktop layout starts here)** · `lg` 1200px · `xl` 1400px · `2xl` 1600px · `3xl` 1800px · `4xl` 2000px · `5xl` 2400px.
 
 ### Border Radius
@@ -69,7 +69,7 @@ Fluid root font-size: `--text-md` (16 → 17px) by default, 15px from 1000 to 11
 | Mobile "Daftar" chip | 5px | (literal) |
 
 ### Layout
-- **Grid:** 16 columns, 20px gutter and margin (`--unit-md`); `--gs-{columns}-{gutters}` tokens hold the reference's `grid-space()` maths.
+- **Grid:** 16 columns, 20px gutter and margin (`--unit-md`); `--gs-{columns}-{gutters}` tokens hold the `grid-space()` maths.
 - **Menu bar height:** 15 × `--spacing` below 1000px, 16 × `--spacing` from 1000px; fixed 4 × `--spacing` from the top.
 - **Card width:** 6 of 16 columns (max 800px), 7 columns on 1000–1399px; padding 6.25 × 5 `--spacing` below 1400px, 12.5 × `--spacing` from 1400px.
 - **Section gap:** `--spacing-fluid-*` (xs 8px → 4xl 160px).
@@ -99,7 +99,7 @@ Fluid root font-size: `--text-md` (16 → 17px) by default, 15px from 1000 to 11
 - **FAQ** (`.c-faq`): native `<details>` rows inside a white panel, hairline dividers, a "+" / "–" marker drawn with CSS generated content and hidden from screen readers.
 
 ### 5. Form (`/daftar`)
-- **Role:** Registration, modelled on the reference's cost estimator: numbered steps (`.c-step`: white panel, **10px radius**, 40px plum number badge) and a sticky white summary panel beside them.
+- **Role:** Registration as a step-by-step estimator: numbered steps (`.c-step`: white panel, **10px radius**, 40px plum number badge) and a sticky white summary panel beside them.
 - Two steps: category, then personal data. The package is not picked; it follows the category (the API assigns it), so each category card shows only the category name, and the summary reads the package and price from the checked card.
 - Fields per category (NIS/kelas, NIP/jabatan/unit, anak, tahun lulus) sit in `fieldset[data-for=<code>]` blocks, shown and enabled only for the checked category so hidden ones are not submitted.
 - **Guru Karyawan NIP gate**: picking that category focuses the NIP field first. The NIP is checked live against the `employees` master (`GET /api/employees/{nip}`); a match shows a `.c-note` line with a Marigold ✓, fills "Nama lengkap" from the master and locks it (`readonly`, Sand Cream fill, `.c-hint` note under it). An unknown NIP shows a `.c-error.-nip` line (Grape × instead of "!") plus the 2px Grape input border. One NIP may only register once per event; the API enforces both rules.
@@ -151,7 +151,7 @@ Fluid root font-size: `--text-md` (16 → 17px) by default, 15px from 1000 to 11
 | 2 | Sand | `#f3d9a8` | Inset or secondary surface tone, hairline borders |
 
 **Elevation Rule:**  
-MindMarket uses a cream-to-white surface stack and generous border-radii instead of box-shadows for elevation. Drop shadows are avoided to maintain the flat, editorial, printed storybook feel.
+The site uses a cream-to-white surface stack and generous border-radii instead of box-shadows for elevation. Drop shadows are avoided to maintain the flat, editorial, printed storybook feel.
 
 ---
 

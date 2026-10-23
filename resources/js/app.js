@@ -26,7 +26,7 @@ matchMedia('(min-width: 1000px)').addEventListener('change', (e) => e.matches &&
 if (has('c-rive')) import('./components/c-rive.js');
 if (has('c-homepage-timeline')) import('./components/c-homepage-timeline.js');
 
-// Smooth scroll + scroll-linked attributes. Same engine and default options as the reference:
+// Smooth scroll + scroll-linked attributes, Locomotive default options:
 // Locomotive Scroll v5 drives [data-scroll-speed] parallax, [data-scroll-css-progress] (--progress),
 // [data-scroll-event-progress] (the route's `pathProgress` event) and the `is-inview` class.
 if (!reduceMotion && has('[data-scroll], [data-scroll-speed], [data-scroll-event-progress], [data-scroll-css-progress]')) {

@@ -1,7 +1,7 @@
 # 🏃‍♂️ Centaurian Run — Dokumentasi Lengkap Proyek
 
 > **Centaurian Run** (Centaurian FunRun) adalah platform digital terintegrasi untuk kegiatan Fun Run keluarga besar Yayasan / SMA Alfa Centauri (siswa, guru, staf, alumni, orang tua, dan masyarakat umum). 
-> Sistem ini menggabungkan landing page publik berstandar editorial interaktif tingkat tinggi (berbasis *MindMarket style reference*), sistem registrasi & verifikasi pembayaran, scan barcode garis finish panitia, serta dashboard manajemen terpusat bagi administrator.
+> Sistem ini menggabungkan landing page publik berstandar editorial interaktif tingkat tinggi, sistem registrasi & verifikasi pembayaran, scan barcode garis finish panitia, serta dashboard manajemen terpusat bagi administrator.
 
 ---
 
@@ -52,9 +52,9 @@ Aplikasi ini menggunakan arsitektur **Backend API Monolith Terpusat** berbasis L
 
 ---
 
-## 🎨 3. Design System (MindMarket Style Reference)
+## 🎨 3. Design System
 
-Desain antarmuka publik mengadopsi filosofi **MindMarket Style Reference**: *“Warm storybook on cream paper”* dengan estetika editorial lembut, rounded radii tinggi (*sticker-like*), dan tipografi berukuran masif.
+Desain antarmuka publik mengusung filosofi *“Warm storybook on cream paper”* dengan estetika editorial lembut, rounded radii tinggi (*sticker-like*), dan tipografi berukuran masif.
 
 ### Palet Warna (Design Tokens)
 | Token | Nilai Hex | Peran / Penggunaan |
@@ -118,7 +118,7 @@ alcent-centaurian-run/
 │   ├── factories/                               # Factory model untuk testing
 │   ├── migrations/                              # Struktur tabel database
 │   └── seeders/                                 # Dummy & initial data
-├── docs/                                        # Dokumentasi teknis, API.md, wireframe, Postman
+├── docs/                                        # Dokumentasi teknis, API.md, Postman
 ├── public/
 │   ├── images/                                  # Aset gambar & ilustrasi
 │   ├── rive/                                    # File animasi Rive (.riv)

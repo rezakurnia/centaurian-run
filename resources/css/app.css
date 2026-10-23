@@ -3,9 +3,9 @@
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 
-/* Tokens: see DESIGN.md. Values are measured from the reference (mindmarket.com) with audit/. */
+/* Tokens: see DESIGN.md. */
 @theme {
-    /* Breakpoints: the reference uses its own scale (md = 1000px, not Tailwind's 768px). */
+    /* Breakpoints: own scale (md = 1000px, not Tailwind's 768px). */
     --breakpoint-*: initial;
     --breakpoint-2xs: 400px;
     --breakpoint-xs: 500px;
@@ -97,7 +97,7 @@
     --transition-duration-slow: .6s;
     --transition-duration-slower: .8s;
 
-    /* 16-column grid maths of the reference: gs-{columns}-{gutters}
+    /* 16-column grid maths: gs-{columns}-{gutters}
        = columns/16 of the content width, minus the gutters it spans, plus `gutters` extra gutters. */
     --gs-w: calc(100vw - 2 * var(--grid-margin));
     --gs-1-2: calc(1 / 16 * var(--gs-w) - 15 / 16 * var(--grid-gutter) + 2 * var(--grid-gutter));
@@ -127,7 +127,7 @@
     margin-inline: auto;
 }
 
-/* Headings and body copy, as in the reference */
+/* Headings and body copy */
 @utility heading-2xl {
     font-size: var(--text-heading-2xl);
     letter-spacing: -0.06em;
@@ -152,7 +152,7 @@
 @utility body-md { font-size: var(--text-md); letter-spacing: -0.04em; font-weight: 500; line-height: 1.25; }
 @utility z-above { z-index: 1; }
 
-/* Fluid root, same steps as the reference: clamp 16→17px, 15px on 1000–1199, 19px from 2000, 21.5px from 2400 */
+/* Fluid root: clamp 16→17px, 15px on 1000–1199, 19px from 2000, 21.5px from 2400 */
 html {
     font-family: Inter, sans-serif;
     font-weight: 500;
@@ -175,7 +175,7 @@ body {
 :focus-visible { outline: 2px solid var(--color-charcoal); outline-offset: 3px; }
 
 @layer components {
-/* ---------- Button (reference .c-button) ---------- */
+/* ---------- Button (.c-button) ---------- */
 :is(.c-button, .c-button-quote) {
     --button-height: calc(var(--spacing) * 15);
     --button-radius: var(--radius-sm);
@@ -265,7 +265,7 @@ body {
     .c-logo_text { font-size: calc(var(--spacing) * 3.89); }
 }
 
-/* ---------- Desktop menu (reference .c-menu-desktop, md and up) ---------- */
+/* ---------- Desktop menu (.c-menu-desktop, md and up) ---------- */
 .c-menu-desktop {
     position: fixed;
     top: calc(var(--spacing) * 4);
@@ -363,7 +363,7 @@ html.is-loaded .c-menu-desktop {
 }
 .c-menu-desktop_contact > .c-button-quote_label { z-index: 3; }
 
-/* ---------- Mobile menu (reference .c-menu-mobile, below md) ---------- */
+/* ---------- Mobile menu (.c-menu-mobile, below md) ---------- */
 html.has-menu-mobile-open { overflow: hidden; }
 .c-menu-mobile {
     position: fixed;
@@ -417,7 +417,7 @@ html.has-menu-mobile-open { overflow: hidden; }
     border-radius: 100%;
     cursor: pointer;
 }
-/* 40px circle per the reference; the invisible ring takes the tap area to 44px */
+/* 40px circle by design; the invisible ring takes the tap area to 44px */
 .c-menu-mobile_burger::after { content: ''; position: absolute; inset: -2px; }
 .c-menu-mobile_burger::before {
     content: '';
@@ -528,7 +528,7 @@ html.has-menu-mobile-open .c-menu-mobile_nav_contact { opacity: 1; transform: tr
 }
 .c-menu-mobile_nav_label { font-size: var(--text-heading-xs); letter-spacing: -0.06em; font-weight: 500; line-height: 1.2; }
 
-/* ---------- Hero (reference .c-hero-home) ---------- */
+/* ---------- Hero (.c-hero-home) ---------- */
 .c-hero-home {
     --progress: 0;
     width: 100%;
@@ -630,7 +630,7 @@ html.has-menu-mobile-open .c-menu-mobile_nav_contact { opacity: 1; transform: tr
     transform: translate(var(--tx)) translateY(var(--ty)) rotate(var(--rot)) scale(var(--scale));
 }
 
-/* ---------- Timeline (reference .c-homepage-timeline) ---------- */
+/* ---------- Timeline (.c-homepage-timeline) ---------- */
 .c-homepage-timeline {
     position: relative;
     z-index: 1;
@@ -693,7 +693,7 @@ html.has-menu-mobile-open .c-menu-mobile_nav_contact { opacity: 1; transform: tr
 @media (width < 1000px) { .c-homepage-timeline_path { margin-bottom: -86vw; } }
 @media (width >= 1000px) { .c-homepage-timeline_path { margin-bottom: -10vw; } }
 
-/* Cards: absolutely placed on the 16-column grid; positions change at md / xl / 3xl just like the reference. */
+/* Cards: absolutely placed on the 16-column grid; positions change at md / xl / 3xl. */
 .c-homepage-timeline-cards { position: absolute; z-index: 3; }
 @media (width < 1000px) {
     .c-homepage-timeline-cards { left: var(--unit-md); right: var(--unit-md); transform: none !important; }
@@ -731,7 +731,7 @@ html.has-menu-mobile-open .c-menu-mobile_nav_contact { opacity: 1; transform: tr
 }
 @media (1600px <= width < 1800px) { .c-homepage-timeline-cards:nth-child(3) { top: 46%; } }
 
-/* Tile (reference .c-tile-animated): white panel with the content inset */
+/* Tile (.c-tile-animated): white panel with the content inset */
 .c-tile-animated { position: relative; }
 .c-tile-animated_bg {
     position: absolute;

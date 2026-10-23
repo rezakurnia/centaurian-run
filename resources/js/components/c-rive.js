@@ -60,7 +60,7 @@ class CRive extends HTMLElement {
         this.timeline = null;
     }
 
-    // Debounced like the reference (200ms) so the drawing surface follows the canvas size
+    // Debounced (200ms) so the drawing surface follows the canvas size
     onResize = () => {
         clearTimeout(this.resizeTimer);
         this.resizeTimer = setTimeout(() => this.rive?.resizeDrawingSurfaceToCanvas(), 200);
