@@ -1,7 +1,21 @@
 // /pembayaran/selesai/{no}: Midtrans sends the browser back here right after paying. The webhook
 // may land later (and might not be configured at all), so poll the endpoint that asks Midtrans for
 // the transaction status, then reload into the success state once it is settled.
+import { showBarcode, stashedBarcode } from './barcode-card.js';
+
 const waiting = document.getElementById('payment-waiting');
+
+// Settled state: offer the QR if this browser registered the participant
+const qrOpen = document.getElementById('barcode-open');
+if (qrOpen) {
+    const number = qrOpen.dataset.number;
+    const barcode = stashedBarcode(number);
+    if (barcode) {
+        qrOpen.hidden = false;
+        qrOpen.addEventListener('click', () => showBarcode(number, barcode));
+        showBarcode(number, barcode);
+    }
+}
 
 if (waiting) {
     const number = waiting.dataset.number;

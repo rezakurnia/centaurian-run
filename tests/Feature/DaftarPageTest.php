@@ -46,4 +46,12 @@ class DaftarPageTest extends TestCase
             ->assertSee('sum-quota')
             ->assertDontSee('data-quota');
     }
+
+    public function test_dialog_qr_ada_di_halaman_daftar(): void
+    {
+        $this->get('/daftar')
+            ->assertOk()
+            ->assertSee('id="barcode-dialog"', false)
+            ->assertSee('id="success-qr"', false);
+    }
 }

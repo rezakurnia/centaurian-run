@@ -1,4 +1,6 @@
 // Registration form: live summary + POST /api/registrations with per-field errors.
+import { showBarcode, stashBarcode } from './barcode-card.js';
+
 const form = document.getElementById('register-form');
 
 if (form) {
@@ -293,6 +295,8 @@ if (form) {
         const unpaid = reg.payment_status === 'unpaid';
 
         if (payUrl) {
+            // The QR appears on /pembayaran/selesai once the payment is settled
+            stashBarcode(reg.registration_number, reg.barcode);
             form.hidden = true;
             const redirect = $('register-redirect');
             $('register-redirect-link').hidden = false;
@@ -317,5 +321,11 @@ if (form) {
         box.hidden = false;
         box.scrollIntoView({ block: 'center' });
         box.focus({ preventScroll: true });
+
+        // Free packages are confirmed already: open the QR right away
+        const qrButton = $('success-qr');
+        qrButton.hidden = unpaid;
+        qrButton.onclick = () => showBarcode(reg.registration_number, reg.barcode);
+        if (!unpaid) showBarcode(reg.registration_number, reg.barcode);
     };
 }

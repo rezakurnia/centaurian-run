@@ -181,6 +181,7 @@
                                     <dt class="opacity-75">Nomor peserta</dt><dd class="heading-xs" id="success-number"></dd>
                                     <dt class="opacity-75">Status</dt><dd id="success-status"></dd>
                                 </dl>
+                                <p class="mt-6"><button type="button" class="c-link" id="success-qr" hidden>Lihat QR kartu masuk</button></p>
                                 <div class="mt-8 grid gap-4 sm:grid-cols-2">
                                     <div class="rounded-sm bg-beige p-5" id="success-pay" hidden>
                                         <h3 class="heading-xs">Pembayaran belum tersedia</h3>
@@ -225,6 +226,8 @@
             </div>
         </div>
     </section>
+
+    @include('partials.barcode-dialog')
 
     <div class="rounded-t-lg bg-green py-fluid-2xl">
         <div class="container">@include('partials.footer')</div>

@@ -384,7 +384,9 @@ class MidtransPaymentTest extends TestCase
             ->assertOk()
             ->assertSee('Pendaftaran berhasil.')
             ->assertSee('A-0001')
-            ->assertSee('Lunas');
+            ->assertSee('Lunas')
+            ->assertSee('id="barcode-dialog"', false)
+            ->assertDontSee(Registration::first()->barcode);
     }
 
     public function test_halaman_selesai_untuk_nomor_tak_dikenal(): void

@@ -72,7 +72,11 @@
                         </div>
 
                         <p class="body-md mt-gutter rounded-sm bg-beige p-4">Nomor peserta dan barcode juga dikirim ke emailmu.</p>
-                        <p class="mt-6"><a class="c-link" href="/cek-status?no={{ rawurlencode($registration->registration_number) }}">Lihat kartu BIB →</a></p>
+                        <p class="mt-6 flex flex-wrap gap-x-6 gap-y-2">
+                            {{-- Shown by c-payment-finish.js only in the browser that registered; the barcode never comes from the server here --}}
+                            <button type="button" class="c-link" id="barcode-open" data-number="{{ $registration->registration_number }}" hidden>Lihat QR kartu masuk</button>
+                            <a class="c-link" href="/cek-status?no={{ rawurlencode($registration->registration_number) }}">Lihat kartu BIB →</a>
+                        </p>
                     </article>
                 @else
                     {{-- Waiting for the Midtrans notification; c-payment-finish.js reloads when it lands --}}
@@ -100,6 +104,8 @@
             </div>
         </div>
     </section>
+
+    @include('partials.barcode-dialog')
 
     <div class="rounded-t-lg bg-green py-fluid-2xl">
         <div class="container">@include('partials.footer')</div>
