@@ -22,20 +22,20 @@ const RES = {
     },
     contents: {
         path: '/admin/contents', one: 'konten', name: 'title',
-        cols: [['Bagian', 'section'], ['Judul', 'title'], ['Urutan', 'sort_order'], ['Diubah', 'updated_at', when]],
+        cols: [['Bagian', 'section'], ['Judul', 'title'], ['Situs', 'target_site'], ['Status', 'status'], ['Urutan', 'sort_order'], ['Diubah', 'updated_at', when]],
         fields: [
             { n: 'target_site', l: 'Situs', t: 'select', o: [['utama', 'Utama'], ['panitia', 'Panitia']], omit: true },
             { n: 'status', l: 'Status', t: 'select', o: [['draft', 'Draf'], ['published', 'Terbit']], omit: true },
             { n: 'section', l: 'Bagian (kunci)' }, { n: 'title', l: 'Judul' },
-            { n: 'body', l: 'Isi', t: 'textarea' }, { n: 'sort_order', l: 'Urutan', t: 'number' },
+            { n: 'body', l: 'Isi', t: 'textarea' }, { n: 'sort_order', l: 'Urutan', t: 'number', omit: true },
         ],
     },
     users: {
         path: '/admin/users', one: 'pengguna', name: 'username',
-        cols: [['Username', 'username'], ['Email', 'email'], ['Role', 'role'], ['Login terakhir', 'last_login', when]],
+        cols: [['Username', 'username'], ['Email', 'email'], ['Peran', 'role'], ['Login terakhir', 'last_login', when]],
         fields: [
             { n: 'username', l: 'Username' }, { n: 'email', l: 'Email', t: 'email' },
-            { n: 'role', l: 'Role', t: 'select', o: [['panitia', 'Panitia'], ['admin', 'Admin']] },
+            { n: 'role', l: 'Peran', t: 'select', o: [['panitia', 'Panitia'], ['admin', 'Admin']] },
             { n: 'password', l: 'Password (min. 6)', t: 'password', omit: true },
         ],
     },
@@ -60,10 +60,10 @@ export function initCrud() {
         const r = await api(cfg.path);
         if (!r.ok) { body.innerHTML = `<tr><td colspan="${span}">${esc(errText(r))}</td></tr>`; return; }
         rows = r.data.data;
-        body.innerHTML = rows.length ? rows.map((x, i) => `<tr>${cfg.cols.map((c) => `<td>${cell(x, c)}</td>`).join('')}<td class="k-actions"><button type="button" class="k-btn -ghost" data-a="edit" data-i="${i}">Ubah</button>${(cfg.actions ?? []).map((a, j) => `<button type="button" class="k-btn -ghost" data-a="${j}" data-i="${i}">${esc(a.label(x))}</button>`).join('')}<button type="button" class="k-btn -ghost" data-a="del" data-i="${i}">Hapus</button></td></tr>`).join('')
+        body.innerHTML = rows.length ? rows.map((x, i) => `<tr>${cfg.cols.map((c) => `<td>${cell(x, c)}</td>`).join('')}<td class="k-actions"><button type="button" class="k-btn -ghost" data-a="edit" data-i="${i}" aria-label="Ubah ${esc(x[cfg.name])}">Ubah</button>${(cfg.actions ?? []).map((a, j) => `<button type="button" class="k-btn -ghost" data-a="${j}" data-i="${i}" aria-label="${esc(a.label(x))} ${esc(x[cfg.name])}">${esc(a.label(x))}</button>`).join('')}<button type="button" class="k-btn -ghost" data-a="del" data-i="${i}" aria-label="Hapus ${esc(x[cfg.name])}">Hapus</button></td></tr>`).join('')
             : `<tr><td colspan="${span}">Belum ada data.</td></tr>`;
     };
-    head.innerHTML = `<tr>${cfg.cols.map(([l]) => `<th>${l}</th>`).join('')}<th></th></tr>`;
+    head.innerHTML = `<tr>${cfg.cols.map(([l]) => `<th>${l}</th>`).join('')}<th><span class="sr-only">Aksi</span></th></tr>`;
 
     // Panggilan langsung (toggle dst.), lalu muat ulang
     const call = async (path, method, body) => {
@@ -77,7 +77,7 @@ export function initCrud() {
     const rd = $('reset-dialog');
     const rerr = $('reset-error');
     let target = null;
-    const reset = (ev) => { target = ev; $('reset-confirm').value = ''; $('reset-password').value = ''; setErr(rerr, ''); rd.showModal(); };
+    const reset = (ev) => { target = ev; $('reset-title').textContent = `Reset acara: ${ev.name}`; $('reset-confirm').value = ''; $('reset-password').value = ''; setErr(rerr, ''); rd.showModal(); };
     $('reset-cancel').addEventListener('click', () => rd.close());
     $('reset-form').addEventListener('submit', async (e) => {
         e.preventDefault();

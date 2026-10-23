@@ -4,7 +4,7 @@
 <section class="k-card" data-crud="{{ $resource }}">
     <div class="k-row"><button type="button" class="k-btn" id="crud-new">Tambah</button></div>
     <div id="crud-msg" class="k-result mt-3" role="status" aria-live="polite"></div>
-    <div class="k-scroll mt-4">
+    <div class="k-scroll mt-4" tabindex="0" role="region" aria-label="Tabel data">
         <table class="c-table">
             <thead id="crud-head"></thead>
             <tbody id="crud-body"><tr><td>Memuat…</td></tr></tbody>

@@ -10,8 +10,9 @@ class CRive extends HTMLElement {
     constructor() {
         super();
         this.src = this.getAttribute('data-src');
-        this.autoplay = this.getAttribute('data-autoplay') === 'true';
-        this.reveal = this.getAttribute('data-reveal') === 'true';
+        const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+        this.autoplay = !still && this.getAttribute('data-autoplay') === 'true';
+        this.reveal = !still && this.getAttribute('data-reveal') === 'true';
         this.revealDelay = parseFloat(this.getAttribute('data-reveal-delay') || '0');
         this.revealTranslateX = this.getAttribute('data-reveal-translate-x') || '0%';
         this.$canvas = this.querySelector('canvas');

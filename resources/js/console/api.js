@@ -6,6 +6,9 @@ export const auth = {
     clear() { localStorage.removeItem(KEY); },
 };
 
+// Expired or missing token: forget it and go back to the login page.
+export const expired = () => { auth.clear(); location.href = '/login'; };
+
 export async function api(path, { method = 'GET', body } = {}) {
     const a = auth.get();
     const headers = { Accept: 'application/json' };
@@ -14,7 +17,7 @@ export async function api(path, { method = 'GET', body } = {}) {
     try {
         const res = await fetch(`/api${path}`, { method, headers, body: body && JSON.stringify(body) });
         const data = await res.json().catch(() => ({}));
-        if (res.status === 401 && a) { auth.clear(); location.href = '/login'; }
+        if (res.status === 401 && a) expired();
         return { ok: res.ok, status: res.status, data };
     } catch {
         return { ok: false, status: 0, data: { message: 'Tidak bisa terhubung ke server. Periksa koneksimu.' } };
@@ -24,13 +27,14 @@ export async function api(path, { method = 'GET', body } = {}) {
 // File download (CSV/xlsx) needs the Bearer header, so fetch the blob and save it under the server's filename.
 export async function download(path, fallback) {
     const res = await fetch(`/api${path}`, { headers: { Authorization: `Bearer ${auth.get()?.token}` } });
-    if (!res.ok) throw new Error(res.status === 401 ? 'Sesi habis, login ulang.' : 'Gagal mengunduh.');
+    if (res.status === 401) { expired(); throw new Error('Sesi habis, login ulang.'); }
+    if (!res.ok) throw new Error('Gagal mengunduh.');
     const a = Object.assign(document.createElement('a'), {
         href: URL.createObjectURL(await res.blob()),
         download: /filename="?([^";]+)/.exec(res.headers.get('Content-Disposition') ?? '')?.[1] ?? fallback,
     });
     a.click();
-    URL.revokeObjectURL(a.href);
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
 }
 
 export const errText =(r) => (r.data.errors && Object.values(r.data.errors)[0]?.[0]) || r.data.message || 'Terjadi kendala di server.';

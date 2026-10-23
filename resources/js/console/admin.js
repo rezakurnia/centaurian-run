@@ -19,7 +19,7 @@ const debounce = (fn, ms = 300) => { let t; return () => { clearTimeout(t); t = 
 async function dashboard() {
     const stats = document.getElementById('dash-stats');
     const r = await api('/admin/dashboard');
-    if (!r.ok) { stats.textContent = errText(r); return; }
+    if (!r.ok) { stats.textContent = errText(r); document.getElementById('dash-category').innerHTML = row(3, esc(errText(r))); return; }
     const d = r.data.data;
     const card = (label, v) => `<div class="k-card"><p class="body-md">${label}</p><p class="k-stat">${v}</p></div>`;
     const sum = (arr, key, v) => arr.find((x) => x[key] === v)?.total ?? 0;
@@ -38,12 +38,15 @@ function pendaftaran() {
     let list = [];
     let current = null;
 
+    let seq = 0;
     const load = async () => {
+        const mine = ++seq;
         body.innerHTML = row(8, 'Memuat…');
         const r = await api(`/admin/registrations?${qs(form)}`);
+        if (mine !== seq) return; // a newer filter is already loading
         if (!r.ok) { body.innerHTML = row(8, esc(errText(r))); return; }
         list = r.data.data;
-        body.innerHTML = list.length ? list.map((x, i) => `<tr><td>${esc(x.registration_number)}</td><td>${esc(x.participant?.full_name ?? '-')}</td><td>${esc(x.category)}</td><td>${esc(x.package)}</td><td>${badge(REG, x.registration_status)}</td><td>${badge(PAY, x.payment_status)}</td><td>${x.payment_proof_url ? `<a class="c-link" href="${esc(x.payment_proof_url)}" target="_blank" rel="noopener">Lihat</a>` : '-'}</td><td><button type="button" class="k-btn -ghost" data-i="${i}">Verifikasi</button></td></tr>`).join('')
+        body.innerHTML = list.length ? list.map((x, i) => `<tr><td>${esc(x.registration_number)}</td><td>${esc(x.participant?.full_name ?? '-')}</td><td>${esc(x.category)}</td><td>${esc(x.package)}</td><td>${badge(REG, x.registration_status)}</td><td>${badge(PAY, x.payment_status)}</td><td>${esc(x.payment_method ?? '-')}</td><td><button type="button" class="k-btn -ghost" data-i="${i}" aria-label="Verifikasi ${esc(x.registration_number)}">Verifikasi</button></td></tr>`).join('')
             : row(8, 'Tidak ada pendaftaran.');
     };
 
@@ -63,9 +66,9 @@ function pendaftaran() {
         if (!b) return;
         current = list[b.dataset.i];
         document.getElementById('reg-dialog-title').textContent = `Verifikasi ${current.registration_number}`;
-        document.getElementById('reg-dialog-info').textContent = `${current.category}, ${current.package}`;
+        document.getElementById('reg-dialog-info').textContent = [`${current.category}, ${current.package}`, current.payment_method && `Metode ${current.payment_method}`, current.paid_at && `Dibayar ${new Date(current.paid_at).toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' })}`].filter(Boolean).join(' · ');
         document.getElementById('reg-dialog-proof').innerHTML = current.payment_proof_url
-            ? `<a class="c-link" href="${esc(current.payment_proof_url)}" target="_blank" rel="noopener">Buka bukti pembayaran</a>` : 'Belum ada bukti pembayaran.';
+            ? `<a class="c-link" href="${esc(current.payment_proof_url)}" target="_blank" rel="noopener">Buka bukti pembayaran</a>` : '';
         document.getElementById('v-reg').value = current.registration_status;
         document.getElementById('v-pay').value = current.payment_status;
         setErr(err, '');
@@ -102,8 +105,11 @@ const identity = (x) => [
 function peserta() {
     const form = document.getElementById('p-filter');
     const body = document.getElementById('p-body');
+    let seq = 0;
     const load = async () => {
+        const mine = ++seq;
         const r = await api(`/admin/participants?${qs(form)}`);
+        if (mine !== seq) return;
         if (!r.ok) { body.innerHTML = row(6, esc(errText(r))); return; }
         const list = r.data.data;
         body.innerHTML = list.length ? list.map((x) => `<tr><td>${esc(x.full_name)}</td><td>${esc(identity(x))}</td><td>${esc(x.gender)}</td><td>${esc(x.email)}</td><td>${esc(x.phone)}</td><td>${new Date(x.created_at).toLocaleDateString('id-ID')}</td></tr>`).join('')

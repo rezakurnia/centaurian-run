@@ -6,7 +6,7 @@
         <input class="c-input" name="search" type="search" placeholder="Cari nama, email, atau nomor" aria-label="Cari peserta" autocomplete="off">
         <select class="c-input" name="category_id" aria-label="Kategori"><option value="">Semua kategori</option></select>
     </form>
-    <div class="k-scroll mt-4">
+    <div class="k-scroll mt-4" tabindex="0" role="region" aria-label="Tabel data">
         <table class="c-table">
             <thead><tr><th>Nama</th><th>Identitas</th><th>L/P</th><th>Email</th><th>Telepon</th><th>Daftar</th></tr></thead>
             <tbody id="p-body"><tr><td colspan="6">Memuat…</td></tr></tbody>

@@ -51,6 +51,9 @@ class CHomepageTimeline extends HTMLElement {
                 .fromTo($('#secondary-path'), { drawSVG: '0%' }, { drawSVG: '100%', duration: 1, ease: 'none' })
                 .fromTo($('#shadow-path'), { opacity: 0 }, { opacity: 1, duration: 0.15, ease: 'none' }, 0.95);
         }
+
+        // No scroll engine under reduced motion, so nothing scrubs the route: show it fully drawn
+        if (matchMedia('(prefers-reduced-motion: reduce)').matches) this.masterTimeline.progress(1);
     }
 }
 

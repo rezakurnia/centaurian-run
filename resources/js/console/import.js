@@ -1,4 +1,4 @@
-import { api, auth, download, errText, esc, setErr } from './api.js';
+import { api, auth, download, errText, esc, expired, setErr } from './api.js';
 
 // Impor peserta (Admin → Peserta): xlsx templates + POST /admin/participants/import (multipart, so no api()).
 export function initImport() {
@@ -40,6 +40,7 @@ export function initImport() {
                 headers: { Accept: 'application/json', Authorization: `Bearer ${auth.get()?.token}` },
                 body,
             });
+            if (res.status === 401) return expired();
             const data = await res.json().catch(() => ({}));
             if (!res.ok) return flash(errText({ data }), '-bad');
             const d = data.data;

@@ -1,10 +1,4 @@
-import 'locomotive-scroll/dist/locomotive-scroll.css';
-import LocomotiveScroll from 'locomotive-scroll';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import './components/c-rive.js';
 import './components/c-deluxe-callout.js';
-import './components/c-homepage-timeline.js';
 import './components/c-register.js';
 import './components/c-check-status.js';
 import './components/c-payment-finish.js';
@@ -13,10 +7,9 @@ import './components/c-result-detail.js';
 
 const root = document.documentElement;
 const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
-gsap.registerPlugin(ScrollTrigger);
+const has = (sel) => document.querySelector(sel);
 
-// Slides the nav in and starts the hero's first-hit animation
-requestAnimationFrame(() => root.classList.add('is-loaded'));
+// html.is-loaded (nav slide-in, hero first hit) is set by the inline script in partials/nav.blade.php
 
 // Mobile menu: the burger toggles html.has-menu-mobile-open, picking a link closes it
 const burger = document.querySelector('.c-menu-mobile_burger');
@@ -29,13 +22,17 @@ document.querySelectorAll('.c-menu-mobile_nav a').forEach((a) => a.addEventListe
 document.addEventListener('keydown', (e) => e.key === 'Escape' && setMenu(false));
 matchMedia('(min-width: 1000px)').addEventListener('change', (e) => e.matches && setMenu(false));
 
+// GSAP, the route timeline, Rive and the scroll engine only load on pages that use them
+if (has('c-rive')) import('./components/c-rive.js');
+if (has('c-homepage-timeline')) import('./components/c-homepage-timeline.js');
+
 // Smooth scroll + scroll-linked attributes. Same engine and default options as the reference:
 // Locomotive Scroll v5 drives [data-scroll-speed] parallax, [data-scroll-css-progress] (--progress),
 // [data-scroll-event-progress] (the route's `pathProgress` event) and the `is-inview` class.
-if (!reduceMotion) {
+if (!reduceMotion && has('[data-scroll], [data-scroll-speed], [data-scroll-event-progress], [data-scroll-css-progress]')) {
     root.classList.add('has-motion');
-    new LocomotiveScroll({
-        lenisOptions: { anchors: { offset: -100 } },
-        scrollCallback: () => ScrollTrigger.update(),
-    });
+    Promise.all([
+        import('locomotive-scroll'),
+        import('locomotive-scroll/dist/locomotive-scroll.css'),
+    ]).then(([{ default: LocomotiveScroll }]) => new LocomotiveScroll({ lenisOptions: { anchors: { offset: -100 } } }));
 }

@@ -99,6 +99,7 @@ if (form) {
     const acceptNip = (employee) => {
         verifiedNip = employee.nip;
         setError('nip', '');
+        setError('full_name', '');
         setNipNote(`NIP terdaftar sebagai ${employee.name}.`);
         syncNipHint();
         if (nameInput) {
@@ -203,16 +204,13 @@ if (form) {
                 if (!input || !c.quota) return;
 
                 quotas.set(String(c.id), c);
+                const option = input.closest('.c-option');
                 if (!c.is_full) return;
 
                 // A full category is disabled here so it cannot be picked; the API rejects it too
                 input.checked = false;
                 input.disabled = true;
-                const badge = input.closest('.c-option')?.querySelector('[data-full]');
-                if (badge) {
-                    badge.hidden = false;
-                    badge.innerHTML = '<span class="c-badge -bad">Penuh</span>';
-                }
+                option?.querySelector('[data-full]')?.removeAttribute('hidden');
             });
 
             quotasLoaded = true;
@@ -238,17 +236,20 @@ if (form) {
             return showFirst(missing);
         }
 
+        // Disabled before the NIP gate so a double click cannot start two submissions
+        submit.disabled = true;
+
         // Guru Karyawan: never send a NIP that has not matched the employee master
         if (checkedCategory()?.dataset.code === 'E' && nipInput?.value.trim() && nipInput.value.trim() !== verifiedNip) {
             await checkNip();
             if (nipInput.value.trim() !== verifiedNip) {
+                submit.disabled = false;
                 formError.textContent = 'Periksa kembali NIP-mu sebelum mengirim.';
                 formError.hidden = false;
                 return showFirst(['nip']);
             }
         }
 
-        submit.disabled = true;
         try {
             const res = await fetch('/api/registrations', {
                 method: 'POST',
@@ -276,7 +277,8 @@ if (form) {
         } catch {
             formError.textContent = 'Tidak bisa terhubung ke server. Periksa koneksimu lalu coba lagi.';
         } finally {
-            submit.disabled = false;
+            // Registration closed mid-session (close()) keeps the button off
+            submit.disabled = !$('register-closed').hidden;
         }
         formError.hidden = false;
     });
@@ -301,15 +303,13 @@ if (form) {
             return;
         }
 
-        $('success-message').textContent = message;
+        // The API message promises an email, which an unpaid registration does not get yet
+        $('success-message').textContent = unpaid ? 'Pendaftaranmu sudah tersimpan.' : message;
         $('success-number').textContent = reg.registration_number;
         $('success-status').textContent = unpaid ? 'Menunggu pembayaran' : 'Terkonfirmasi';
 
-        const q = '?no=' + encodeURIComponent(reg.registration_number);
         $('success-pay').hidden = !unpaid;
-        $('pay-unavailable').hidden = !unpaid;
-        $('success-pay-link').href = '/cek-status' + q;
-        $('success-status-link').href = '/cek-status' + q;
+        $('success-status-link').href = '/cek-status?no=' + encodeURIComponent(reg.registration_number);
 
         form.hidden = true;
         const box = $('register-success');

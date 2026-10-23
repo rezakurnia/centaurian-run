@@ -14,7 +14,7 @@
 
 @include('partials.nav', ['base' => '/'])
 
-<main class="bg-beige">
+<main id="main" class="bg-beige">
     <header class="rounded-b-lg bg-(image:--gradient-hero) pt-32 pb-fluid-lg max-md:pt-28">
         <div class="container">
             <div class="grid grid-cols-6 gap-gutter md:grid-cols-16">
@@ -45,7 +45,7 @@
                         <p class="body-lg mt-6" id="results-status" role="status">Memuat hasil…</p>
                         <p class="c-error mt-4" id="results-error" role="alert" hidden></p>
 
-                        <div class="mt-6 overflow-x-auto" id="results-wrap" hidden>
+                        <div class="mt-6 overflow-x-auto" id="results-wrap" tabindex="0" role="region" aria-label="Tabel hasil lomba" hidden>
                             <table class="c-table">
                                 <caption class="sr-only">Hasil lomba, diurutkan dari waktu tercepat</caption>
                                 <thead>

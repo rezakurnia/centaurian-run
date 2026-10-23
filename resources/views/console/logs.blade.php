@@ -3,7 +3,7 @@
 @section('content')
 <section class="k-card" data-log="{{ $log }}">
     <form id="log-filter" class="k-row" aria-label="Filter log"></form>
-    <div class="k-scroll mt-4">
+    <div class="k-scroll mt-4" tabindex="0" role="region" aria-label="Tabel data">
         <table class="c-table">
             <thead id="log-head"></thead>
             <tbody id="log-body"><tr><td>Memuat…</td></tr></tbody>

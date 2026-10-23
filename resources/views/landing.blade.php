@@ -22,7 +22,7 @@
         [
             'id' => 'paket', 'color' => 'yellow', 'href' => '/daftar', 'button' => 'Daftar',
             'title' => 'Paket ikut kategorimu.',
-            'body' => 'Paketmu otomatis menyesuaikan kategori. Untuk paket berbayar, cukup transfer, unggah bukti pembayaran, dan tunggu verifikasi panitia.',
+            'body' => 'Paketmu otomatis menyesuaikan kategori. Untuk paket berbayar, kamu diarahkan ke halaman pembayaran dan kartu BIB terbuka begitu pembayaranmu lunas.',
         ],
         [
             'id' => 'jadwal', 'color' => 'blue', 'href' => '/cek-status', 'button' => 'BIB Checking',
@@ -56,7 +56,7 @@
 
 @include('partials.nav')
 
-<main>
+<main id="main">
     {{-- Hero: pinned (sticky) behind the timeline from md up, see .c-hero-home in app.css --}}
     <div class="c-hero-home" data-scroll data-scroll-css-progress>
         <div class="c-hero-home_inner">
@@ -123,7 +123,7 @@
                             @if ($card['id'] === 'kategori' && $categories->isNotEmpty())
                                 <ul class="flex flex-wrap gap-2">
                                     @foreach ($categories as $category)
-                                        <li class="rounded-[10px] bg-beige px-3 py-1 text-[.9375rem] font-medium text-charcoal">{{ $category->name }}</li>
+                                        <li class="rounded-sm bg-beige px-3 py-1 text-sm font-medium text-charcoal">{{ $category->name }}</li>
                                     @endforeach
                                 </ul>
                             @elseif ($card['id'] === 'paket' && $paidPackages->isNotEmpty())
@@ -299,16 +299,16 @@
                     <h2 class="heading-lg text-center text-balance">Rute 5K.</h2>
                     <p class="body-lg mx-auto mt-4 max-w-140 text-center text-balance">CENTAURIAN RUN</p>
 
-                    <div class="mt-fluid-2xl overflow-x-auto rounded-sm bg-white">
+                    <div class="mt-fluid-2xl overflow-x-auto rounded-sm bg-white" tabindex="0" role="region" aria-label="Peta rute 5K">
                         <img src="/images/rute-5k.webp" width="1800" height="871" loading="lazy" decoding="async"
                              class="h-auto w-full min-w-[56rem] md:min-w-0"
                              alt="Peta rute 5K Centaurian Run: garis merah putus-putus dari start dan finis di Untung Surapati Avenue, melewati penanda KM 1 sampai KM 4 dan satu pos air minum.">
                     </div>
-                    <p class="body-md mt-3 opacity-75 md:hidden">Geser peta ke samping untuk melihat seluruh rute.</p>
+                    <p class="body-md mt-3 md:hidden">Geser peta ke samping untuk melihat seluruh rute.</p>
 
                     <ul class="mt-4 flex flex-wrap gap-2">
                         @foreach (['Start / Finish', 'Water station', 'KM MARKER', 'MARSHAL'] as $legend)
-                            <li class="rounded-[10px] bg-beige px-3 py-1 text-[.9375rem] font-medium text-charcoal">{{ $legend }}</li>
+                            <li class="rounded-sm bg-beige px-3 py-1 text-sm font-medium text-charcoal">{{ $legend }}</li>
                         @endforeach
                     </ul>
                 </div>

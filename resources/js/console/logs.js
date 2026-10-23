@@ -1,7 +1,12 @@
 import { api, download, errText, esc } from './api.js';
 
 const when = (v) => (v ? new Date(v).toLocaleString('id-ID') : '-');
-const SCAN = { valid: ['-ok', 'Valid'], duplicate: ['-wait', 'Duplikat'], invalid: ['-bad', 'Invalid'] };
+const SCAN = { valid: ['-ok', 'Valid'], duplicate: ['-wait', 'Duplikat'], invalid: ['-bad', 'Tidak valid'] };
+// Indonesian labels for the detail dialog; unknown keys fall back to the raw name
+const LABEL = {
+    id: 'ID', scanned_at: 'Waktu scan', created_at: 'Waktu', barcode: 'Barcode', scan_status: 'Status scan', scanned_by: 'Petugas',
+    participant: 'Peserta', ip_address: 'IP', user: 'Pengguna', action: 'Aksi', target_table: 'Tabel', target_id: 'ID target', detail: 'Detail', error: 'Kesalahan',
+};
 const input = (n, l, t = 'text') => `<input class="c-input" name="${n}" type="${t}" aria-label="${l}" placeholder="${t === 'date' ? '' : l}" autocomplete="off">`;
 const dates = input('date_from', 'Dari tanggal', 'date') + input('date_to', 'Sampai tanggal', 'date');
 
@@ -41,7 +46,7 @@ export function initLogs() {
     let rows = [];
 
     form.innerHTML = cfg.f;
-    $('log-head').innerHTML = `<tr>${cfg.cols.map(([l]) => `<th>${l}</th>`).join('')}<th></th></tr>`;
+    $('log-head').innerHTML = `<tr>${cfg.cols.map(([l]) => `<th>${l}</th>`).join('')}<th><span class="sr-only">Aksi</span></th></tr>`;
 
     // Detail: every field of GET {path}/{id}, nested objects (user, participant) flattened to one line
     const dlg = $('log-dialog');
@@ -53,19 +58,22 @@ export function initLogs() {
         const r = await api(`${cfg.path}/${rows[b.dataset.i].id}`);
         const d = r.ok ? r.data.data : { error: errText(r) };
         $('log-dialog-body').innerHTML = Object.entries(d).filter(([, v]) => v != null && v !== '')
-            .map(([k, v]) => `<dt>${esc(k.replaceAll('_', ' '))}</dt><dd>${esc(/_at$/.test(k) ? when(v) : flat(v))}</dd>`).join('');
+            .map(([k, v]) => `<dt>${esc(LABEL[k] ?? k.replaceAll('_', ' '))}</dt><dd>${esc(/_at$/.test(k) ? when(v) : flat(v))}</dd>`).join('');
         dlg.showModal();
     });
 
+    let seq = 0;
     const load = async () => {
+        const mine = ++seq;
         const q = new URLSearchParams([...new FormData(form)].filter(([, v]) => v));
         q.set('page', page);
         const r = await api(`${cfg.path}?${q}`);
+        if (mine !== seq) return; // a newer request is already loading
         if (!r.ok) { body.innerHTML = `<tr><td colspan="${span}">${esc(errText(r))}</td></tr>`; return; }
         const { data, meta } = r.data;
         last = meta.last_page;
         rows = data;
-        body.innerHTML = data.length ? data.map((x, i) => `<tr>${cfg.cols.map(([, f]) => `<td>${f(x)}</td>`).join('')}<td><button type="button" class="k-btn -ghost" data-i="${i}">Detail</button></td></tr>`).join('')
+        body.innerHTML = data.length ? data.map((x, i) => `<tr>${cfg.cols.map(([, f]) => `<td>${f(x)}</td>`).join('')}<td><button type="button" class="k-btn -ghost" data-i="${i}" aria-label="Detail baris ${i + 1}">Detail</button></td></tr>`).join('')
             : `<tr><td colspan="${span}">Tidak ada data.</td></tr>`;
         $('log-page').textContent = `Halaman ${meta.current_page} dari ${last} (${meta.total} data)`;
         $('log-prev').disabled = page <= 1;

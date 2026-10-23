@@ -69,8 +69,11 @@ if (form) {
 
     let lastQuery = '';
     let pollTimer = 0;
+    let pollGen = 0;
 
+    // Bumping the generation also cancels a tick that is already awaiting a response
     const stopPolling = () => {
+        pollGen++;
         window.clearTimeout(pollTimer);
         pollTimer = 0;
     };
@@ -84,10 +87,15 @@ if (form) {
         if (!unpaid.length) return;
 
         const startedAt = Date.now();
+        const gen = pollGen;
+        let delay = 5000;
         const tick = async () => {
             for (const number of unpaid) {
                 try {
                     const res = await json(`/api/registrations/${encodeURIComponent(number)}/payment-status`, { method: 'POST' });
+                    if (gen !== pollGen) return;
+                    // Rate limited: back off instead of hammering the endpoint
+                    if (res.status === 429) delay = Math.min(delay * 2, 30000);
                     const out = await res.json().catch(() => ({}));
                     if (out.data?.payment_status && out.data.payment_status !== 'unpaid') {
                         return lookup(lastQuery);
@@ -96,11 +104,11 @@ if (form) {
                     // Offline or a hiccup: the next tick tries again
                 }
             }
-            if (Date.now() - startedAt < 120000) {
-                pollTimer = window.setTimeout(tick, 5000);
+            if (gen === pollGen && Date.now() - startedAt < 120000) {
+                pollTimer = window.setTimeout(tick, delay);
             }
         };
-        pollTimer = window.setTimeout(tick, 5000);
+        pollTimer = window.setTimeout(tick, delay);
     };
 
     // Native <dialog> gives the pop-up focus trapping and Escape for free; older browsers get an
@@ -110,8 +118,10 @@ if (form) {
             return results.scrollIntoView({ block: 'nearest' });
         }
         if (typeof dialog.showModal === 'function') {
-            if (!dialog.open) dialog.showModal();
-            dialogClose?.focus();
+            if (!dialog.open) {
+                dialog.showModal();
+                dialogClose?.focus();
+            }
         } else {
             dialog.setAttribute('open', '');
         }
@@ -137,7 +147,7 @@ if (form) {
             return input.focus();
         }
         lastQuery = value;
-        // Registration numbers look like "SW-0001"; anything with "@" is an email
+        // Registration numbers look like "S-0001"; anything with "@" is an email
         const body = value.includes('@') ? { email: value } : { registration_number: value.toUpperCase() };
         submit.disabled = true;
         try {
@@ -169,9 +179,9 @@ if (form) {
     // A click on the backdrop lands on the <dialog> element itself
     dialog?.addEventListener('click', (e) => { if (e.target === dialog) closeDialog(); });
     // Escape closes the native dialog; stop the background status check with it
-    dialog?.addEventListener('close', stopPolling);
+    dialog?.addEventListener('close', () => { stopPolling(); input.focus(); });
 
-    // Arriving from the success screen: /cek-status?no=SW-0001
+    // Arriving from the success screen: /cek-status?no=S-0001
     const preset = new URLSearchParams(location.search).get('no');
     if (preset) { input.value = preset; lookup(preset); }
 }

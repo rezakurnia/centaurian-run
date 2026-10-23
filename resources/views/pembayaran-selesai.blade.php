@@ -19,7 +19,7 @@
 
 @include('partials.nav', ['base' => '/'])
 
-<main class="bg-beige">
+<main id="main" class="bg-beige">
     <header class="rounded-b-lg bg-(image:--gradient-hero) pt-32 pb-fluid-lg max-md:pt-28">
         <div class="container">
             <div class="grid grid-cols-6 gap-gutter md:grid-cols-16">
@@ -71,8 +71,8 @@
                             </dl>
                         </div>
 
-                        <p class="body-md mt-gutter rounded-sm bg-beige p-4">Nomor peserta dan barcode juga dikirim ke {{ $registration->participant->email }}.</p>
-                        <p class="mt-6"><a class="c-link" href="/cek-status?no={{ urlencode($registration->registration_number) }}">Lihat kartu BIB →</a></p>
+                        <p class="body-md mt-gutter rounded-sm bg-beige p-4">Nomor peserta dan barcode juga dikirim ke emailmu.</p>
+                        <p class="mt-6"><a class="c-link" href="/cek-status?no={{ rawurlencode($registration->registration_number) }}">Lihat kartu BIB →</a></p>
                     </article>
                 @else
                     {{-- Waiting for the Midtrans notification; c-payment-finish.js reloads when it lands --}}
@@ -86,13 +86,13 @@
                             <dt class="opacity-75">Paket</dt><dd>{{ $registration->package->name }}</dd>
                         </dl>
 
-                        <p class="body-md mt-6" id="payment-slow" hidden>Pembayaran belum terkonfirmasi. Kalau kamu menutup halaman pembayaran, buka lagi lewat tautan di bawah, lalu muat ulang halaman ini.</p>
+                        <p class="body-md mt-6" id="payment-slow" role="status" hidden>Pembayaran belum terkonfirmasi. Kalau kamu menutup halaman pembayaran, buka lagi lewat tautan di bawah, lalu muat ulang halaman ini.</p>
 
                         <div class="mt-6 flex flex-wrap justify-center gap-x-6 gap-y-2">
                             @if ($registration->snap_redirect_url)
                                 <a class="c-link" href="{{ $registration->snap_redirect_url }}">Lanjutkan pembayaran →</a>
                             @endif
-                            <a class="c-link" href="/pembayaran/selesai/{{ urlencode($registration->registration_number) }}">Muat ulang halaman</a>
+                            <a class="c-link" href="/pembayaran/selesai/{{ rawurlencode($registration->registration_number) }}">Muat ulang halaman</a>
                             <a class="c-link" href="/cek-status">BIB Checking</a>
                         </div>
                     </article>

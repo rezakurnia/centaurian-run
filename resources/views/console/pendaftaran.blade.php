@@ -11,9 +11,9 @@
             <option value="">Semua pembayaran</option><option value="unpaid">Belum bayar</option><option value="paid">Lunas</option><option value="free">Gratis</option>
         </select>
     </form>
-    <div class="k-scroll mt-4">
+    <div class="k-scroll mt-4" tabindex="0" role="region" aria-label="Tabel data">
         <table class="c-table">
-            <thead><tr><th>No.</th><th>Peserta</th><th>Kategori</th><th>Paket</th><th>Pendaftaran</th><th>Bayar</th><th>Bukti</th><th></th></tr></thead>
+            <thead><tr><th>No.</th><th>Peserta</th><th>Kategori</th><th>Paket</th><th>Pendaftaran</th><th>Bayar</th><th>Metode</th><th><span class="sr-only">Aksi</span></th></tr></thead>
             <tbody id="reg-body"><tr><td colspan="8">Memuat…</td></tr></tbody>
         </table>
     </div>

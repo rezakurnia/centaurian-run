@@ -25,7 +25,7 @@
 
 <section class="k-card">
     <h2 class="k-h2">Riwayat sesi ini</h2>
-    <div class="k-scroll">
+    <div class="k-scroll" tabindex="0" role="region" aria-label="Tabel data">
         <table class="c-table">
             <thead><tr><th>Jam</th><th>Peserta</th><th>Kategori</th><th>Waktu</th><th>Status</th></tr></thead>
             <tbody id="scan-history"><tr><td colspan="5">Belum ada scan.</td></tr></tbody>

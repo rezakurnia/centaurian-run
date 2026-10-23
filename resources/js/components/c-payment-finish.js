@@ -9,12 +9,16 @@ if (waiting) {
     const startedAt = Date.now();
     const maxWait = 120000;
 
+    let delay = 3000;
+
     const check = async () => {
         try {
             const res = await fetch('/api/registrations/' + encodeURIComponent(number) + '/payment-status', {
                 method: 'POST',
                 headers: { Accept: 'application/json' },
             });
+            // Rate limited: back off instead of hammering the endpoint
+            if (res.status === 429) delay = Math.min(delay * 2, 30000);
             const json = await res.json().catch(() => ({}));
             const status = json.data?.payment_status;
 
@@ -31,7 +35,7 @@ if (waiting) {
             return;
         }
 
-        window.setTimeout(check, 3000);
+        window.setTimeout(check, delay);
     };
 
     window.setTimeout(check, 2000);

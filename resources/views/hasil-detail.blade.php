@@ -14,7 +14,7 @@
 
 @include('partials.nav', ['base' => '/'])
 
-<main class="bg-beige">
+<main id="main" class="bg-beige">
     <header class="rounded-b-lg bg-(image:--gradient-hero) pt-32 pb-fluid-lg max-md:pt-28">
         <div class="container">
             <div class="grid grid-cols-6 gap-gutter md:grid-cols-16">

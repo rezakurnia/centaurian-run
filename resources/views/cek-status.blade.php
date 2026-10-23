@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>BIB Check · Centaurian Run</title>
+    <title>BIB Checking · Centaurian Run</title>
     <meta name="description" content="Cek nomor BIB peserta Centaurian Run. Kartu BIB resmi muncul untuk pendaftaran yang pembayarannya sudah lunas.">
     <link rel="icon" href="/favicon.ico" sizes="any">
     <link rel="icon" href="/favicon.png" type="image/png">
@@ -19,13 +19,13 @@
 
 @include('partials.nav', ['base' => '/'])
 
-<main class="bg-beige">
+<main id="main" class="bg-beige">
     <header class="rounded-b-lg bg-(image:--gradient-hero) pt-32 pb-fluid-lg max-md:pt-28">
         <div class="container">
             <div class="grid grid-cols-6 gap-gutter md:grid-cols-16">
                 <div class="col-span-full md:col-start-2 md:col-span-14 text-center">
-                    <p class="body-md uppercase">BIB Check</p>
-                    <h1 class="heading-lg mx-auto mt-4 max-w-[22ch] text-balance">Ambil nomor BIB mu.</h1>
+                    <p class="body-md uppercase">BIB Checking</p>
+                    <h1 class="heading-lg mx-auto mt-4 max-w-[22ch] text-balance">Ambil nomor BIB-mu.</h1>
                     <p class="body-lg mx-auto mt-4 max-w-140 text-balance">Masukkan nomor peserta atau emailmu.</p>
                 </div>
             </div>
@@ -39,8 +39,8 @@
                 <form id="status-form" class="c-step" novalidate>
                     <div class="c-field flex flex-col items-center text-center">
                         <label class="c-label mb-2" for="identifier">Nomor peserta atau email</label>
-                        <input class="c-input text-center" id="identifier" name="identifier" type="text" autocomplete="email" autocapitalize="off" spellcheck="false" placeholder="Contoh : S-9999 atau nama@email.com" aria-describedby="err-identifier">
-                        <p class="c-error" id="err-identifier" hidden></p>
+                        <input class="c-input text-center" id="identifier" name="identifier" type="text" autocomplete="email" autocapitalize="off" spellcheck="false" placeholder="Contoh: S-0001 atau nama@email.com" aria-describedby="err-identifier">
+                        <p class="c-error" id="err-identifier" role="alert" hidden></p>
                     </div>
 
                     <div class="mt-6 flex justify-center">
@@ -56,8 +56,8 @@
         <article class="c-step">
             <div class="rounded-sm bg-(image:--gradient-hero) p-fluid-lg text-center">
                 <p class="body-md uppercase">Peserta Resmi</p>
-                <h2 class="heading-sm mt-2">SELAMAT !</h2>
-                <p class="body-lg mx-auto mt-3 max-w-140 text-balance">Anda sudah terdaftar sebagai peserta <strong data-f="event"></strong>.</p>
+                <h2 class="heading-sm mt-2">Selamat!</h2>
+                <p class="body-lg mx-auto mt-3 max-w-140 text-balance">Kamu sudah terdaftar sebagai peserta <strong data-f="event"></strong>.</p>
             </div>
 
             <div class="mt-gutter grid gap-gutter md:grid-cols-[minmax(0,0.9fr)_1.1fr] md:items-center">

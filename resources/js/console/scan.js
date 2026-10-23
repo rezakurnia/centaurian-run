@@ -107,8 +107,9 @@ export function initScan() {
         if (barcode === last.code && Date.now() - last.at < cfg.cooldown * 1000) return;
         last = { code: barcode, at: Date.now() };
         const r = await api('/panitia/scan', { method: 'POST', body: { barcode } });
+        if (r.status === 0) last = { code: '', at: 0 }; // network failure: allow an immediate retry
         const d = r.data.data;
-        const [cls, label] = r.ok ? ['-ok', 'Valid'] : r.status === 409 ? ['-wait', 'Duplikat'] : ['-bad', 'Gagal'];
+        const [cls, label] = r.ok ? ['-ok', 'Valid'] : r.status === 409 ? ['-wait', 'Duplikat'] : ['-bad', 'Tidak valid'];
         beep(r.ok);
         clearTimeout(clearTimer);
         if (cfg.autoClear > 0) clearTimer = setTimeout(() => { result.className = 'k-result'; result.textContent = ''; }, cfg.autoClear * 1000);
